@@ -39,6 +39,7 @@ object JinadaDimens {
         val large = 70.dp
         val xLarge = 150.dp
         val xxLarge = 180.dp
+        val xxxLarge = 220.dp
     }
 
 }

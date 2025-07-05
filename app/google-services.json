@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "835729201686",
+    "project_id": "jinada-179b7",
+    "storage_bucket": "jinada-179b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835729201686:android:fba0ee694ab0dc024cf337",
+        "android_client_info": {
+          "package_name": "com.youngsik.jinada"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJkELy9ytofWSasGfn6qsOV_pHkWNxrFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

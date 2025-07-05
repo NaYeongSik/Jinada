@@ -34,11 +34,11 @@ import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.common.MemoWriteTabMenu
-import com.youngsik.jinada.shared.composable.CommonCard
-import com.youngsik.jinada.shared.composable.CommonDividingLine
-import com.youngsik.jinada.shared.composable.CommonTabRow
-import com.youngsik.jinada.shared.composable.ListItemRow
-import com.youngsik.jinada.shared.composable.commonTabRow
+import com.youngsik.jinada.presentation.common.CommonCard
+import com.youngsik.jinada.presentation.common.CommonDividingLine
+import com.youngsik.jinada.presentation.common.CommonTabRow
+import com.youngsik.jinada.presentation.common.ListItemRow
+import com.youngsik.jinada.presentation.common.commonTabRow
 import com.youngsik.jinada.shared.theme.JinadaDimens
 import com.youngsik.jinada.shared.utils.changeToStringDate
 import java.time.LocalDate
@@ -64,8 +64,8 @@ fun MemoWriteScreen(address: String?, memoId: Int?, onBackEvent: () -> Unit) {
 
         MemoWriteTopAppBar(
             if (memoId == null) stringResource(R.string.write_memo_title) else stringResource(R.string.write_memo_title_update),
-            onCloseClick = { onBackEvent },
-            onSaveClick = { onBackEvent } // TODO: 메모 저장 처리 필요
+            onCloseClick = { onBackEvent() },
+            onSaveClick = { onBackEvent() } // TODO: 메모 저장 처리 필요
         )
 
         Column(
@@ -80,7 +80,7 @@ fun MemoWriteScreen(address: String?, memoId: Int?, onBackEvent: () -> Unit) {
                     ) {
                         Text(text = stringResource(R.string.selected_location), style = MaterialTheme.typography.bodySmall)
                         Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xxxSmall))
-                        Text(text = "스타벅스 독산사거리점", style = MaterialTheme.typography.bodyLarge)
+                        Text(text = "스타벅스 독산사거리점", style = MaterialTheme.typography.bodyLarge) // TODO: 넘겨받은 주소로 넣어주기
                     }
 
                     CommonDividingLine(modifier = Modifier.padding(horizontal = JinadaDimens.Padding.medium))
@@ -130,7 +130,7 @@ fun MemoWriteTopAppBar(title : String,
         title = { Text(title, fontWeight = FontWeight.Bold) },
         navigationIcon = {
             IconButton(onClick = onCloseClick) {
-                Icon(Icons.Default.Close, contentDescription = "닫기")
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.common_close))
             }
         },
         actions = {

@@ -16,19 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.shared.composable.CommonCard
-import com.youngsik.jinada.shared.composable.CommonDividingLine
-import com.youngsik.jinada.shared.composable.CommonSettingsDialog
-import com.youngsik.jinada.shared.composable.CommonSliderOptionRow
-import com.youngsik.jinada.shared.composable.CommonSwitchOptionRow
-import com.youngsik.jinada.shared.composable.ListItemRow
-import com.youngsik.jinada.shared.data.SettingOptionData
-import com.youngsik.jinada.shared.data.SettingsData
+import com.youngsik.jinada.presentation.common.SettingDialogState
+import com.youngsik.jinada.presentation.common.CommonCard
+import com.youngsik.jinada.presentation.common.CommonDividingLine
+import com.youngsik.jinada.presentation.common.CommonSettingsDialog
+import com.youngsik.jinada.presentation.common.CommonSliderOptionRow
+import com.youngsik.jinada.presentation.common.CommonSwitchOptionRow
+import com.youngsik.jinada.presentation.common.ListItemRow
+import com.youngsik.jinada.presentation.common.SettingOptionData
+import com.youngsik.jinada.presentation.common.SettingsData
 import com.youngsik.jinada.shared.theme.JinadaDimens
 
 
 @Composable
-fun SettingsSection(onClickEvent: (String) -> Unit){
+fun SettingsSection(onClickEvent: (SettingDialogState) -> Unit){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +45,7 @@ fun SettingsSection(onClickEvent: (String) -> Unit){
 }
 
 @Composable
-fun SettingsGroup(title: String,optionList: List<SettingOptionData>, onClickEvent: (String)-> Unit) {
+fun SettingsGroup(title: String,optionList: List<SettingOptionData>, onClickEvent: (SettingDialogState)-> Unit) {
     CommonCard(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(JinadaDimens.Padding.medium),
@@ -76,7 +77,7 @@ fun SettingsGroup(title: String,optionList: List<SettingOptionData>, onClickEven
 }
 
 @Composable
-fun DialogView(dialogRoute: String, onChangedDialogType:(String)-> Unit){
+fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDialogState)-> Unit){
     // TODO: 저장된 설정 옵션 값으로 변경하기
     var (isCheckedCloserNoti,onCloserSwitchChanged) = remember { mutableStateOf(true) }
     var (isCheckedDailyNoti, onDailySwitchChanged) = remember { mutableStateOf(false) }
@@ -84,10 +85,10 @@ fun DialogView(dialogRoute: String, onChangedDialogType:(String)-> Unit){
     var closerNotiRange by remember { mutableFloatStateOf(0.3f) }
 
     when(dialogRoute){
-        "NotificationSetting" -> {
+        SettingDialogState.NOTIFICATION_RANGE -> {
             CommonSettingsDialog(
                 stringResource(R.string.notification_setting_title),
-                { onChangedDialogType("None") },
+                { onChangedDialogType(SettingDialogState.NONE) },
                 { /*TODO: 저장시 동작*/ }) {
                 Column {
                     CommonSwitchOptionRow(isCheckedCloserNoti, onCloserSwitchChanged) {
@@ -116,10 +117,10 @@ fun DialogView(dialogRoute: String, onChangedDialogType:(String)-> Unit){
                 }
             }
         }
-        "SearchRangeSetting" -> {
+        SettingDialogState.SEARCHING_RANGE -> {
             CommonSettingsDialog(
                 stringResource(R.string.setting_title_search_range),
-                { onChangedDialogType("None") },
+                { onChangedDialogType(SettingDialogState.NONE) },
                 { /*TODO: 저장시 동작*/ }) {
                 Column(
                     modifier = Modifier.fillMaxWidth()

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 
@@ -67,6 +68,10 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.jetbrains.kotlinx.serialization.json)
+
+    implementation(libs.firebase.firestore.ktx)
+    implementation(platform(libs.firebase.bom))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

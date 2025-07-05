@@ -3,11 +3,6 @@ package com.youngsik.jinada.shared.theme
 import androidx.compose.ui.graphics.Color
 
 
-val JinadaPrimary = Color(0xFFFF6B6B)
-val JinadaSecondary = Color(0xFFFFF5F0)
-val JinadaText = Color(0xFF4A3F3A)
-val JinadaSubText = Color(0xFFB5A9A3)
-
 // --- 주조색: 부드러운 분홍 계열 ---
 val SoftPink = Color(0xFFF0AAB8)         // 새로운 Primary 색상 (은은한 분홍)
 val LightPinkContainer = Color(0xFFFFE4E8) // Primary Container (더 옅은 분홍)

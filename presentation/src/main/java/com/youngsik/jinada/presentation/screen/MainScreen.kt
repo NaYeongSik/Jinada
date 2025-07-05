@@ -24,7 +24,7 @@ import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.composable.MapSearchBar
 import com.youngsik.jinada.presentation.composable.MyLocationButton
 import com.youngsik.jinada.presentation.map.NaverMapView
-import com.youngsik.jinada.shared.composable.CommonLazyColumnCard
+import com.youngsik.jinada.presentation.common.CommonLazyColumnCard
 import com.youngsik.jinada.shared.theme.JinadaDimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +62,7 @@ fun MainScreen(onCreateMemoClick: (String)-> Unit, onMemoUpdateClick: (Int)-> Un
         Box(
             modifier = Modifier.padding(innerPadding)
         ) {
-            NaverMapView(onCreateMemoClick)
+            NaverMapView(onMapLongClick = onCreateMemoClick)
 
             MapSearchBar(Modifier.align(Alignment.TopCenter)
                 .padding(JinadaDimens.Padding.medium)

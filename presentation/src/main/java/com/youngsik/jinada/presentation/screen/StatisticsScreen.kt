@@ -20,7 +20,7 @@ import com.youngsik.jinada.presentation.composable.IncompleteTodosSection
 import com.youngsik.jinada.presentation.composable.MainStatisticsSection
 import com.youngsik.jinada.presentation.composable.MemoCountCardSection
 import com.youngsik.jinada.presentation.MemoMockData
-import com.youngsik.jinada.shared.composable.MemoCard
+import com.youngsik.jinada.presentation.common.MemoCard
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.jinada.shared.theme.JinadaDimens
 import com.youngsik.jinada.shared.utils.changeToStringDate

@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +16,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildFeatures {
+        compose = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -54,6 +57,8 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.jetbrains.kotlinx.serialization.json)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.ui.viewbinding)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

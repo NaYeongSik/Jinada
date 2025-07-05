@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.youngsik.jinada.ui.screen.EntryPointMainScreen
+import com.youngsik.jinada.nav_graph.EntryPointMainActivity
 import com.youngsik.jinada.shared.theme.JinadaTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JinadaTheme {
-                EntryPointMainScreen()
+                EntryPointMainActivity()
             }
         }
     }

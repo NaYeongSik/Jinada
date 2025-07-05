@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youngsik.jinada.presentation.R
+import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.composable.DialogView
 import com.youngsik.jinada.presentation.composable.SettingsSection
 import com.youngsik.jinada.shared.theme.JinadaDimens
@@ -30,7 +31,7 @@ import com.youngsik.jinada.shared.theme.JinadaDimens
 @Preview(showBackground = true)
 @Composable
 fun MyPageScreen(){
-    var dialogRoute by remember { mutableStateOf("None") }
+    var dialogRoute by remember { mutableStateOf(SettingDialogState.NONE) }
 
     Column(
         modifier = Modifier.fillMaxSize(),

@@ -4,17 +4,27 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface ScreenRouteDef {
-    @Serializable
-    data object MainTab: ScreenRouteDef
 
     @Serializable
-    data object MyMemoTab: ScreenRouteDef
+    data object Splash : ScreenRouteDef
 
     @Serializable
-    data object MyPageTab: ScreenRouteDef
+    data object entryscreen : ScreenRouteDef
 
     @Serializable
-    data object StatisticsTab: ScreenRouteDef
+    sealed interface BottomNavigation : ScreenRouteDef {
+        @Serializable
+        data object MainTab: BottomNavigation
+
+        @Serializable
+        data object MyMemoTab: BottomNavigation
+
+        @Serializable
+        data object MyPageTab: BottomNavigation
+
+        @Serializable
+        data object StatisticsTab: BottomNavigation
+    }
 
     @Serializable
     sealed interface MemoManagementTab : ScreenRouteDef{

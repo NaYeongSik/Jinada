@@ -24,10 +24,10 @@ fun EntryPointMainScreen(){
     AppScaffold(navController = navController) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = ScreenRouteDef.MainTab,
+            startDestination = ScreenRouteDef.BottomNavigation.MainTab,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable<ScreenRouteDef.MainTab>{
+            composable<ScreenRouteDef.BottomNavigation.MainTab>{
                 MainScreen(
                     onCreateMemoClick = { address ->
                         navController.navigate(ScreenRouteDef.MemoManagementTab.CreateMemo(address))
@@ -37,7 +37,7 @@ fun EntryPointMainScreen(){
                     }
                 )
             }
-            composable<ScreenRouteDef.MyMemoTab>{
+            composable<ScreenRouteDef.BottomNavigation.MyMemoTab>{
                 MyMemoScreen({ memoId ->
                     navController.navigate(
                         ScreenRouteDef.MemoManagementTab.UpdateMemo(
@@ -46,20 +46,20 @@ fun EntryPointMainScreen(){
                     )
                 })
             }
-            composable<ScreenRouteDef.MyPageTab>{
+            composable<ScreenRouteDef.BottomNavigation.MyPageTab>{
                 MyPageScreen()
             }
-            composable<ScreenRouteDef.StatisticsTab>{
+            composable<ScreenRouteDef.BottomNavigation.StatisticsTab>{
                 StatisticsScreen()
             }
             composable<ScreenRouteDef.MemoManagementTab.CreateMemo>{ navBackStackEntry ->
                 val selectedAddress = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.CreateMemo>().address
-                MemoWriteScreen(address = selectedAddress, memoId = null, onBackEvent = { navController.popBackStack() })
+                MemoWriteScreen(address = selectedAddress, memoId = null, onBackEvent = { navController.navigateUp() })
             }
 
             composable<ScreenRouteDef.MemoManagementTab.UpdateMemo>{ navBackStackEntry ->
                 val selectedMemoId = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.UpdateMemo>().memoId
-                MemoWriteScreen(memoId = selectedMemoId, address = null, onBackEvent = { navController.popBackStack() })
+                MemoWriteScreen(memoId = selectedMemoId, address = null, onBackEvent = { navController.navigateUp() })
             }
 
 

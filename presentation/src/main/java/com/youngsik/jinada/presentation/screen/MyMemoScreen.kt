@@ -31,7 +31,7 @@ import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
-import com.youngsik.jinada.shared.composable.CommonLazyColumnCard
+import com.youngsik.jinada.presentation.common.CommonLazyColumnCard
 import com.youngsik.jinada.shared.data.TodoItemData
 import com.youngsik.jinada.shared.theme.JinadaDimens
 import com.youngsik.jinada.shared.utils.changeToStringDate

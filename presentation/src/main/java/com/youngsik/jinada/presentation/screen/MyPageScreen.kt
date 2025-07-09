@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.SettingDialogState
-import com.youngsik.jinada.presentation.composable.DialogView
-import com.youngsik.jinada.presentation.composable.SettingsSection
+import com.youngsik.jinada.presentation.component.DialogView
+import com.youngsik.jinada.presentation.component.SettingsSection
 import com.youngsik.jinada.shared.theme.JinadaDimens
 
 

@@ -1,4 +1,4 @@
-package com.youngsik.jinada.presentation.composable
+package com.youngsik.jinada.presentation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,12 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.SettingDialogState
-import com.youngsik.jinada.presentation.common.CommonCard
-import com.youngsik.jinada.presentation.common.CommonDividingLine
-import com.youngsik.jinada.presentation.common.CommonSettingsDialog
-import com.youngsik.jinada.presentation.common.CommonSliderOptionRow
-import com.youngsik.jinada.presentation.common.CommonSwitchOptionRow
-import com.youngsik.jinada.presentation.common.ListItemRow
 import com.youngsik.jinada.presentation.common.SettingOptionData
 import com.youngsik.jinada.presentation.common.SettingsData
 import com.youngsik.jinada.shared.theme.JinadaDimens

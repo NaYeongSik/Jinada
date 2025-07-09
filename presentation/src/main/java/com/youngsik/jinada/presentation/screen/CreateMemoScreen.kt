@@ -34,11 +34,11 @@ import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.common.MemoWriteTabMenu
-import com.youngsik.jinada.presentation.common.CommonCard
-import com.youngsik.jinada.presentation.common.CommonDividingLine
-import com.youngsik.jinada.presentation.common.CommonTabRow
-import com.youngsik.jinada.presentation.common.ListItemRow
-import com.youngsik.jinada.presentation.common.commonTabRow
+import com.youngsik.jinada.presentation.component.CommonCard
+import com.youngsik.jinada.presentation.component.CommonDividingLine
+import com.youngsik.jinada.presentation.component.CommonTabRow
+import com.youngsik.jinada.presentation.component.ListItemRow
+import com.youngsik.jinada.presentation.component.commonTabRow
 import com.youngsik.jinada.shared.theme.JinadaDimens
 import com.youngsik.jinada.shared.utils.changeToStringDate
 import java.time.LocalDate

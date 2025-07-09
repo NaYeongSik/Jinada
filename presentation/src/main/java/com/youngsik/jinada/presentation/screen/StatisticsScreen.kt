@@ -16,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.youngsik.jinada.presentation.composable.IncompleteTodosSection
-import com.youngsik.jinada.presentation.composable.MainStatisticsSection
-import com.youngsik.jinada.presentation.composable.MemoCountCardSection
+import com.youngsik.jinada.presentation.component.IncompleteTodosSection
+import com.youngsik.jinada.presentation.component.MainStatisticsSection
+import com.youngsik.jinada.presentation.component.MemoCountCardSection
 import com.youngsik.jinada.presentation.MemoMockData
-import com.youngsik.jinada.presentation.common.MemoCard
+import com.youngsik.jinada.presentation.component.MemoCard
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.jinada.shared.theme.JinadaDimens
 import com.youngsik.jinada.shared.utils.changeToStringDate

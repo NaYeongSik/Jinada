@@ -1,6 +1,5 @@
 package com.youngsik.jinada.presentation.screen
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,26 +10,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.composable.MapSearchBar
-import com.youngsik.jinada.presentation.composable.MyLocationButton
+import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.map.NaverMapView
-import com.youngsik.jinada.presentation.common.CommonLazyColumnCard
 import com.youngsik.jinada.shared.theme.JinadaDimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onCreateMemoClick: (String)-> Unit, onMemoUpdateClick: (Int)-> Unit){
-    var inputText by remember { mutableStateOf("") }
     val memoList = remember { mutableStateListOf(*MemoMockData.getMemosNearby().toTypedArray()) }
     val scaffoldState = rememberBottomSheetScaffoldState()
 
@@ -59,21 +52,7 @@ fun MainScreen(onCreateMemoClick: (String)-> Unit, onMemoUpdateClick: (Int)-> Un
             }
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            NaverMapView(onMapLongClick = onCreateMemoClick)
-
-            MapSearchBar(Modifier.align(Alignment.TopCenter)
-                .padding(JinadaDimens.Padding.medium)
-                .fillMaxWidth(0.9f)
-                ,inputText,{ it -> inputText = it})
-
-            MyLocationButton(Modifier
-                .align(Alignment.BottomEnd)
-                .padding(JinadaDimens.Padding.medium)
-                ,{ /*TODO: 내 위치로 지도 이동*/ })
-        }
+        NaverMapView(Modifier.padding(innerPadding),memoList,onMapLongClick = onCreateMemoClick)
     }
 
 }

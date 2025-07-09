@@ -1,4 +1,4 @@
-package com.youngsik.jinada.presentation.composable
+package com.youngsik.jinada.presentation.component
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons

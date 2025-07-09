@@ -1,4 +1,4 @@
-package com.youngsik.jinada.presentation.common
+package com.youngsik.jinada.presentation.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.youngsik.jinada.presentation.composable
+package com.youngsik.jinada.presentation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.StatTabMenu
-import com.youngsik.jinada.presentation.common.CommonCard
-import com.youngsik.jinada.presentation.common.CommonTabRow
-import com.youngsik.jinada.presentation.common.commonTabRow
 import com.youngsik.jinada.shared.data.CompleteRateData
 import com.youngsik.jinada.shared.data.TodoItemData
 import com.youngsik.jinada.shared.theme.JinadaDimens

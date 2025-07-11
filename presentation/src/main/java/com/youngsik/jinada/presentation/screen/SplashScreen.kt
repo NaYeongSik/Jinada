@@ -1,4 +1,4 @@
-package com.youngsik.jinada.ui.screen
+package com.youngsik.jinada.presentation.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.youngsik.jinada.shared.R
-import com.youngsik.jinada.shared.theme.JinadaDimens
+import com.youngsik.jinada.presentation.R
+import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 @Preview
 @Composable

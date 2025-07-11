@@ -1,4 +1,4 @@
-package com.youngsik.jinada.shared.theme
+package com.youngsik.jinada.presentation.theme
 
 import androidx.compose.ui.unit.dp
 

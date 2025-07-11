@@ -25,7 +25,7 @@ import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.component.DialogView
 import com.youngsik.jinada.presentation.component.SettingsSection
-import com.youngsik.jinada.shared.theme.JinadaDimens
+import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 
 @Preview(showBackground = true)

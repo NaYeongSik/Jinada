@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.shared.theme.JinadaDimens
+import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 
 @Composable

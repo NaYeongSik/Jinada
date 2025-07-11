@@ -22,9 +22,9 @@ import com.youngsik.jinada.presentation.component.MemoCountCardSection
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.component.MemoCard
 import com.youngsik.jinada.presentation.common.StatTabMenu
-import com.youngsik.jinada.shared.theme.JinadaDimens
-import com.youngsik.jinada.shared.utils.changeToStringDate
-import com.youngsik.jinada.shared.utils.getCompleteRateData
+import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.data.utils.changeToStringDate
+import com.youngsik.jinada.data.utils.getCompleteRateData
 import java.time.LocalDate
 
 @Preview(showBackground = true)

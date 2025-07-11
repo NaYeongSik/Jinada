@@ -39,8 +39,8 @@ import com.youngsik.jinada.presentation.component.CommonDividingLine
 import com.youngsik.jinada.presentation.component.CommonTabRow
 import com.youngsik.jinada.presentation.component.ListItemRow
 import com.youngsik.jinada.presentation.component.commonTabRow
-import com.youngsik.jinada.shared.theme.JinadaDimens
-import com.youngsik.jinada.shared.utils.changeToStringDate
+import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.data.utils.changeToStringDate
 import java.time.LocalDate
 
 

@@ -1,4 +1,4 @@
-package com.youngsik.jinada.ui.screen
+package com.youngsik.jinada.nav_graph
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -8,8 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.youngsik.jinada.nav_graph.AppScaffold
-import com.youngsik.jinada.nav_graph.ScreenRouteDef
 import com.youngsik.jinada.presentation.screen.MainScreen
 import com.youngsik.jinada.presentation.screen.MemoWriteScreen
 import com.youngsik.jinada.presentation.screen.MyMemoScreen

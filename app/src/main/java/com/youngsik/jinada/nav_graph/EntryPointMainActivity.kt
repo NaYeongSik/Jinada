@@ -5,8 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.youngsik.jinada.ui.screen.EntryPointMainScreen
-import com.youngsik.jinada.ui.screen.SplashScreen
+import com.youngsik.jinada.presentation.screen.SplashScreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -21,7 +20,7 @@ fun EntryPointMainActivity(){
             SplashScreen()
 
             LaunchedEffect(Unit){
-                delay(2000)
+                delay(1000)
                 navController.navigate(ScreenRouteDef.entryscreen){
                     popUpTo(ScreenRouteDef.Splash){
                         inclusive = true

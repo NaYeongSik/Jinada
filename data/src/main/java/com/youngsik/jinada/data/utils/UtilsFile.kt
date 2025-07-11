@@ -1,7 +1,7 @@
-package com.youngsik.jinada.shared.utils
+package com.youngsik.jinada.data.utils
 
-import com.youngsik.jinada.shared.data.CompleteRateData
-import com.youngsik.jinada.shared.data.TodoItemData
+import com.youngsik.jinada.data.CompleteRateData
+import com.youngsik.jinada.data.TodoItemData
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

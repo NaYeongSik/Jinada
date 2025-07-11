@@ -23,6 +23,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Jinada"
 include(":app")
-include(":shared")
 include(":presentation")
 include(":data")

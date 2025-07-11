@@ -1,10 +1,10 @@
 package com.youngsik.jinada.presentation
 
 import androidx.compose.runtime.mutableStateListOf
-import com.youngsik.jinada.shared.utils.changeToLocalDate
-import com.youngsik.jinada.shared.data.StatisticsData
-import com.youngsik.jinada.shared.data.TodoItemData
-import com.youngsik.jinada.shared.utils.getWeekRange
+import com.youngsik.jinada.data.StatisticsData
+import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.utils.changeToLocalDate
+import com.youngsik.jinada.data.utils.getWeekRange
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle

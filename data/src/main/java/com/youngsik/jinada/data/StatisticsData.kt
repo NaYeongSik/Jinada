@@ -1,4 +1,4 @@
-package com.youngsik.jinada.shared.data
+package com.youngsik.jinada.data
 
 sealed interface StatisticsData {
     data class TotallyStatData(

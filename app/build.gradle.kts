@@ -53,7 +53,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":shared"))
     implementation(project(":presentation"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -65,7 +64,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.androidx.navigation.compose)
+
     implementation(libs.play.services.location)
+
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.jetbrains.kotlinx.serialization.json)
 

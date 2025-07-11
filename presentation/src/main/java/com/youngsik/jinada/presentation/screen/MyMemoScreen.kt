@@ -27,15 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.utils.changeToStringDate
+import com.youngsik.jinada.data.utils.getCompleteRateData
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
-import com.youngsik.jinada.shared.data.TodoItemData
-import com.youngsik.jinada.shared.theme.JinadaDimens
-import com.youngsik.jinada.shared.utils.changeToStringDate
-import com.youngsik.jinada.shared.utils.getCompleteRateData
+import com.youngsik.jinada.presentation.theme.JinadaDimens
 import java.time.LocalDate
 
 @Composable

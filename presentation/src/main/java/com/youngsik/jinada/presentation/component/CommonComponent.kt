@@ -50,8 +50,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
-import com.youngsik.jinada.shared.data.TodoItemData
-import com.youngsik.jinada.shared.theme.JinadaDimens
+import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 
 @Composable

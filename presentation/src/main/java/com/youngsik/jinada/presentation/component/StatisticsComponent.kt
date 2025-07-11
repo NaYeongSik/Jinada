@@ -21,12 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.youngsik.jinada.data.CompleteRateData
+import com.youngsik.jinada.data.TodoItemData
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.StatTabMenu
-import com.youngsik.jinada.shared.data.CompleteRateData
-import com.youngsik.jinada.shared.data.TodoItemData
-import com.youngsik.jinada.shared.theme.JinadaDimens
+import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 @Composable
 fun MainStatisticsSection(selectedTab: StatTabMenu, memoList: List<TodoItemData>, completeRateData: CompleteRateData, onChangeTab: (StatTabMenu)-> Unit, onChangeData: (List<TodoItemData>)-> Unit){

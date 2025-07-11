@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.youngsik.jinada.nav_graph.EntryPointMainActivity
-import com.youngsik.jinada.shared.theme.JinadaTheme
+import com.youngsik.jinada.presentation.theme.JinadaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

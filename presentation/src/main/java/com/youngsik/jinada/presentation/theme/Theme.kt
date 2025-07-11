@@ -1,4 +1,4 @@
-package com.youngsik.jinada.shared.theme
+package com.youngsik.jinada.presentation.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -15,10 +15,12 @@ import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
-import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class MapController(private val scope: CoroutineScope){
     private var context: Context? = null
@@ -48,13 +50,14 @@ class MapController(private val scope: CoroutineScope){
         mapView?.cameraPosition = CameraPosition(latLng,16.0)
     }
 
-    fun setMapLongClickListener(onMapLongClick: (String)-> Unit){
+    fun setMapLongClickListener(onMapLongClick: (TodoItemData)-> Unit){
         mapView?.setOnMapLongClickListener { point, coord -> // point = 화면 좌표, coord = 위치정보
-            onMapLongClick("주소 반환") // TODO: 위치정보 같이 넘겨주기
+            onMapLongClick(TodoItemData(locationName = "POI 정보 REST 처리하기", latitude = coord.latitude, longitude = coord.longitude, deadlineDate = changeToStringDate(
+                LocalDate.now()))) // TODO: 주소명 REST 처리해서 같이 넘겨주기
         }
     }
 
-    fun updateMemoMarkers(memoList: List<TodoItemData>,onMarkerClick: (Int) -> Unit){
+    fun updateMemoMarkers(memoList: List<TodoItemData>,onMarkerClick: (String) -> Unit){
         markers.forEach { maker ->
             maker.map = null
         }
@@ -66,11 +69,11 @@ class MapController(private val scope: CoroutineScope){
                     icon = OverlayImage.fromResource(R.drawable.jinada_map_marker)
                     position = LatLng(memo.latitude,memo.longitude)
                     map = mapView
-                    tag = memo.id
+                    tag = memo.memoId
                     width = 225
                     height = 240
                     setOnClickListener {
-                        onMarkerClick(memo.id)
+                        onMarkerClick(memo.memoId)
                         true
                     }
                 }
@@ -79,18 +82,18 @@ class MapController(private val scope: CoroutineScope){
         }
     }
 
-    fun showInfoWindow(memoList: List<TodoItemData>,selectedMarkerId: Int){
-        if (selectedMarkerId == -1) {
+    fun showInfoWindow(memoList: List<TodoItemData>,selectedMarkerId: String){
+        if (selectedMarkerId.isBlank() || selectedMarkerId.toInt() == -1) {
             infoWindow.close()
         } else {
             val selectedMarker = markers.find { it.tag == selectedMarkerId }
-            val selectedMemo = memoList.find { it.id == selectedMarkerId }
+            val selectedMemo = memoList.find { it.memoId == selectedMarkerId }
 
             if (selectedMarker != null && selectedMemo != null && context != null) {
                 infoWindow.adapter = object : InfoWindow.DefaultViewAdapter(context!!){
                     override fun getContentView(infoWindow: InfoWindow): View {
                         return TextView(context).apply {
-                            text = selectedMemo.title
+                            text = selectedMemo.content
                         }
                     }
 

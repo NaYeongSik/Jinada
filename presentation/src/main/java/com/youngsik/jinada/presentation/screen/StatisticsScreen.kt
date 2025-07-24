@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.component.IncompleteTodosSection
 import com.youngsik.jinada.presentation.component.MainStatisticsSection
 import com.youngsik.jinada.presentation.component.MemoCountCardSection
@@ -23,7 +24,6 @@ import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.component.MemoCard
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.jinada.presentation.theme.JinadaDimens
-import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.data.utils.getCompleteRateData
 import java.time.LocalDate
 
@@ -63,12 +63,11 @@ fun StatisticsScreen(){
         if(showIncompletedMemo){
             items(
                 items = memoList.filter { it -> !it.isCompleted },
-                key = { it.id }
+                key = { it.memoId }
             ) { item ->
                 MemoCard(item,{ isChecked ->
                     val index = memoList.indexOf(item)
-                    if (index != -1) { memoList[index] = item.copy(isCompleted = isChecked, completeDate = changeToStringDate(
-                        LocalDate.now())
+                    if (index != -1) { memoList[index] = item.copy(isCompleted = isChecked, completeDate = changeToStringDate(LocalDate.now())
                     ) }
                     // TODO: 해당 메모 데이터 완료 처리 필요
                 }

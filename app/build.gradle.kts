@@ -1,4 +1,3 @@
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,14 +6,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.secrets.gradle.plugin)
 }
 
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.inputStream())
-}
 
 android {
     namespace = "com.youngsik.jinada"
@@ -28,7 +22,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders["naverMapClientId"] = localProperties.getProperty("NAVER_MAP_CLIENT_ID")
     }
 
     buildTypes {
@@ -41,19 +34,25 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+}
+
+secrets {
+    propertiesFileName = "secret.properties"
 }
 
 dependencies {
     implementation(project(":presentation"))
+    implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

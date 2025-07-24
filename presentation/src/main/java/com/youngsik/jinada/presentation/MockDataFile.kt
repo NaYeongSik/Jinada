@@ -1,8 +1,8 @@
 package com.youngsik.jinada.presentation
 
 import androidx.compose.runtime.mutableStateListOf
-import com.youngsik.jinada.data.StatisticsData
-import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.dataclass.StatisticsData
+import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.data.utils.changeToLocalDate
 import com.youngsik.jinada.data.utils.getWeekRange
 import java.time.LocalDate
@@ -15,7 +15,7 @@ object MemoMockData{
     private val memoList = mutableStateListOf<TodoItemData>()
     init {
         with(memoList){
-            add(TodoItemData(1, "여름용 반팔 티셔츠 3장", true, "마리오아울렛", 37.4781, 126.8885, "1.1 km", "2025년 5월 12일", "2025년 5월 12일"))
+            /*add(TodoItemData(1, "여름용 반팔 티셔츠 3장", true, "마리오아울렛", 37.4781, 126.8885, "1.1 km", "2025년 5월 12일", "2025년 5월 12일"))
             add(TodoItemData(2, "사무용품(A4용지, 볼펜) 구매", true, "다이소 가산디지털단지점", 37.4812, 126.8826, "1.6 km", "2025년 5월 13일", "2025년 5월 13일"))
             add(TodoItemData(3, "샴푸, 바디워시, 폼클렌징", true, "올리브영 가산점", 37.4795, 126.8831, "1.3 km", "2025년 5월 13일", "2025년 5월 13일"))
             add(TodoItemData(4, "운동화 세일하는지 구경하기", true, "W-MALL", 37.4764, 126.8883, "750 m", "2025년 6월 19일", "2025년 6월 19일"))
@@ -35,17 +35,13 @@ object MemoMockData{
             add(TodoItemData(16, "마스크 KF94 한 박스", false, "조은약국", 37.4805, 126.8812, "1.6 km", "2025년 7월 10일", ""))
             add(TodoItemData(17, "읽고 싶은 소설책 대여", false, "가산도서관", 37.4748, 126.8836, "900 m", "2025년 7월 11일", ""))
             add(TodoItemData(18, "기프티콘으로 케이크 픽업", false, "투썸플레이스 구로디지털점", 37.4851, 126.9017, "1.9 km", "2025년 7월 12일", ""))
-            add(TodoItemData(19, "친구랑 볼 영화 시간표 확인", false, "롯데시네마 가산디지털", 37.4777, 126.8888, "1.0 km", "2025년 7월 13일", ""))
+            add(TodoItemData(19, "친구랑 볼 영화 시간표 확인", false, "롯데시네마 가산디지털", 37.4777, 126.8888, "1.0 km", "2025년 7월 13일", ""))*/
         }
     }
 
     fun getMemosNearby() = memoList.filter {
         it.isCompleted == false && changeKmToMeter(it.distance) <= 1300
     }.toMutableList()
-
-    fun getMemosOnOrAfter(targetDate: LocalDate)= memoList.filter{
-        !changeToLocalDate(it.deadlineDate).isBefore(targetDate)
-    }.sortedBy { !it.isCompleted }.toMutableList()
 
     private fun changeKmToMeter(distance: String): Double{
         when {
@@ -61,8 +57,14 @@ object MemoMockData{
         }
     }
 
+    /*fun getMemosOnOrAfter(targetDate: LocalDate)= memoList.filter{
+        !it.deadlineDate.isBefore(targetDate)
+    }.sortedBy { !it.isCompleted }.toMutableList()
+
+
+
     fun getMemosAtMonth() = memoList.filter {
-        changeToLocalDate(it.deadlineDate).monthValue == LocalDate.now().monthValue
+        it.deadlineDate.monthValue == LocalDate.now().monthValue
     }.toMutableList()
 
     fun getMemosAll() = memoList
@@ -70,7 +72,7 @@ object MemoMockData{
     fun getWeeklyStatData(memoList: List<TodoItemData>): StatisticsData.WeeklyStatData{
 
         val filteredData = memoList.filter { it.isCompleted && it.completeDate != null }
-            .groupBy { changeToLocalDate(it.completeDate).dayOfWeek }
+            .groupBy { it.deadlineDate.dayOfWeek }
             .mapValues { it.value.size }
 
         val dayOfWeek = filteredData.maxByOrNull { it.value }?.key?.getDisplayName(TextStyle.FULL, Locale.KOREAN) ?: ""
@@ -90,7 +92,7 @@ object MemoMockData{
 
         val completedByMonth = memoList
             .filter { it.isCompleted && it.completeDate != null }
-            .groupBy { changeToLocalDate(it.completeDate)!!.withDayOfMonth(1) }
+            .groupBy { it.deadlineDate!!.withDayOfMonth(1) }
             .mapValues { it.value.size }
 
         val maxMonth = completedByMonth.maxByOrNull { it.value }
@@ -100,6 +102,6 @@ object MemoMockData{
         val bestMonthCompletedCount = maxMonth?.value ?: 0
 
         return StatisticsData.TotallyStatData(totalCompletedCount,bestMonth,bestMonthCompletedCount)
-    }
+    }*/
 
 }

@@ -15,19 +15,18 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.MapView
-import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.presentation.databinding.MapContainerLayoutBinding
 
 @Composable
-fun NaverMapView(mapController: MapController, memoList: List<TodoItemData>, onMapLongClick: (String)-> Unit){
+fun NaverMapView(mapController: MapController, memoList: List<TodoItemData>, onMapLongClick: (TodoItemData)-> Unit){
     val context = LocalContext.current
     var myPosition by remember { mutableStateOf(LatLng(37.472336,126.895997)) }
     var mapView: MapView? by remember { mutableStateOf(null) }
-    var selectedMarkerId by remember { mutableIntStateOf(-1) }
+    var selectedMarkerId by remember { mutableStateOf("") }
 
-    if (mapView != null) ManageMapViewLifecycle(context,mapView, myPosition,memoList,mapController,onMapLongClick,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
+    if (mapView != null) MapLifecycleEffect(context,mapView, myPosition,memoList,mapController,onMapLongClick,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
 
     AndroidViewBinding(
         modifier = Modifier,
@@ -49,7 +48,7 @@ fun NaverMapView(mapController: MapController, memoList: List<TodoItemData>, onM
 }
 
 @Composable
-fun ManageMapViewLifecycle(context: Context,mapView: MapView?, myPosition: LatLng,memoList: List<TodoItemData>,mapController: MapController,onMapLongClick: (String)-> Unit, onMarkerClick: (Int) -> Unit) {
+fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng, memoList: List<TodoItemData>, mapController: MapController, onMapLongClick: (TodoItemData)-> Unit, onMarkerClick: (String) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = object : DefaultLifecycleObserver {

@@ -3,6 +3,7 @@ package com.youngsik.jinada.presentation.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,13 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,58 +28,65 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import com.youngsik.jinada.data.TodoItemData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.data.utils.getCompleteRateData
-import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
 import java.time.LocalDate
 
 @Composable
-fun MyMemoScreen(onMemoUpdateClick: (Int)-> Unit){
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+fun MyMemoScreen(memoViewModel: MemoViewModel, onMemoUpdateClick: (TodoItemData)-> Unit){
     var showDatePicker by remember { mutableStateOf(false) }
-    val memoList = remember(selectedDate) { mutableStateListOf(*MemoMockData.getMemosOnOrAfter(selectedDate).toTypedArray()) }
+    val memoUiState by memoViewModel.memoUiState.collectAsStateWithLifecycle()
 
-    Column (
+    Box(
         modifier = Modifier.fillMaxSize()
     ){
-        if (showDatePicker){
-            DatePickerModal(DatePickerSelectableDates(true),{ selectedNewDate -> selectedDate = selectedNewDate }, { it -> showDatePicker = it })
-        }
-
-        DateSelectSection(selectedDate,{ showDatePicker = true })
-
         Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize()
         ){
-            ProgressBarSection(memoList)
+            if (showDatePicker){
+                DatePickerModal(DatePickerSelectableDates(true),{ selectedNewDate -> memoViewModel.changeSelectedDate(selectedNewDate) }, { it -> showDatePicker = it })
+            }
 
-            Spacer(modifier = Modifier.padding(JinadaDimens.Padding.xxSmall))
+            DateSelectSection(memoUiState.selectedDate,{ showDatePicker = true })
 
-            CommonLazyColumnCard(modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(0.9f), memoList = memoList, onCheckChange = {
-                item, isChecked -> // TODO: 해당 메모 데이터 완료 처리 필요
-                val index = memoList.indexOf(item)
-                if (index != -1) {
-                    memoList[index] = item.copy(isCompleted = isChecked)
-                }
-            }, { onMemoUpdateClick(1) /*TODO: 메모 생성화면으로 해당 데이터 가지고 이동 */ }, { item -> memoList.remove(item) /*TODO: 메모 데이터 삭제 처리 필요*/ })
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                ProgressBarSection(memoUiState.memoList)
 
+                Spacer(modifier = Modifier.padding(JinadaDimens.Padding.xxSmall))
+
+                CommonLazyColumnCard(modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(0.9f), memoList = memoUiState.memoList, onCheckChange = {
+                        item, isChecked -> // TODO: 해당 메모 데이터 완료 처리 필요
+                    val index = memoUiState.memoList.indexOf(item)
+                    if (index != -1) {
+                        memoViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))
+                    }
+                }, { item -> onMemoUpdateClick(item) }, { item -> memoViewModel.deleteMemo(item.memoId) })
+
+            }
+        }
+        if (memoUiState.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }
 
 @Composable
-fun DateSelectSection(selectedDate: LocalDate, onClickEvent: ()-> Unit){
+fun DateSelectSection(selectedDate: String, onClickEvent: ()-> Unit){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -88,7 +96,7 @@ fun DateSelectSection(selectedDate: LocalDate, onClickEvent: ()-> Unit){
         horizontalArrangement = Arrangement.Center
     ){
         Text(
-            text = changeToStringDate(selectedDate),
+            text = selectedDate,
             style = MaterialTheme.typography.bodyLarge
         )
 

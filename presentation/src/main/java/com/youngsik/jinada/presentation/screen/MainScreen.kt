@@ -19,19 +19,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naver.maps.geometry.LatLng
+import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.component.MapSearchBar
 import com.youngsik.jinada.presentation.component.MyLocationButton
+import com.youngsik.jinada.presentation.factory.ViewModelFactory
 import com.youngsik.jinada.presentation.map.NaverMapView
 import com.youngsik.jinada.presentation.map.rememberMapController
 import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.presentation.viewmodel.MemoMapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onCreateMemoClick: (String)-> Unit, onMemoUpdateClick: (Int)-> Unit){
+fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
     val memoList = remember { mutableStateListOf(*MemoMockData.getMemosNearby().toTypedArray()) }
     var inputText by remember { mutableStateOf("") }
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -51,22 +55,24 @@ fun MainScreen(onCreateMemoClick: (String)-> Unit, onMemoUpdateClick: (Int)-> Un
                         style = MaterialTheme.typography.titleMedium
                     )
                     CommonLazyColumnCard(modifier = Modifier.weight(1f).fillMaxWidth(0.9f), memoList = memoList, onCheckChange = {
-                            item, isChecked -> // TODO: 해당 메모 데이터 완료 처리 필요
+                            item, isChecked ->
                         val index = memoList.indexOf(item)
                         if (index != -1) {
                             memoList[index] = item.copy(isCompleted = isChecked)
                         }
-                    }, { onMemoUpdateClick(1) /*TODO: 메모 생성화면으로 해당 데이터 가지고 이동 */ }, { item -> memoList.remove(item)  /*TODO: 메모 데이터 삭제 처리 필요*/ } )
+                    }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoList.remove(item)  /*TODO: 메모 데이터 삭제 처리 필요*/ } )
                 }
             }
         },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)){
+
+            NaverMapView(mapController,memoList,onMapLongClick = onCreateMemoClick)
+
             MapSearchBar(Modifier.align(Alignment.TopCenter)
                 .padding(JinadaDimens.Padding.medium)
                 .fillMaxWidth(0.9f)
                 ,inputText,{ it -> inputText = it})
-            NaverMapView(mapController,memoList,onMapLongClick = onCreateMemoClick)
 
             MyLocationButton(Modifier
                 .align(Alignment.BottomEnd)

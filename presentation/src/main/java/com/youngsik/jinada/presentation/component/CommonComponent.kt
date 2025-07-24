@@ -50,7 +50,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
-import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 
@@ -86,7 +86,7 @@ fun CommonLazyColumnCard(modifier: Modifier, memoList: List<TodoItemData>, onChe
     ){
         items(
             items = memoList,
-            key = { it.id }
+            key = { it.memoId }
         ) { item ->
             MemoCard(item,{ isChecked ->
                     onCheckChange(item, isChecked)
@@ -128,12 +128,12 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
                 )
                 Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xSmall))
                 Text(
-                    text = item.title,
+                    text = item.content,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xSmall))
                 Text(
-                    text = "${item.storeInfo} / ${item.distance}",
+                    text = "${item.locationName} / ${item.distance}",
                     style = MaterialTheme.typography.labelMedium
                 )
             }

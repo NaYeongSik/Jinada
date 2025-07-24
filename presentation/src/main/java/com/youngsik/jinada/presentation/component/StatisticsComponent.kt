@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.youngsik.jinada.data.CompleteRateData
-import com.youngsik.jinada.data.TodoItemData
+import com.youngsik.jinada.data.dataclass.CompleteRateData
+import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.StatTabMenu
@@ -51,9 +51,9 @@ fun MainStatisticsSection(selectedTab: StatTabMenu, memoList: List<TodoItemData>
                     onChangeTab(newSelect)
 
                     when (newSelect) {
-                        StatTabMenu.TOTALLY -> onChangeData(MemoMockData.getMemosAll())
-                        StatTabMenu.MONTHLY -> onChangeData(MemoMockData.getMemosAtMonth())
-                        else -> onChangeData(MemoMockData.getCompleteRateDataInWeek())
+                        StatTabMenu.TOTALLY -> null// TODO: 메모 데이터 변경 onChangeData(MemoMockData.getMemosAll())
+                        StatTabMenu.MONTHLY -> null// TODO: 메모 데이터 변경 onChangeData(MemoMockData.getMemosAtMonth())
+                        else -> null // TODO: 메모 데이터 변경 onChangeData(MemoMockData.getCompleteRateDataInWeek())
                     }
                 },
                 tabTitleResId = { it.titleResId })
@@ -162,13 +162,14 @@ fun TextSummarySection(memoList: List<TodoItemData>, selectedTab: StatTabMenu) {
             .height(JinadaDimens.Common.xLarge)
     ) {
         when(selectedTab){
-            StatTabMenu.TOTALLY -> TotalySummary(memoList)
-            StatTabMenu.MONTHLY -> MonthlySummary(memoList)
-            StatTabMenu.WEEKLY -> WeeklySummary(memoList)
+            StatTabMenu.TOTALLY -> null // TODO: 뷰모델로 데이터 세팅 TotalySummary(memoList)
+            StatTabMenu.MONTHLY -> null // TODO: 뷰모델로 데이터 세팅 MonthlySummary(memoList)
+            StatTabMenu.WEEKLY -> null // TODO: 뷰모델로 데이터 세팅 WeeklySummary(memoList)
         }
     }
 }
 
+/*
 @Composable
 fun WeeklySummary(memoList: List<TodoItemData>){
     val weeklyMemoData = MemoMockData.getWeeklyStatData(memoList)
@@ -212,4 +213,4 @@ fun TotalySummary(memoList: List<TodoItemData>){
         if (totalyMemoData.bestMonth.isNotBlank())Text(text = stringResource(R.string.analysis_total_best_month,totalyMemoData.bestMonth,totalyMemoData.bestMonthCompletedCount))
         else Text(text = stringResource(R.string.analysis_common_no_completed_memos))
     }
-}
+}*/

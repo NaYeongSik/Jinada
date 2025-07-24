@@ -4,20 +4,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.jinada.nav_type.parcelableType
+import com.youngsik.jinada.presentation.factory.ViewModelFactory
 import com.youngsik.jinada.presentation.screen.MainScreen
 import com.youngsik.jinada.presentation.screen.MemoWriteScreen
 import com.youngsik.jinada.presentation.screen.MyMemoScreen
 import com.youngsik.jinada.presentation.screen.MyPageScreen
 import com.youngsik.jinada.presentation.screen.StatisticsScreen
+import com.youngsik.jinada.presentation.viewmodel.MemoMapViewModel
+import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
+import kotlin.reflect.typeOf
 
 @Preview(showBackground = true)
 @Composable
 fun EntryPointMainScreen(){
     val navController = rememberNavController()
+    val memoViewModel: MemoViewModel = viewModel(factory = ViewModelFactory)
+    val memoMapViewModel: MemoMapViewModel = viewModel(factory = ViewModelFactory)
 
     AppScaffold(navController = navController) { innerPadding ->
         NavHost(
@@ -26,20 +35,19 @@ fun EntryPointMainScreen(){
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<ScreenRouteDef.BottomNavigation.MainTab>{
-                MainScreen(
-                    onCreateMemoClick = { address ->
-                        navController.navigate(ScreenRouteDef.MemoManagementTab.CreateMemo(address))
+                MainScreen(memoMapViewModel,onCreateMemoClick = { todoItemData ->
+                        navController.navigate(ScreenRouteDef.MemoManagementTab.CreateMemo(todoItemData))
                     },
-                    onMemoUpdateClick = { memoId ->
-                        navController.navigate(ScreenRouteDef.MemoManagementTab.UpdateMemo(memoId))
+                    onMemoUpdateClick = { todoItemData ->
+                        navController.navigate(ScreenRouteDef.MemoManagementTab.UpdateMemo(todoItemData))
                     }
                 )
             }
             composable<ScreenRouteDef.BottomNavigation.MyMemoTab>{
-                MyMemoScreen({ memoId ->
+                MyMemoScreen(memoViewModel,onMemoUpdateClick= { todoItemData ->
                     navController.navigate(
                         ScreenRouteDef.MemoManagementTab.UpdateMemo(
-                            memoId
+                            todoItemData
                         )
                     )
                 })
@@ -50,14 +58,18 @@ fun EntryPointMainScreen(){
             composable<ScreenRouteDef.BottomNavigation.StatisticsTab>{
                 StatisticsScreen()
             }
-            composable<ScreenRouteDef.MemoManagementTab.CreateMemo>{ navBackStackEntry ->
-                val selectedAddress = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.CreateMemo>().address
-                MemoWriteScreen(address = selectedAddress, memoId = null, onBackEvent = { navController.navigateUp() })
+            composable<ScreenRouteDef.MemoManagementTab.CreateMemo>(
+                typeMap = mapOf( typeOf<TodoItemData>() to parcelableType<TodoItemData>())
+            ){ navBackStackEntry ->
+                val todoItem = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.CreateMemo>().todoItem
+                MemoWriteScreen(memoViewModel,todoItem= todoItem, onBackEvent = { navController.navigateUp() })
             }
 
-            composable<ScreenRouteDef.MemoManagementTab.UpdateMemo>{ navBackStackEntry ->
-                val selectedMemoId = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.UpdateMemo>().memoId
-                MemoWriteScreen(memoId = selectedMemoId, address = null, onBackEvent = { navController.navigateUp() })
+            composable<ScreenRouteDef.MemoManagementTab.UpdateMemo>(
+                typeMap = mapOf( typeOf<TodoItemData>() to parcelableType<TodoItemData>())
+            ){ navBackStackEntry ->
+                val todoItem = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.UpdateMemo>().todoItem
+                MemoWriteScreen(memoViewModel,todoItem= todoItem, onBackEvent = { navController.navigateUp() })
             }
 
 

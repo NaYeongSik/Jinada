@@ -7,13 +7,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import com.youngsik.jinada.data.utils.changeToStringDate
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(selectableDates : DatePickerSelectableDates,onDateSelected: (LocalDate) -> Unit, onDismiss: (Boolean) -> Unit) {
+fun DatePickerModal(selectableDates : DatePickerSelectableDates,onDateSelected: (String) -> Unit, onDismiss: (Boolean) -> Unit) {
     val datePickerState = rememberDatePickerState(selectableDates = selectableDates)
 
     DatePickerDialog(
@@ -25,7 +26,7 @@ fun DatePickerModal(selectableDates : DatePickerSelectableDates,onDateSelected: 
                     val newDate = Instant.ofEpochMilli(selectedMillis)
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()
-                    onDateSelected(newDate)
+                    onDateSelected(changeToStringDate(newDate))
                 }
                 onDismiss(false)
             }) {

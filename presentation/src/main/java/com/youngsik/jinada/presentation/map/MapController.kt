@@ -35,9 +35,11 @@ class MapController(private val scope: CoroutineScope){
         this.locationOverlay = mapView?.locationOverlay
     }
 
-    fun updateMyLocationOverlay(myPosition: LatLng){
-        locationOverlay?.position = myPosition
-        locationOverlay?.isVisible = true
+    fun updateMyLocationOverlay(myPosition: LatLng?){
+        if (myPosition != null) {
+            locationOverlay?.position = myPosition
+            locationOverlay?.isVisible = true
+        }
     }
 
     fun moveToTargetLocation(location: LatLng){
@@ -46,8 +48,8 @@ class MapController(private val scope: CoroutineScope){
         }
     }
 
-    fun setCameraPosition(latLng: LatLng){
-        mapView?.cameraPosition = CameraPosition(latLng,16.0)
+    fun setCameraPosition(latLng: LatLng?){
+        latLng?.let { mapView?.cameraPosition = CameraPosition(it,16.0) }
     }
 
     fun setMapLongClickListener(onMapLongClick: (TodoItemData)-> Unit){
@@ -103,6 +105,10 @@ class MapController(private val scope: CoroutineScope){
                 infoWindow.close()
             }
         }
+    }
+
+    fun getAddress(location: LatLng){
+
     }
 }
 

@@ -1,13 +1,11 @@
 package com.youngsik.jinada.data.repository
 
-import com.google.type.LatLng
+import com.naver.maps.geometry.LatLng
 import com.youngsik.jinada.data.common.DataResourceResult
 import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.data.datasource.MemoDataSource
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import java.time.LocalDate
 
 class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
     override suspend fun createMemo(todoItemData: TodoItemData) = flow {

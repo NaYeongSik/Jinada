@@ -1,6 +1,6 @@
 package com.youngsik.jinada.data.repository
 
-import com.google.type.LatLng
+import com.naver.maps.geometry.LatLng
 import com.youngsik.jinada.data.common.DataResourceResult
 import com.youngsik.jinada.data.dataclass.TodoItemData
 import kotlinx.coroutines.flow.Flow

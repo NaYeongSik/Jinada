@@ -1,9 +1,9 @@
 package com.youngsik.jinada.data.datasource
 
-import com.google.type.LatLng
+
+import com.naver.maps.geometry.LatLng
 import com.youngsik.jinada.data.common.DataResourceResult
 import com.youngsik.jinada.data.dataclass.TodoItemData
-import java.time.LocalDate
 
 interface MemoDataSource {
     suspend fun createMemo(todoItemData: TodoItemData): DataResourceResult<Unit>

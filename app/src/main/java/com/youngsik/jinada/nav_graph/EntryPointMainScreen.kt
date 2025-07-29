@@ -2,6 +2,7 @@ package com.youngsik.jinada.nav_graph
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -10,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.jinada.data.remote.FirestoreMemoDataSourceImpl
+import com.youngsik.jinada.data.repository.MemoRepositoryImpl
 import com.youngsik.jinada.nav_type.parcelableType
 import com.youngsik.jinada.presentation.factory.ViewModelFactory
 import com.youngsik.jinada.presentation.screen.MainScreen
@@ -25,8 +28,12 @@ import kotlin.reflect.typeOf
 @Composable
 fun EntryPointMainScreen(){
     val navController = rememberNavController()
-    val memoViewModel: MemoViewModel = viewModel(factory = ViewModelFactory)
-    val memoMapViewModel: MemoMapViewModel = viewModel(factory = ViewModelFactory)
+    val memoDataSource = remember { FirestoreMemoDataSourceImpl() }
+    val repository = remember { MemoRepositoryImpl(memoDataSource) }
+    val factory = remember(repository) { ViewModelFactory(repository) }
+
+    val memoViewModel: MemoViewModel = viewModel(factory = factory)
+    val memoMapViewModel: MemoMapViewModel = viewModel(factory = factory)
 
     AppScaffold(navController = navController) { innerPadding ->
         NavHost(

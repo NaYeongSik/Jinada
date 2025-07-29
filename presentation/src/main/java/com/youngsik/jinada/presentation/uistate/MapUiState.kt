@@ -1,6 +1,7 @@
 package com.youngsik.jinada.presentation.uistate
 
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
 import com.youngsik.jinada.data.dataclass.TodoItemData
 
 data class MapUiState(
@@ -8,5 +9,6 @@ data class MapUiState(
     val isSuccessful: Boolean = false,
     val isFailure: Boolean = false,
     val nearByMemoList: List<TodoItemData> = emptyList(),
-    val myLocation: LatLng? = null
+    val myLocation: LatLng? = null,
+    val cameraPosition: LatLng? = null
 )

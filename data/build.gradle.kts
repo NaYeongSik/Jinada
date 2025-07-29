@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.youngsik.data"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -43,8 +42,10 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.libraries)
 
+    implementation(libs.naver.map.sdk)
+    implementation(libs.play.services.location)
+
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
     implementation(libs.moshi.kotlin)
 
     testImplementation(libs.junit)

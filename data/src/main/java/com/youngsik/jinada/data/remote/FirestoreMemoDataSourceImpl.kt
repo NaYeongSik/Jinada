@@ -2,7 +2,7 @@ package com.youngsik.jinada.data.remote
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.type.LatLng
+import com.naver.maps.geometry.LatLng
 import com.youngsik.jinada.data.common.DataResourceResult
 import com.youngsik.jinada.data.dataclass.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
@@ -12,7 +12,6 @@ import com.youngsik.jinada.data.mapper.toDto
 import com.youngsik.jinada.data.utils.changeToLocalDate
 import com.youngsik.jinada.data.utils.toTimestamp
 import kotlinx.coroutines.tasks.await
-import java.time.LocalDate
 
 class FirestoreMemoDataSourceImpl : MemoDataSource {
     private val memoCollection = Firebase.firestore.collection("memo")

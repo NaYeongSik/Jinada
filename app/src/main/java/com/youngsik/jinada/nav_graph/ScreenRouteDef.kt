@@ -10,7 +10,10 @@ sealed interface ScreenRouteDef {
     data object Splash : ScreenRouteDef
 
     @Serializable
-    data object entryscreen : ScreenRouteDef
+    data object OnboardingScreen : ScreenRouteDef
+
+    @Serializable
+    data object Entryscreen : ScreenRouteDef
 
     @Serializable
     sealed interface BottomNavigation : ScreenRouteDef {

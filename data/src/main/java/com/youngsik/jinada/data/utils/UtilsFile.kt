@@ -13,7 +13,6 @@ import java.util.Locale
 val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
 
 fun changeToStringDate(date: LocalDate): String = date.format(formatter)
-
 fun changeToLocalDate(dateString: String) = LocalDate.parse(dateString,formatter)
 
 fun getCompleteRateData(memoList: List<TodoItemData>): CompleteRateData{

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-    <uses-permission android:name="android.permission.FOST_NOTIFICATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -28,20 +28,21 @@
             android:value="${NAVER_MAP_CLIENT_ID}"/>
 
         <receiver
-            android:name=".receiver.ActivityRecognitionReceiver"
+            android:name=".data.service.ActivityRecognitionReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="ACTION_ACTIVITY_TRANSITION_UPDATE" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.ActivityRecognitionService"
+        <service android:name=".data.service.CurrentLocationService"
+            android:foregroundServiceType="location"/>
+        <service android:name=".data.service.ActivityRecognitionService"
             android:foregroundServiceType="location"/>
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Jinada">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,6 @@
 package com.youngsik.jinada.nav_graph
 
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.jinada.presentation.data.TodoItemParcelable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -33,10 +33,10 @@ sealed interface ScreenRouteDef {
     @Serializable
     sealed interface MemoManagementTab : ScreenRouteDef{
         @Serializable
-        data class CreateMemo(val todoItem: TodoItemData): MemoManagementTab
+        data class CreateMemo(val todoItem: TodoItemParcelable): MemoManagementTab
 
         @Serializable
-        data class UpdateMemo(val todoItem: TodoItemData) : MemoManagementTab
+        data class UpdateMemo(val todoItem: TodoItemParcelable) : MemoManagementTab
     }
 
 }

@@ -1,7 +1,5 @@
 package com.youngsik.jinada.presentation.screen
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,10 +23,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
-import com.youngsik.jinada.data.dataclass.TodoItemData
-import com.youngsik.jinada.data.service.CurrentLocationService
+import com.youngsik.domain.manager.LocationServiceManager
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
-import com.youngsik.jinada.presentation.MemoMockData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.component.MapSearchBar
@@ -42,15 +38,14 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
-    val context = LocalContext.current
+fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: LocationServiceManager,onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
     val mapUiState by memoMapViewModel.mapUiState.collectAsStateWithLifecycle()
     var inputText by remember { mutableStateOf("") }
     val scaffoldState = rememberBottomSheetScaffoldState()
-    var mapController = rememberMapController()
+    var mapController = rememberMapController(LocalContext.current)
 
     LaunchedEffect(Unit) {
-        startLocationService(context)
+        locationServiceManager.startLocationTracking()
         memoMapViewModel.observeCurrentLocation()
     }
 
@@ -58,9 +53,15 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemD
         mapController.setCameraPosition(mapUiState.cameraPosition)
     }
 
+    LaunchedEffect(mapUiState.targetLocationInfo) {
+        mapUiState.targetLocationInfo?.let {
+            mapController.showTemporaryMarker(it,onCreateMemoClick)
+        }
+    }
+
     DisposableEffect(Unit) {
         onDispose {
-            context.stopService(Intent(context, CurrentLocationService::class.java))
+            locationServiceManager.stopLocationTracking()
         }
     }
 
@@ -83,14 +84,17 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemD
                         if (index != -1) {
                             memoMapViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))
                         }
-                    }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoMapViewModel.deleteMemo(item.memoId) } )
+                    }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoMapViewModel.deleteMemo(item.memoId) }
+                    , { todoItemData -> mapController.moveToTargetLocation(LatLng(todoItemData.latitude,todoItemData.longitude))})
                 }
             }
         },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)){
 
-            NaverMapView(mapController,mapUiState,onMapLongClick = onCreateMemoClick)
+            NaverMapView(mapController,mapUiState){ todoItemData ->
+                memoMapViewModel.getTargetLocationInfo(todoItemData)
+            }
 
             MapSearchBar(Modifier.align(Alignment.TopCenter)
                 .padding(JinadaDimens.Padding.medium)
@@ -104,9 +108,4 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemD
         }
     }
 
-}
-
-fun startLocationService(context: Context) {
-    val target = Intent(context, CurrentLocationService::class.java)
-    context.startForegroundService(target)
 }

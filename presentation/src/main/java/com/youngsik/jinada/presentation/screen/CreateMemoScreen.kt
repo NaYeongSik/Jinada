@@ -34,10 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.common.DatePickerModal
+import com.youngsik.jinada.presentation.component.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.common.MemoWriteTabMenu
 import com.youngsik.jinada.presentation.component.CommonCard
@@ -46,8 +45,6 @@ import com.youngsik.jinada.presentation.component.CommonTabRow
 import com.youngsik.jinada.presentation.component.ListItemRow
 import com.youngsik.jinada.presentation.component.commonTabRow
 import com.youngsik.jinada.presentation.theme.JinadaDimens
-import com.youngsik.jinada.data.utils.changeToStringDate
-import com.youngsik.jinada.presentation.factory.ViewModelFactory
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
 
 

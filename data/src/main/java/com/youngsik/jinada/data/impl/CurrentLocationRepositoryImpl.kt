@@ -12,12 +12,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
 
@@ -58,8 +58,7 @@ class CurrentLocationRepositoryImpl(context: Context) : CurrentLocationRepositor
 
     @SuppressLint("MissingPermission")
     override suspend fun getCurrentLocation(): Location? {
-        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).await()
-
-        return null
+        val currentLocation = fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).await()
+        return currentLocation
     }
 }

@@ -1,6 +1,7 @@
 package com.youngsik.jinada.presentation.map
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.compose.runtime.Composable
@@ -14,24 +15,26 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class MapController(private val scope: CoroutineScope){
-    private var context: Context? = null
+class MapController(private val context: Context){
     private var mapView: NaverMap? = null
-    private var markers: MutableList<Marker> = mutableListOf()
-    private var infoWindow: InfoWindow = InfoWindow()
-    private var locationOverlay: LocationOverlay? = null
+    private var markers: MutableList<Marker> = mutableListOf() // 근처 메모에 대한 마커 리스트
+    private var infoWindow: InfoWindow = InfoWindow() // 근처 메모에 대한 인포윈도우
+    private var locationOverlay: LocationOverlay? = null // 사용자 위치 오버레이
+
+    private var tempMarker: Marker? = null // 사용자 롱클릭 이벤트 지점에 대한 마커
+    private var tempInfoWindow: InfoWindow = InfoWindow() // 사용자 롱클릭 이벤트 지점에 대한 인포윈도우
 
     internal fun initMapController(naverMap: NaverMap,context: Context){
         this.mapView = naverMap
-        this.context = context
         this.locationOverlay = mapView?.locationOverlay
     }
 
@@ -43,9 +46,7 @@ class MapController(private val scope: CoroutineScope){
     }
 
     fun moveToTargetLocation(location: LatLng){
-        scope.launch {
-            mapView?.moveCamera(CameraUpdate.scrollTo(location).animate(CameraAnimation.Easing))
-        }
+        mapView?.moveCamera(CameraUpdate.scrollTo(location).animate(CameraAnimation.Easing))
     }
 
     fun setCameraPosition(latLng: LatLng?){
@@ -54,8 +55,8 @@ class MapController(private val scope: CoroutineScope){
 
     fun setMapLongClickListener(onMapLongClick: (TodoItemData)-> Unit){
         mapView?.setOnMapLongClickListener { point, coord -> // point = 화면 좌표, coord = 위치정보
-            onMapLongClick(TodoItemData(locationName = "POI 정보 REST 처리하기", latitude = coord.latitude, longitude = coord.longitude, deadlineDate = changeToStringDate(
-                LocalDate.now()))) // TODO: 주소명 REST 처리해서 같이 넘겨주기
+            onMapLongClick(TodoItemData(latitude = coord.latitude, longitude = coord.longitude, deadlineDate = changeToStringDate(
+                LocalDate.now())))
         }
     }
 
@@ -85,7 +86,7 @@ class MapController(private val scope: CoroutineScope){
     }
 
     fun showInfoWindow(memoList: List<TodoItemData>,selectedMarkerId: String){
-        if (selectedMarkerId.isBlank() || selectedMarkerId.toInt() == -1) {
+        if (selectedMarkerId.isBlank()) {
             infoWindow.close()
         } else {
             val selectedMarker = markers.find { it.tag == selectedMarkerId }
@@ -107,15 +108,44 @@ class MapController(private val scope: CoroutineScope){
         }
     }
 
-    fun getAddress(location: LatLng){
+    fun showTemporaryMarker(todoItemData: TodoItemData,onCreateMemo: (TodoItemData) -> Unit) {
+        clearTemporaryMarker()
 
+        val targetLocation = LatLng(todoItemData.latitude, todoItemData.longitude)
+
+        tempMarker = Marker().apply {
+            position = targetLocation
+            map = mapView
+            icon = OverlayImage.fromResource(R.drawable.jinada_temp_marker)
+            width = 225
+            height = 240
+            onClickListener = Overlay.OnClickListener {
+                onCreateMemo(todoItemData)
+                true
+            }
+        }
+
+        tempInfoWindow.adapter = object : InfoWindow.DefaultViewAdapter(context!!) {
+            override fun getContentView(infoWindow: InfoWindow): View {
+                return TextView(context).apply { text = todoItemData.locationName }
+            }
+        }
+        tempInfoWindow.open(tempMarker!!)
+        moveToTargetLocation(targetLocation)
     }
+
+
+    fun clearTemporaryMarker() {
+        tempMarker?.map = null
+        tempInfoWindow.close()
+        tempMarker = null
+    }
+
 }
 
 @Composable
-fun rememberMapController(): MapController{
-    val scope = rememberCoroutineScope()
+fun rememberMapController(context: Context): MapController{
     return remember {
-        MapController(scope)
+        MapController(context)
     }
 }

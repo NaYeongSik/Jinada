@@ -29,11 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.data.utils.getCompleteRateData
 import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.common.DatePickerModal
+import com.youngsik.jinada.presentation.component.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.theme.JinadaDimens
@@ -70,7 +70,7 @@ fun MyMemoScreen(memoViewModel: MemoViewModel, onMemoUpdateClick: (TodoItemData)
                 CommonLazyColumnCard(modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(0.9f), memoList = memoUiState.memoList, onCheckChange = {
-                        item, isChecked -> // TODO: 해당 메모 데이터 완료 처리 필요
+                        item, isChecked ->
                     val index = memoUiState.memoList.indexOf(item)
                     if (index != -1) {
                         memoViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))

@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.secrets.gradle.plugin)
 }
 
 
@@ -19,6 +22,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -39,7 +43,12 @@ android {
     }
 }
 
+secrets {
+    propertiesFileName = "secret.properties"
+}
+
 dependencies {
+    implementation(project(":domain"))
     implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))

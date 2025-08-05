@@ -50,7 +50,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.TodoItemData
+import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 
@@ -78,7 +79,7 @@ fun CommonCard(modifier: Modifier,content: @Composable () -> Unit){
 }
 
 @Composable
-fun CommonLazyColumnCard(modifier: Modifier, memoList: List<TodoItemData>, onCheckChange: (item: TodoItemData, isChecked: Boolean) -> Unit, onEditClick: (TodoItemData) -> Unit, onDeleteClick: (TodoItemData) -> Unit ){
+fun CommonLazyColumnCard(modifier: Modifier, memoList: List<TodoItemData>, onCheckChange: (item: TodoItemData, isChecked: Boolean) -> Unit, onEditClick: (TodoItemData) -> Unit, onDeleteClick: (TodoItemData) -> Unit, onClick: ((TodoItemData) -> Unit)?=null ){
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.small),
@@ -93,13 +94,14 @@ fun CommonLazyColumnCard(modifier: Modifier, memoList: List<TodoItemData>, onChe
                 }
                 ,{ onEditClick(item) }
                 ,{ onDeleteClick(item) }
+                ,{ onClick?.invoke(item) }
             )
         }
     }
 }
 
 @Composable
-fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClick: () -> Unit, onDeleteClick: () -> Unit){
+fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClick: () -> Unit, onDeleteClick: () -> Unit, onClick: (() -> Unit)?=null){
     Card (
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(JinadaDimens.Corner.medium),
@@ -121,7 +123,7 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
 
             Spacer(modifier = Modifier.width(JinadaDimens.Spacer.small))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier.weight(1f).clickable{ onClick?.invoke() }) {
                 Text(
                     text = "마감일: ${ item.deadlineDate }",
                     style = MaterialTheme.typography.bodyMedium
@@ -133,7 +135,7 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
                 )
                 Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xSmall))
                 Text(
-                    text = "${item.locationName} / ${item.distance}",
+                    text = stringResource(R.string.address_distance_info,item.locationName,item.distance),
                     style = MaterialTheme.typography.labelMedium
                 )
             }

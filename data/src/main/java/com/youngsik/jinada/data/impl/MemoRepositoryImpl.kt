@@ -1,13 +1,12 @@
-package com.youngsik.jinada.data.repository
+package com.youngsik.jinada.data.impl
 
-import com.google.type.LatLng
-import com.youngsik.jinada.data.common.DataResourceResult
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import android.location.Location
+import com.youngsik.domain.model.DataResourceResult
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.datasource.MemoDataSource
-import kotlinx.coroutines.flow.Flow
+import com.youngsik.jinada.data.repository.MemoRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import java.time.LocalDate
 
 class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
     override suspend fun createMemo(todoItemData: TodoItemData) = flow {
@@ -26,6 +25,11 @@ class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
         emit(memoDataSource.deleteMemo(memoId))
     }.catch { emit(DataResourceResult.Failure(it)) }
 
+    override suspend fun getMemoById(memoId: String) = flow {
+        emit(DataResourceResult.Loading)
+        emit(memoDataSource.getMemoById(memoId))
+    }.catch { emit(DataResourceResult.Failure(it)) }
+
     override suspend fun getMemoListBySelectedDate(date: String) = flow {
         emit(DataResourceResult.Loading)
         emit(memoDataSource.getMemoListBySelectedDate(date))
@@ -36,7 +40,7 @@ class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
         emit(memoDataSource.getMemoListBySelectedStatTabMenu(selectedTabMenu))
     }
 
-    override suspend fun getNearByMemoList(location: LatLng) = flow {
+    override suspend fun getNearByMemoList(location: Location) = flow {
         emit(DataResourceResult.Loading)
         emit(memoDataSource.getNearByMemoList(location))
     }.catch { emit(DataResourceResult.Failure(it)) }

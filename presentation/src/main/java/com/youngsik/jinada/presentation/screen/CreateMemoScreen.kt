@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.common.DatePickerModal
+import com.youngsik.jinada.presentation.component.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.common.MemoWriteTabMenu
 import com.youngsik.jinada.presentation.component.CommonCard
@@ -46,8 +46,6 @@ import com.youngsik.jinada.presentation.component.CommonTabRow
 import com.youngsik.jinada.presentation.component.ListItemRow
 import com.youngsik.jinada.presentation.component.commonTabRow
 import com.youngsik.jinada.presentation.theme.JinadaDimens
-import com.youngsik.jinada.data.utils.changeToStringDate
-import com.youngsik.jinada.presentation.factory.ViewModelFactory
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
 
 
@@ -60,6 +58,13 @@ fun MemoWriteScreen(memoViewModel: MemoViewModel, todoItem: TodoItemData, onBack
     val tabs = listOf(MemoWriteTabMenu.KEYBOARD, MemoWriteTabMenu.HANDWRITING)
     var selectedDate by remember { mutableStateOf(todoItem.deadlineDate) }
     val memoUiState by memoViewModel.memoUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(memoUiState.lastSuccessfulAction) {
+        if (memoUiState.lastSuccessfulAction == MemoViewModel.SUCCESSFUL_CREATE_MEMO || memoUiState.lastSuccessfulAction == MemoViewModel.SUCCESSFUL_UPDATE_MEMO) {
+            memoViewModel.resetLastSuccessfulAction()
+            onBackEvent()
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()

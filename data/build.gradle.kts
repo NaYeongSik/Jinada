@@ -1,13 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
     namespace = "com.youngsik.data"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -35,7 +33,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -43,9 +41,12 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.libraries)
 
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
-    implementation(libs.moshi.kotlin)
+    implementation(libs.bundles.location)
+    implementation(libs.bundles.serialization)
+    implementation(libs.geofire.android.common)
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -1,11 +1,5 @@
-package com.youngsik.jinada.data.dataclass
+package com.youngsik.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
-
-@Parcelize
-@Serializable
 data class TodoItemData(
     val memoId: String = "",
     val content: String = "",
@@ -13,7 +7,7 @@ data class TodoItemData(
     val locationName: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
-    val distance: String = "",
+    val distance: Double = 0.0,
     val deadlineDate: String = "",
     val completeDate: String? = null
-) : Parcelable
+)

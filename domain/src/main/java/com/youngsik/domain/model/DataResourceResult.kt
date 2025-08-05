@@ -1,4 +1,4 @@
-package com.youngsik.jinada.data.common
+package com.youngsik.domain.model
 
 sealed class DataResourceResult<out T> {
     data object Loading : DataResourceResult<Nothing>()

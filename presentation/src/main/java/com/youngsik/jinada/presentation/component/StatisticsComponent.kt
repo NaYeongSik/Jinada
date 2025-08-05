@@ -21,15 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.youngsik.jinada.data.dataclass.CompleteRateData
-import com.youngsik.jinada.data.dataclass.TodoItemData
-import com.youngsik.jinada.presentation.MemoMockData
+import com.youngsik.domain.model.CompleteRateData
+import com.youngsik.domain.model.StatisticsData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.jinada.presentation.theme.JinadaDimens
 
 @Composable
-fun MainStatisticsSection(selectedTab: StatTabMenu, memoList: List<TodoItemData>, completeRateData: CompleteRateData, onChangeTab: (StatTabMenu)-> Unit, onChangeData: (List<TodoItemData>)-> Unit){
+fun MainStatisticsSection(selectedTab: StatTabMenu, statData: StatisticsData, completeRateData: CompleteRateData, onChangeTab: (StatTabMenu)-> Unit){
     val tabs = listOf(StatTabMenu.TOTALLY, StatTabMenu.MONTHLY, StatTabMenu.WEEKLY)
 
     CommonCard(
@@ -49,29 +49,23 @@ fun MainStatisticsSection(selectedTab: StatTabMenu, memoList: List<TodoItemData>
                 tabs,
                 onClickEvent = { newSelect ->
                     onChangeTab(newSelect)
-
-                    when (newSelect) {
-                        StatTabMenu.TOTALLY -> null// TODO: 메모 데이터 변경 onChangeData(MemoMockData.getMemosAll())
-                        StatTabMenu.MONTHLY -> null// TODO: 메모 데이터 변경 onChangeData(MemoMockData.getMemosAtMonth())
-                        else -> null // TODO: 메모 데이터 변경 onChangeData(MemoMockData.getCompleteRateDataInWeek())
-                    }
                 },
                 tabTitleResId = { it.titleResId })
             Spacer(modifier = Modifier.height(JinadaDimens.Spacer.medium))
-            MainProgressSection(completeRateData, memoList, selectedTab)
+            MainProgressSection(completeRateData, statData, selectedTab)
         }
     }
 }
 
 @Composable
-fun MainProgressSection(completeRateData: CompleteRateData,memoList: List<TodoItemData>,selectedTab: StatTabMenu) {
+fun MainProgressSection(completeRateData: CompleteRateData,statData: StatisticsData,selectedTab: StatTabMenu) {
     Column(
         modifier = Modifier.padding(JinadaDimens.Padding.large),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.xLarge)
     ) {
         CircularProgressWithLabel(completeRateData)
-        TextSummarySection(memoList,selectedTab)
+        TextSummarySection(statData,selectedTab)
     }
 }
 
@@ -155,40 +149,49 @@ fun IncompleteTodosSection(showIncompletedMemo: Boolean,onClick: ()-> Unit) {
 }
 
 @Composable
-fun TextSummarySection(memoList: List<TodoItemData>, selectedTab: StatTabMenu) {
+fun TextSummarySection(statData: StatisticsData, selectedTab: StatTabMenu) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(JinadaDimens.Common.xLarge)
     ) {
-        when(selectedTab){
-            StatTabMenu.TOTALLY -> null // TODO: 뷰모델로 데이터 세팅 TotalySummary(memoList)
-            StatTabMenu.MONTHLY -> null // TODO: 뷰모델로 데이터 세팅 MonthlySummary(memoList)
-            StatTabMenu.WEEKLY -> null // TODO: 뷰모델로 데이터 세팅 WeeklySummary(memoList)
+        when (selectedTab) {
+            StatTabMenu.TOTALLY -> {
+                if (statData is StatisticsData.TotallyStatData) {
+                    TotalySummary(statData)
+                }
+            }
+            StatTabMenu.MONTHLY -> {
+                if (statData is StatisticsData.MonthlyStatData) {
+                    MonthlySummary(statData)
+                }
+            }
+            StatTabMenu.WEEKLY -> {
+                if (statData is StatisticsData.WeeklyStatData) {
+                    WeeklySummary(statData)
+                }
+            }
         }
     }
 }
 
-/*
 @Composable
-fun WeeklySummary(memoList: List<TodoItemData>){
-    val weeklyMemoData = MemoMockData.getWeeklyStatData(memoList)
+fun WeeklySummary(weeklyStat: StatisticsData.WeeklyStatData){
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.xSmall)
     ){
         Text(text = stringResource(R.string.analysis_title_weekly), style = MaterialTheme.typography.bodyLarge)
-        if (weeklyMemoData.mostCompletedDayOfWeek.isNotBlank()) Text(text = stringResource(R.string.analysis_weekly_most_completed_day,weeklyMemoData.mostCompletedDayOfWeek,weeklyMemoData.mostCompletedCount))
-
-        if (weeklyMemoData.incompletedCount != 0)Text(text = stringResource(R.string.analysis_weekly_upcoming_memos,weeklyMemoData.incompletedCount))
-        if (weeklyMemoData.mostCompletedCount == 0 && weeklyMemoData.incompletedCount == 0) Text(text = stringResource(R.string.analysis_weekly_not_have_memos))
-        else Text(text = stringResource(R.string.analysis_weekly_all_memos_completed))
+        if (weeklyStat.mostCompletedDayOfWeek.isNotBlank()) Text(text = stringResource(R.string.analysis_weekly_most_completed_day,weeklyStat.mostCompletedDayOfWeek,weeklyStat.mostCompletedCount),style = MaterialTheme.typography.bodyMedium)
+        if (weeklyStat.incompletedCount != 0)Text(text = stringResource(R.string.analysis_weekly_upcoming_memos,weeklyStat.incompletedCount),style = MaterialTheme.typography.bodyMedium)
+        if (weeklyStat.mostCompletedCount == 0 && weeklyStat.incompletedCount == 0) Text(text = stringResource(R.string.analysis_weekly_not_have_memos),style = MaterialTheme.typography.bodyMedium)
+        else Text(text = stringResource(R.string.analysis_weekly_all_memos_completed),style = MaterialTheme.typography.bodyMedium)
     }
 }
 
 @Composable
-fun MonthlySummary(memoList: List<TodoItemData>){
+fun MonthlySummary(montlyStat: StatisticsData.MonthlyStatData){
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -199,18 +202,16 @@ fun MonthlySummary(memoList: List<TodoItemData>){
 }
 
 @Composable
-fun TotalySummary(memoList: List<TodoItemData>){
-    val totalyMemoData = MemoMockData.getTotalyStatData(memoList)
+fun TotalySummary(totalyStat: StatisticsData.TotallyStatData){
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.xSmall)
     ){
         Text(text = stringResource(R.string.analysis_title_total), style = MaterialTheme.typography.bodyLarge)
-        if (totalyMemoData.totalCompletedMemoCount != 0) Text(text = stringResource(R.string.analysis_total_completed_memos,totalyMemoData.totalCompletedMemoCount))
+        if (totalyStat.totalCompletedMemoCount != 0) Text(text = stringResource(R.string.analysis_total_completed_memos,totalyStat.totalCompletedMemoCount),style = MaterialTheme.typography.bodyMedium)
         else Text(text = stringResource(R.string.analysis_common_no_completed_memos))
 
-        if (totalyMemoData.bestMonth.isNotBlank())Text(text = stringResource(R.string.analysis_total_best_month,totalyMemoData.bestMonth,totalyMemoData.bestMonthCompletedCount))
-        else Text(text = stringResource(R.string.analysis_common_no_completed_memos))
+        if (totalyStat.bestMonth.isNotBlank())Text(text = stringResource(R.string.analysis_total_best_month,totalyStat.bestMonth,totalyStat.bestMonthCompletedCount),style = MaterialTheme.typography.bodyMedium)
     }
-}*/
+}

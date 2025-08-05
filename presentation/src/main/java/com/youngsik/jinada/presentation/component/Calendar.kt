@@ -1,4 +1,4 @@
-package com.youngsik.jinada.presentation.common
+package com.youngsik.jinada.presentation.component
 
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -8,13 +8,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import com.youngsik.jinada.data.utils.changeToStringDate
+import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(selectableDates : DatePickerSelectableDates,onDateSelected: (String) -> Unit, onDismiss: (Boolean) -> Unit) {
+fun DatePickerModal(selectableDates : DatePickerSelectableDates, onDateSelected: (String) -> Unit, onDismiss: (Boolean) -> Unit) {
     val datePickerState = rememberDatePickerState(selectableDates = selectableDates)
 
     DatePickerDialog(

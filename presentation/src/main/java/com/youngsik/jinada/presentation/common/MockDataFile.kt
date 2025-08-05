@@ -1,8 +1,8 @@
-package com.youngsik.jinada.presentation
+package com.youngsik.jinada.presentation.common
 
 import androidx.compose.runtime.mutableStateListOf
-import com.youngsik.jinada.data.dataclass.StatisticsData
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.StatisticsData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.utils.changeToLocalDate
 import com.youngsik.jinada.data.utils.getWeekRange
 import java.time.LocalDate
@@ -40,7 +40,7 @@ object MemoMockData{
     }
 
     fun getMemosNearby() = memoList.filter {
-        it.isCompleted == false && changeKmToMeter(it.distance) <= 1300
+        it.isCompleted == false && it.distance <= 1300
     }.toMutableList()
 
     private fun changeKmToMeter(distance: String): Double{
@@ -57,6 +57,37 @@ object MemoMockData{
         }
     }
 
+    fun getWeeklyStatData(memoList: List<TodoItemData>): StatisticsData.WeeklyStatData{
+
+        val filteredData = memoList.filter { it.isCompleted && it.completeDate != null }
+            .groupBy { changeToLocalDate(it.deadlineDate).dayOfWeek }
+            .mapValues { it.value.size }
+
+        val dayOfWeek = filteredData.maxByOrNull { it.value }?.key?.getDisplayName(TextStyle.FULL,
+            Locale.KOREAN) ?: ""
+        val completeCount = filteredData.maxByOrNull { it.value }?.value ?: 0
+        val incompletedCount = memoList.filter { !it.isCompleted }.size
+
+        return StatisticsData.WeeklyStatData(dayOfWeek,completeCount,incompletedCount)
+    }
+
+    fun getTotalyStatData(memoList: List<TodoItemData>): StatisticsData.TotallyStatData{
+        val totalCompletedCount = memoList.filter { it.isCompleted }.size
+
+        val completedByMonth = memoList
+            .filter { it.isCompleted && it.completeDate != null }
+            .groupBy { changeToLocalDate(it.deadlineDate!!).withDayOfMonth(1) }
+            .mapValues { it.value.size }
+
+        val maxMonth = completedByMonth.maxByOrNull { it.value }
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월")
+
+        val bestMonth = maxMonth?.key?.format(formatter) ?: ""
+        val bestMonthCompletedCount = maxMonth?.value ?: 0
+
+        return StatisticsData.TotallyStatData(totalCompletedCount,bestMonth,bestMonthCompletedCount)
+    }
+
     /*fun getMemosOnOrAfter(targetDate: LocalDate)= memoList.filter{
         !it.deadlineDate.isBefore(targetDate)
     }.sortedBy { !it.isCompleted }.toMutableList()
@@ -69,39 +100,13 @@ object MemoMockData{
 
     fun getMemosAll() = memoList
 
-    fun getWeeklyStatData(memoList: List<TodoItemData>): StatisticsData.WeeklyStatData{
 
-        val filteredData = memoList.filter { it.isCompleted && it.completeDate != null }
-            .groupBy { it.deadlineDate.dayOfWeek }
-            .mapValues { it.value.size }
-
-        val dayOfWeek = filteredData.maxByOrNull { it.value }?.key?.getDisplayName(TextStyle.FULL, Locale.KOREAN) ?: ""
-        val completeCount = filteredData.maxByOrNull { it.value }?.value ?: 0
-        val incompletedCount = memoList.filter { !it.isCompleted }.size
-
-        return StatisticsData.WeeklyStatData(dayOfWeek,completeCount,incompletedCount)
-    }
 
     fun getMonthlyStatData(){
 
     }
 
 
-    fun getTotalyStatData(memoList: List<TodoItemData>): StatisticsData.TotallyStatData{
-        val totalCompletedCount = memoList.filter { it.isCompleted }.size
-
-        val completedByMonth = memoList
-            .filter { it.isCompleted && it.completeDate != null }
-            .groupBy { it.deadlineDate!!.withDayOfMonth(1) }
-            .mapValues { it.value.size }
-
-        val maxMonth = completedByMonth.maxByOrNull { it.value }
-        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월")
-
-        val bestMonth = maxMonth?.key?.format(formatter) ?: ""
-        val bestMonthCompletedCount = maxMonth?.value ?: 0
-
-        return StatisticsData.TotallyStatData(totalCompletedCount,bestMonth,bestMonthCompletedCount)
-    }*/
+    */
 
 }

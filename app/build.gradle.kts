@@ -12,12 +12,12 @@ plugins {
 
 android {
     namespace = "com.youngsik.jinada"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.youngsik.jinada"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -52,6 +52,7 @@ secrets {
 
 dependencies {
     implementation(project(":presentation"))
+    implementation(project(":domain"))
     implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,7 +68,6 @@ dependencies {
     implementation(libs.play.services.location)
 
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
 
     implementation(libs.firebase.firestore.ktx)
     implementation(platform(libs.firebase.bom))

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -16,17 +15,17 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapView
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.presentation.databinding.MapContainerLayoutBinding
+import com.youngsik.jinada.presentation.uistate.MapUiState
 
 @Composable
-fun NaverMapView(mapController: MapController, memoList: List<TodoItemData>, onMapLongClick: (TodoItemData)-> Unit){
+fun NaverMapView(mapController: MapController, mapUiState: MapUiState, onMapLongClick: (TodoItemData)-> Unit){
     val context = LocalContext.current
-    var myPosition by remember { mutableStateOf(LatLng(37.472336,126.895997)) }
     var mapView: MapView? by remember { mutableStateOf(null) }
     var selectedMarkerId by remember { mutableStateOf("") }
 
-    if (mapView != null) MapLifecycleEffect(context,mapView, myPosition,memoList,mapController,onMapLongClick,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
+    if (mapView != null) MapLifecycleEffect(context,mapView, mapUiState.myLocation,mapUiState.nearByMemoList,mapController,onMapLongClick,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
 
     AndroidViewBinding(
         modifier = Modifier,
@@ -37,9 +36,9 @@ fun NaverMapView(mapController: MapController, memoList: List<TodoItemData>, onM
             if (mapView == null) {
                 mapView = this.mapView
             } else {
-                mapController.updateMyLocationOverlay(myPosition)
-                mapController.updateMemoMarkers(memoList,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
-                mapController.showInfoWindow(memoList,selectedMarkerId)
+                mapController.updateMyLocationOverlay(mapUiState.myLocation)
+                mapController.updateMemoMarkers(mapUiState.nearByMemoList,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
+                mapController.showInfoWindow(mapUiState.nearByMemoList,selectedMarkerId)
             }
 
         }
@@ -48,7 +47,7 @@ fun NaverMapView(mapController: MapController, memoList: List<TodoItemData>, onM
 }
 
 @Composable
-fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng, memoList: List<TodoItemData>, mapController: MapController, onMapLongClick: (TodoItemData)-> Unit, onMarkerClick: (String) -> Unit) {
+fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng?, memoList: List<TodoItemData>, mapController: MapController, onMapLongClick: (TodoItemData)-> Unit, onMarkerClick: (String) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = object : DefaultLifecycleObserver {
@@ -58,7 +57,6 @@ fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng, 
                     mapView.onCreate(null)
                     mapView.getMapAsync { naverMap ->
                         mapController.initMapController(naverMap,context)
-                        mapController.setCameraPosition(myPosition)
                         mapController.updateMyLocationOverlay(myPosition)
                         mapController.setMapLongClickListener(onMapLongClick)
                         mapController.updateMemoMarkers(memoList, onMarkerClick)
@@ -72,7 +70,10 @@ fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng, 
             }
 
             override fun onResume(owner: LifecycleOwner) {
-                mapView?.onResume()
+                mapView?.let { mapView ->
+                    mapView.onResume()
+                    mapController.setCameraPosition(myPosition)
+                }
             }
 
             override fun onPause(owner: LifecycleOwner) {

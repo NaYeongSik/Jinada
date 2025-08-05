@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -23,7 +24,7 @@ fun MapSearchBar(modifier: Modifier, inputText: String, onValueChange: (String)-
         modifier = modifier,
         value = inputText,
         onValueChange = { inputValue -> onValueChange(inputValue) },
-        placeholder = { Text(text = stringResource(R.string.search_map_placeholder)) },
+        placeholder = { Text(text = stringResource(R.string.search_map_placeholder),style = MaterialTheme.typography.bodyMedium) },
         leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon)) },
         shape = RoundedCornerShape(JinadaDimens.Corner.small),
         colors = OutlinedTextFieldDefaults.colors(

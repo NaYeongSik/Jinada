@@ -1,4 +1,4 @@
-package com.youngsik.jinada.data.dataclass
+package com.youngsik.domain.model
 
 data class CompleteRateData(
     val rate: Float,

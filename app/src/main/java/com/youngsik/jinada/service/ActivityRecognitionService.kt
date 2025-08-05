@@ -1,43 +1,77 @@
 package com.youngsik.jinada.service
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.content.pm.PackageManager
 import android.os.IBinder
-import androidx.annotation.RequiresApi
+import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import com.youngsik.jinada.R
+import com.youngsik.domain.manager.GeoFencingManager
+import com.youngsik.domain.model.DataResourceResult
+import com.youngsik.jinada.data.datasource.remote.FirestoreMemoDataSourceImpl
+import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
+import com.youngsik.jinada.data.repository.CurrentLocationRepository
+import com.youngsik.jinada.data.repository.MemoRepository
+import com.youngsik.jinada.data.impl.MemoRepositoryImpl
+import com.youngsik.jinada.di.LocationRepositoryProvider
+import com.youngsik.jinada.manager.GeoFencingManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class ActivityRecognitionService : Service(){
     companion object {
-        private const val NOTIFICATION_ID = 12345
-        const val ACTION_START_TRACKING = "ACTION_START_TRACKING"
-        const val ACTION_STOP_TRACKING = "ACTION_STOP_TRACKING"
+        private const val NOTIFICATION_ID = 10002
+        const val ACTION_UPDATE_GEOFENCING = "ACTION_UPDATE_GEOFENCING"
     }
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val locationRepository: CurrentLocationRepository by lazy {
+        LocationRepositoryProvider.getInstance(applicationContext)
+    }
 
-    override fun onCreate() {
-        super.onCreate()
+    private val memoRepository : MemoRepository by lazy {
+        MemoRepositoryImpl(FirestoreMemoDataSourceImpl())
+    }
+
+    private val geoFencingManager : GeoFencingManager by lazy {
+        GeoFencingManagerImpl(applicationContext)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d("jinada_test", "ActivityRecognitionService onStartCommand")
         when (intent?.action) {
-            ACTION_START_TRACKING -> {
+            ACTION_UPDATE_GEOFENCING -> {
+                Log.d("jinada_test", "ActivityRecognitionService ACTION_UPDATE_GEOFENCING")
                 startForegroundNotify()
-            }
-            ACTION_STOP_TRACKING -> {
-                stopForegroundNotify()
+                serviceScope.launch {
+                    val location = (locationRepository as CurrentLocationRepositoryImpl).getCurrentLocation()
+                    if (location != null){
+                        memoRepository.getNearByMemoList(location).collect { result ->
+                            when (result) {
+                                is DataResourceResult.Success -> {
+                                    if (ActivityCompat.checkSelfPermission(applicationContext,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                        val memoList = result.data.filter { todoItemData -> !todoItemData.isCompleted }
+                                        geoFencingManager.updateGeoPencing(memoList)
+                                    }
+                                    stopForegroundNotify()
+                                }
+                                is DataResourceResult.Failure -> { stopForegroundNotify() }
+                                is DataResourceResult.Loading -> { /* 로딩 처리 */ }
+                            }
+                        }
+                    }
+                }
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -46,23 +80,21 @@ class ActivityRecognitionService : Service(){
     private lateinit var notificationManager: NotificationManager
 
     @SuppressLint("ForegroundServiceType")
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startForegroundNotify() {
         val channelId = "location_notification_channel"
         notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         val channel = NotificationChannel(
             channelId,
-            "Current Location Service",
+            "Activity Recognition Service",
             NotificationManager.IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(channel)
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("지나다")
-            .setContentText("인접한 메모가 있는지 확인중 입니다..")
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentText("인접한 위치의 메모 목록으로 알람을 업데이트 합니다..")
             .setOngoing(true)
             .build()
         startForeground(NOTIFICATION_ID, notification)
@@ -70,6 +102,7 @@ class ActivityRecognitionService : Service(){
 
     private fun stopForegroundNotify(){
         notificationManager.cancel(NOTIFICATION_ID)
+        if(serviceScope.isActive) serviceScope.cancel()
         stopSelf()
     }
 
@@ -77,7 +110,6 @@ class ActivityRecognitionService : Service(){
     override fun onDestroy() {
         super.onDestroy()
         stopForegroundNotify()
-        serviceScope.cancel()
     }
 
 

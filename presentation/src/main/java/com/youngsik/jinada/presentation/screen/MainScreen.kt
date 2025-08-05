@@ -11,35 +11,59 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
-import com.youngsik.jinada.data.dataclass.TodoItemData
-import com.youngsik.jinada.presentation.MemoMockData
+import com.youngsik.domain.manager.LocationServiceManager
+import com.youngsik.domain.model.TodoItemData
+import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.component.MapSearchBar
 import com.youngsik.jinada.presentation.component.MyLocationButton
-import com.youngsik.jinada.presentation.factory.ViewModelFactory
 import com.youngsik.jinada.presentation.map.NaverMapView
 import com.youngsik.jinada.presentation.map.rememberMapController
 import com.youngsik.jinada.presentation.theme.JinadaDimens
 import com.youngsik.jinada.presentation.viewmodel.MemoMapViewModel
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
-    val memoList = remember { mutableStateListOf(*MemoMockData.getMemosNearby().toTypedArray()) }
+fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: LocationServiceManager,onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
+    val mapUiState by memoMapViewModel.mapUiState.collectAsStateWithLifecycle()
     var inputText by remember { mutableStateOf("") }
     val scaffoldState = rememberBottomSheetScaffoldState()
-    var mapController = rememberMapController()
+    var mapController = rememberMapController(LocalContext.current)
+
+    LaunchedEffect(Unit) {
+        locationServiceManager.startLocationTracking()
+        memoMapViewModel.observeCurrentLocation()
+    }
+
+    LaunchedEffect(mapUiState.cameraPosition) {
+        mapController.setCameraPosition(mapUiState.cameraPosition)
+    }
+
+    LaunchedEffect(mapUiState.targetLocationInfo) {
+        mapUiState.targetLocationInfo?.let {
+            mapController.showTemporaryMarker(it,onCreateMemoClick)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            locationServiceManager.stopLocationTracking()
+        }
+    }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -54,20 +78,23 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemD
                         modifier = Modifier.align(Alignment.Start).padding(start = JinadaDimens.Padding.large, bottom = JinadaDimens.Padding.xSmall),
                         style = MaterialTheme.typography.titleMedium
                     )
-                    CommonLazyColumnCard(modifier = Modifier.weight(1f).fillMaxWidth(0.9f), memoList = memoList, onCheckChange = {
+                    CommonLazyColumnCard(modifier = Modifier.weight(1f).fillMaxWidth(0.9f), memoList = mapUiState.nearByMemoList, onCheckChange = {
                             item, isChecked ->
-                        val index = memoList.indexOf(item)
+                        val index = mapUiState.nearByMemoList.indexOf(item)
                         if (index != -1) {
-                            memoList[index] = item.copy(isCompleted = isChecked)
+                            memoMapViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))
                         }
-                    }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoList.remove(item)  /*TODO: 메모 데이터 삭제 처리 필요*/ } )
+                    }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoMapViewModel.deleteMemo(item.memoId) }
+                    , { todoItemData -> mapController.moveToTargetLocation(LatLng(todoItemData.latitude,todoItemData.longitude))})
                 }
             }
         },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)){
 
-            NaverMapView(mapController,memoList,onMapLongClick = onCreateMemoClick)
+            NaverMapView(mapController,mapUiState){ todoItemData ->
+                memoMapViewModel.getTargetLocationInfo(todoItemData)
+            }
 
             MapSearchBar(Modifier.align(Alignment.TopCenter)
                 .padding(JinadaDimens.Padding.medium)
@@ -77,7 +104,7 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemD
             MyLocationButton(Modifier
                 .align(Alignment.BottomEnd)
                 .padding(JinadaDimens.Padding.medium)
-                ,{ mapController.moveToTargetLocation(LatLng(37.472336,126.895997))})
+                ,{ mapUiState.myLocation?.let { mapController.moveToTargetLocation(it) } })
         }
     }
 

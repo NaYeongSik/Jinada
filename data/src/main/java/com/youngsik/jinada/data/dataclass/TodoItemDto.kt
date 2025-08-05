@@ -21,5 +21,8 @@ data class TodoItemDto(
     var deadlineDate: Timestamp = Timestamp.now(),
 
     @get:PropertyName("complete_date") @set:PropertyName("complete_date")
-    var completeDate: Timestamp? = null
+    var completeDate: Timestamp? = null,
+
+    @get:PropertyName("geohash") @set:PropertyName("geohash")
+    var geohash: String = ""
 )

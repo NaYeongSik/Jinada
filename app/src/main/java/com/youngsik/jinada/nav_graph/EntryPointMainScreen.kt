@@ -2,16 +2,21 @@ package com.youngsik.jinada.nav_graph
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.youngsik.jinada.data.dataclass.TodoItemData
+import com.youngsik.domain.manager.LocationServiceManager
+import com.youngsik.jinada.common.JinadaApplication
 import com.youngsik.jinada.nav_type.parcelableType
-import com.youngsik.jinada.presentation.factory.ViewModelFactory
+import com.youngsik.jinada.manager.LocationServiceManagerImpl
+import com.youngsik.jinada.presentation.data.TodoItemParcelable
+import com.youngsik.jinada.presentation.data.toDomainModel
+import com.youngsik.jinada.presentation.data.toParcelable
 import com.youngsik.jinada.presentation.screen.MainScreen
 import com.youngsik.jinada.presentation.screen.MemoWriteScreen
 import com.youngsik.jinada.presentation.screen.MyMemoScreen
@@ -19,14 +24,21 @@ import com.youngsik.jinada.presentation.screen.MyPageScreen
 import com.youngsik.jinada.presentation.screen.StatisticsScreen
 import com.youngsik.jinada.presentation.viewmodel.MemoMapViewModel
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
+import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 import kotlin.reflect.typeOf
 
-@Preview(showBackground = true)
 @Composable
 fun EntryPointMainScreen(){
+    val context = LocalContext.current
     val navController = rememberNavController()
-    val memoViewModel: MemoViewModel = viewModel(factory = ViewModelFactory)
-    val memoMapViewModel: MemoMapViewModel = viewModel(factory = ViewModelFactory)
+    val locationServiceManager: LocationServiceManager = remember { LocationServiceManagerImpl(context) }
+
+    val appContainer = (context.applicationContext as JinadaApplication).container
+    val viewModelFactory = appContainer.viewModelFactory
+
+    val memoViewModel: MemoViewModel = viewModel(factory = viewModelFactory)
+    val memoMapViewModel: MemoMapViewModel = viewModel(factory = viewModelFactory)
+    val settingsViewModel: SettingsViewModel = viewModel(factory = viewModelFactory)
 
     AppScaffold(navController = navController) { innerPadding ->
         NavHost(
@@ -35,41 +47,43 @@ fun EntryPointMainScreen(){
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<ScreenRouteDef.BottomNavigation.MainTab>{
-                MainScreen(memoMapViewModel,onCreateMemoClick = { todoItemData ->
-                        navController.navigate(ScreenRouteDef.MemoManagementTab.CreateMemo(todoItemData))
+                MainScreen(memoMapViewModel,locationServiceManager,onCreateMemoClick = { todoItemData ->
+                        val todoItemParcelable = todoItemData.toParcelable()
+                        navController.navigate(ScreenRouteDef.MemoManagementTab.CreateMemo(todoItemParcelable))
                     },
                     onMemoUpdateClick = { todoItemData ->
-                        navController.navigate(ScreenRouteDef.MemoManagementTab.UpdateMemo(todoItemData))
+                        val todoItemParcelable = todoItemData.toParcelable()
+                        navController.navigate(ScreenRouteDef.MemoManagementTab.UpdateMemo(todoItemParcelable))
                     }
                 )
             }
             composable<ScreenRouteDef.BottomNavigation.MyMemoTab>{
-                MyMemoScreen(memoViewModel,onMemoUpdateClick= { todoItemData ->
-                    navController.navigate(
-                        ScreenRouteDef.MemoManagementTab.UpdateMemo(
-                            todoItemData
-                        )
-                    )
-                })
+                MyMemoScreen(memoViewModel){ todoItemData ->
+                        val todoItemParcelable = todoItemData.toParcelable()
+                        navController.navigate(ScreenRouteDef.MemoManagementTab.UpdateMemo(todoItemParcelable))
+                }
             }
             composable<ScreenRouteDef.BottomNavigation.MyPageTab>{
-                MyPageScreen()
+                MyPageScreen(settingsViewModel)
             }
             composable<ScreenRouteDef.BottomNavigation.StatisticsTab>{
-                StatisticsScreen()
+                StatisticsScreen(memoViewModel){ todoItemData ->
+                    val todoItemParcelable = todoItemData.toParcelable()
+                    navController.navigate(ScreenRouteDef.MemoManagementTab.UpdateMemo(todoItemParcelable))
+                }
             }
             composable<ScreenRouteDef.MemoManagementTab.CreateMemo>(
-                typeMap = mapOf( typeOf<TodoItemData>() to parcelableType<TodoItemData>())
+                typeMap = mapOf( typeOf<TodoItemParcelable>() to parcelableType<TodoItemParcelable>())
             ){ navBackStackEntry ->
-                val todoItem = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.CreateMemo>().todoItem
-                MemoWriteScreen(memoViewModel,todoItem= todoItem, onBackEvent = { navController.navigateUp() })
+                val todoItemParcelable = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.CreateMemo>().todoItem
+                MemoWriteScreen(memoViewModel,todoItem= todoItemParcelable.toDomainModel(), onBackEvent = { navController.navigateUp() })
             }
 
             composable<ScreenRouteDef.MemoManagementTab.UpdateMemo>(
-                typeMap = mapOf( typeOf<TodoItemData>() to parcelableType<TodoItemData>())
+                typeMap = mapOf( typeOf<TodoItemParcelable>() to parcelableType<TodoItemParcelable>())
             ){ navBackStackEntry ->
-                val todoItem = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.UpdateMemo>().todoItem
-                MemoWriteScreen(memoViewModel,todoItem= todoItem, onBackEvent = { navController.navigateUp() })
+                val todoItemParcelable = navBackStackEntry.toRoute<ScreenRouteDef.MemoManagementTab.UpdateMemo>().todoItem
+                MemoWriteScreen(memoViewModel,todoItem= todoItemParcelable.toDomainModel(), onBackEvent = { navController.navigateUp() })
             }
 
 

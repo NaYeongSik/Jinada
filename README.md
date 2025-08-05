@@ -3,9 +3,8 @@
 
 **지나다**는 위치기반으로 메모를 등록하고, 근접한 위치를 지나갈 때 해당 메모에 대한 알림을 주는 Android 앱입니다.
 
-<p align="center">
-  <img src="./assets/logo.png" alt="지나다 로고" width="200"/>
-</p>
+<img width="495" height="482" alt="image" src="https://github.com/user-attachments/assets/8ff0c068-d221-488c-bc29-753529f2b9f2" />
+
 
 ---
 
@@ -45,29 +44,32 @@
 - 지도에서 특정 위치를 선택하고 해당 위치에서 수행할 할 일을 등록
 - 위치별로 다수의 할 일 관리 가능
 
-<p align="center">
-  <img src="./assets/mockup_location.png" alt="위치 등록 화면" width="300" style="border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
-</p>
+| 위치기반 메모 생성 |
+|--------------------|
+| ![메모생성](https://github.com/user-attachments/assets/703f33e9-5c40-449e-bf21-eedf429a5d63)|
+| 네이버 지도를 길게 눌러 위치정보를 마커를 통해 확인하고<br> 마커를 탭해 현재 선택된 위치로 메모를 생성합니다.|
 
 ---
 
 ### 2️⃣ 위치 도달 알림
 - 사용자가 지정한 위치 근처에 도달 시 자동 알림
-- 알림에서 바로 할 일 완료 처리 가능
 
-<p align="center">
-  <img src="./assets/mockup_notification.png" alt="알림 화면" width="300" style="border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
-</p>
+| 인접 위치 메모 알림 |
+|--------------------|
+|![인접위치알림](https://github.com/user-attachments/assets/1dc83954-931c-4eab-b8ba-6b30b4c85106)|
+| 사용자 위치에 인접한 메모가 있을 때 알림을 보내주고<br> 알림을 탭하면 메인화면으로 이동시킵니다.|
+
 
 ---
 
 ### 3️⃣ 할 일 리스트 관리
-- 등록된 위치별 할 일을 한눈에 확인
+- 등록된 메모를 날짜별로 확인하여 관리 가능
 - 완료/미완료 상태 관리 및 수정 가능
 
-<p align="center">
-  <img src="./assets/mockup_todolist.png" alt="할 일 관리 화면" width="300" style="border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
-</p>
+| 메모 완료 및 삭제 |
+|--------------------|
+| ![메모완료_삭제](https://github.com/user-attachments/assets/eb5ffd36-cf8b-436b-b20f-deddf3532fb7)|
+| 체크박스를 탭하여 메모를 완료 처리하고<br>더보기 아이콘을 탭하여 삭제 처리 할 수 있습니다.|
 
 ---
 

@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +58,13 @@ fun MemoWriteScreen(memoViewModel: MemoViewModel, todoItem: TodoItemData, onBack
     val tabs = listOf(MemoWriteTabMenu.KEYBOARD, MemoWriteTabMenu.HANDWRITING)
     var selectedDate by remember { mutableStateOf(todoItem.deadlineDate) }
     val memoUiState by memoViewModel.memoUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(memoUiState.lastSuccessfulAction) {
+        if (memoUiState.lastSuccessfulAction == MemoViewModel.SUCCESSFUL_CREATE_MEMO || memoUiState.lastSuccessfulAction == MemoViewModel.SUCCESSFUL_UPDATE_MEMO) {
+            memoViewModel.resetLastSuccessfulAction()
+            onBackEvent()
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()

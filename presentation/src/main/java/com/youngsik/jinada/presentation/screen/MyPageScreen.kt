@@ -26,11 +26,11 @@ import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.component.DialogView
 import com.youngsik.jinada.presentation.component.SettingsSection
 import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 
 
-@Preview(showBackground = true)
 @Composable
-fun MyPageScreen(){
+fun MyPageScreen(settingsViewModel: SettingsViewModel){
     var dialogRoute by remember { mutableStateOf(SettingDialogState.NONE) }
 
     Column(

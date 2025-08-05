@@ -11,32 +11,37 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.component.IncompleteTodosSection
 import com.youngsik.jinada.presentation.component.MainStatisticsSection
-import com.youngsik.jinada.presentation.component.MemoCountCardSection
-import com.youngsik.jinada.presentation.common.MemoMockData
 import com.youngsik.jinada.presentation.component.MemoCard
-import com.youngsik.jinada.presentation.common.StatTabMenu
+import com.youngsik.jinada.presentation.component.MemoCountCardSection
 import com.youngsik.jinada.presentation.theme.JinadaDimens
-import com.youngsik.jinada.data.utils.getCompleteRateData
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
+import com.youngsik.jinada.presentation.viewmodel.MemoViewModel.Companion.SUCCESSFUL_DELETE_MEMO
+import com.youngsik.jinada.presentation.viewmodel.MemoViewModel.Companion.SUCCESSFUL_GET_STATISTICS
+import com.youngsik.jinada.presentation.viewmodel.MemoViewModel.Companion.SUCCESSFUL_UPDATE_MEMO
 import java.time.LocalDate
 
 @Composable
 fun StatisticsScreen(memoViewModel: MemoViewModel,onMemoUpdateClick: (TodoItemData)-> Unit){
     var showIncompletedMemo by remember { mutableStateOf(false) }
     val memoUiState by memoViewModel.memoUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        memoViewModel.getMemoListBySelectedStatTabMenu(memoUiState.selectedTabMenu.name)
+    }
+    LaunchedEffect(memoUiState.lastSuccessfulAction) {
+        if (memoUiState.lastSuccessfulAction == SUCCESSFUL_UPDATE_MEMO || memoUiState.lastSuccessfulAction == SUCCESSFUL_DELETE_MEMO) memoViewModel.getMemoListBySelectedStatTabMenu(memoUiState.selectedTabMenu.name)
+    }
 
     Box (
         modifier = Modifier.fillMaxSize()

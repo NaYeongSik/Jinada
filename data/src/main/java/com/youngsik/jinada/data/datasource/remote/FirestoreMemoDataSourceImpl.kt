@@ -84,11 +84,11 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         val finalQuery = when (selectedTabMenu) {
             "WEEKLY" -> {
                 val startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                query.whereGreaterThanOrEqualTo("deadlineDate", startOfWeek.toTimestamp())
+                query.whereGreaterThanOrEqualTo("deadline_date", startOfWeek.toTimestamp())
             }
             "MONTHLY" -> {
                 val startOfMonth = LocalDate.now().withDayOfMonth(1)
-                query.whereGreaterThanOrEqualTo("deadlineDate", startOfMonth.toTimestamp())
+                query.whereGreaterThanOrEqualTo("deadline_date", startOfMonth.toTimestamp())
             }
             "TOTALLY" -> {
                 query

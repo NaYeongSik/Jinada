@@ -12,6 +12,7 @@ import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
 import com.youngsik.jinada.data.impl.NaverRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.MemoRepository
+import com.youngsik.jinada.data.repository.NaverRepository
 import com.youngsik.jinada.data.utils.toLocation
 import com.youngsik.jinada.presentation.BuildConfig
 import com.youngsik.jinada.presentation.uistate.MapUiState
@@ -21,11 +22,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MemoMapViewModel(application: Application, private val repository: MemoRepository, private val locationRepository: CurrentLocationRepository) : AndroidViewModel(application) {
+class MemoMapViewModel(application: Application, private val repository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val naverRepository: NaverRepository) : AndroidViewModel(application) {
     private val _mapUiState = MutableStateFlow(MapUiState())
     val mapUiState get() = _mapUiState.asStateFlow()
-
-    private val naverRepository = NaverRepositoryImpl()
 
     fun observeCurrentLocation() {
         viewModelScope.launch {

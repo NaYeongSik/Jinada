@@ -183,11 +183,10 @@ fun WeeklySummary(weeklyStat: StatisticsData.WeeklyStatData){
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.xSmall)
     ){
         Text(text = stringResource(R.string.analysis_title_weekly), style = MaterialTheme.typography.bodyLarge)
-        if (weeklyStat.mostCompletedDayOfWeek.isNotBlank()) Text(text = stringResource(R.string.analysis_weekly_most_completed_day,weeklyStat.mostCompletedDayOfWeek,weeklyStat.mostCompletedCount))
-
-        if (weeklyStat.incompletedCount != 0)Text(text = stringResource(R.string.analysis_weekly_upcoming_memos,weeklyStat.incompletedCount))
-        if (weeklyStat.mostCompletedCount == 0 && weeklyStat.incompletedCount == 0) Text(text = stringResource(R.string.analysis_weekly_not_have_memos))
-        else Text(text = stringResource(R.string.analysis_weekly_all_memos_completed))
+        if (weeklyStat.mostCompletedDayOfWeek.isNotBlank()) Text(text = stringResource(R.string.analysis_weekly_most_completed_day,weeklyStat.mostCompletedDayOfWeek,weeklyStat.mostCompletedCount),style = MaterialTheme.typography.bodyMedium)
+        if (weeklyStat.incompletedCount != 0)Text(text = stringResource(R.string.analysis_weekly_upcoming_memos,weeklyStat.incompletedCount),style = MaterialTheme.typography.bodyMedium)
+        if (weeklyStat.mostCompletedCount == 0 && weeklyStat.incompletedCount == 0) Text(text = stringResource(R.string.analysis_weekly_not_have_memos),style = MaterialTheme.typography.bodyMedium)
+        else Text(text = stringResource(R.string.analysis_weekly_all_memos_completed),style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -210,10 +209,9 @@ fun TotalySummary(totalyStat: StatisticsData.TotallyStatData){
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.xSmall)
     ){
         Text(text = stringResource(R.string.analysis_title_total), style = MaterialTheme.typography.bodyLarge)
-        if (totalyStat.totalCompletedMemoCount != 0) Text(text = stringResource(R.string.analysis_total_completed_memos,totalyStat.totalCompletedMemoCount))
+        if (totalyStat.totalCompletedMemoCount != 0) Text(text = stringResource(R.string.analysis_total_completed_memos,totalyStat.totalCompletedMemoCount),style = MaterialTheme.typography.bodyMedium)
         else Text(text = stringResource(R.string.analysis_common_no_completed_memos))
 
-        if (totalyStat.bestMonth.isNotBlank())Text(text = stringResource(R.string.analysis_total_best_month,totalyStat.bestMonth,totalyStat.bestMonthCompletedCount))
-        else Text(text = stringResource(R.string.analysis_common_no_completed_memos))
+        if (totalyStat.bestMonth.isNotBlank())Text(text = stringResource(R.string.analysis_total_best_month,totalyStat.bestMonth,totalyStat.bestMonthCompletedCount),style = MaterialTheme.typography.bodyMedium)
     }
 }

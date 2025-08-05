@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 data class MemoUiState(
     val isLoading: Boolean = false,
-    val isSuccessful: Boolean = false,
+    val lastSuccessfulAction: String = "",
     val isFailure: Boolean = false,
     val memoList: List<TodoItemData> = emptyList(),
     val selectedDate: String = changeToStringDate(LocalDate.now()),

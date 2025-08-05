@@ -64,7 +64,7 @@ fun EntryPointMainScreen(){
                 }
             }
             composable<ScreenRouteDef.BottomNavigation.MyPageTab>{
-                MyPageScreen()
+                MyPageScreen(settingsViewModel)
             }
             composable<ScreenRouteDef.BottomNavigation.StatisticsTab>{
                 StatisticsScreen(memoViewModel){ todoItemData ->

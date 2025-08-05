@@ -6,11 +6,12 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
+import com.youngsik.jinada.data.repository.NaverRepository
 import com.youngsik.jinada.presentation.viewmodel.MemoMapViewModel
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 
-class ViewModelFactory(private val repository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val dataStoreRepository: DataStoreRepository) : ViewModelProvider.Factory{
+class ViewModelFactory(private val repository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val dataStoreRepository: DataStoreRepository, private val naverRepository: NaverRepository) : ViewModelProvider.Factory{
 
     override fun <T : ViewModel> create(
         modelClass: Class<T>,
@@ -23,7 +24,7 @@ class ViewModelFactory(private val repository: MemoRepository, private val locat
                 MemoViewModel(repository) as T
 
             modelClass.isAssignableFrom(MemoMapViewModel::class.java) ->
-                MemoMapViewModel(application, repository,locationRepository) as T
+                MemoMapViewModel(application, repository,locationRepository,naverRepository) as T
 
             modelClass.isAssignableFrom(SettingsViewModel::class.java) ->
                 SettingsViewModel(dataStoreRepository) as T

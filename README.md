@@ -31,10 +31,11 @@
 | 개발 언어     | Kotlin |
 | 아키텍처     | MVVM |
 | UI            | Jetpack Compose |
-| 데이터베이스  | Firebase Firestore |
-| 위치 서비스  | Fused Location Provider API, Geofencing API, ActivityRecognition API, Naver Map API |
-| 알림         | Notification API |
-| 기타         | Coroutines, Flow |
+| Networking  | Retrofit2, Moshi, Firebase Firestore |
+| Local Storage  | DataStore |
+| Location  | Fused Location Provider API, Geofencing API, ActivityRecognition API |
+| Map     | Naver Map |
+| Tools         | Github, Figma |
 
 ---
 
@@ -48,7 +49,7 @@
 
 | 위치기반 메모 생성 | 메모 완료 및 삭제 | 메모 수정 |
 |--------------------|--------------------|--------------------|
-| ![메모생성](https://github.com/user-attachments/assets/703f33e9-5c40-449e-bf21-eedf429a5d63)|![메모완료_삭제](https://github.com/user-attachments/assets/bdf999f0-db25-4dbb-89ab-2c735583f89a)|![메모 수정](https://github.com/user-attachments/assets/33cd086e-d62a-41fe-9889-db9aace2100a)|
+| ![메모생성](https://github.com/user-attachments/assets/703f33e9-5c40-449e-bf21-eedf429a5d63)|![메모완료및삭제](https://github.com/user-attachments/assets/f0010873-4edc-4378-ac39-37b93b8aa76e)|![메모수정](https://github.com/user-attachments/assets/d24f37b5-34cf-4d71-8463-0ef207064188)|
 | 네이버 지도를 길게 눌러 위치정보를 마커를 통해 확인하고<br> 마커를 탭해 현재 선택된 위치로 메모를 생성합니다.|체크박스를 탭하여 메모를 완료 처리하고<br>더보기 아이콘을 탭하여 삭제 처리 할 수 있습니다.| 더보기 메뉴를 통해 메모의 내용 및 마감일을 수정 할 수 있습니다.    |
 
 ---
@@ -80,7 +81,7 @@
 
 | 메모 진행사항 통계 |
 |--------------------|
-|![통계](https://github.com/user-attachments/assets/010d8d59-f8b9-42a0-b2ae-f62cb4466ee8)|
+|![통계](https://github.com/user-attachments/assets/7599b370-869b-46e7-85f6-47b317aa5ebb)|
 | 사용자의 메모 진행률, 완료율을 기반으로 통계를 보여주고<br> 전체,월간,주간 단위로 요약을 제공해 동기를 부여합니다.|
 
 ---

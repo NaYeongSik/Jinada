@@ -39,7 +39,7 @@ fun MyPageScreen(settingsViewModel: SettingsViewModel){
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        DialogView(dialogRoute,{ newRoute -> dialogRoute = newRoute })
+        DialogView(dialogRoute,{ newRoute -> dialogRoute = newRoute },{ isCheckedCloserNoti, isCheckedDailyNoti -> /* */ },{ closerMemoRange, closerNotiRange -> /* */ })
 
         ProfileSection(settingsUiState.nickname,settingsUiState.uuid)
 

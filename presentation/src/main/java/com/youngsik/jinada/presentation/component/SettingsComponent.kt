@@ -34,7 +34,7 @@ fun SettingsSection(onClickEvent: (SettingDialogState) -> Unit){
 
         SettingsGroup(stringResource(R.string.notification_setting_title), SettingsData.appSettingsItems,onClickEvent)
 
-        SettingsGroup(stringResource(R.string.help_title), SettingsData.supportItems,onClickEvent)
+        //SettingsGroup(stringResource(R.string.help_title), SettingsData.supportItems,onClickEvent)
     }
 }
 
@@ -71,7 +71,7 @@ fun SettingsGroup(title: String,optionList: List<SettingOptionData>, onClickEven
 }
 
 @Composable
-fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDialogState)-> Unit){
+fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDialogState)-> Unit, onSaveNotificationOption: (Boolean, Boolean)-> Unit, onSaveSearchRange: (Float, Float)-> Unit){
     // TODO: 저장된 설정 옵션 값으로 변경하기
     var (isCheckedCloserNoti,onCloserSwitchChanged) = remember { mutableStateOf(true) }
     var (isCheckedDailyNoti, onDailySwitchChanged) = remember { mutableStateOf(false) }
@@ -83,7 +83,7 @@ fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDial
             CommonSettingsDialog(
                 stringResource(R.string.notification_setting_title),
                 { onChangedDialogType(SettingDialogState.NONE) },
-                { /*TODO: 저장시 동작*/ }) {
+                { onSaveNotificationOption(isCheckedCloserNoti, isCheckedDailyNoti) }) {
                 Column {
                     CommonSwitchOptionRow(isCheckedCloserNoti, onCloserSwitchChanged) {
                         Text(
@@ -115,14 +115,14 @@ fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDial
             CommonSettingsDialog(
                 stringResource(R.string.setting_title_search_range),
                 { onChangedDialogType(SettingDialogState.NONE) },
-                { /*TODO: 저장시 동작*/ }) {
+                { onSaveSearchRange(closerMemoRange, closerNotiRange) }) {
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     CommonSliderOptionRow(closerMemoRange,
                         { newValue -> closerMemoRange = newValue }) {
                         Text(text = stringResource(R.string.search_range_setting_memo_title))
-                        Text(text = "${(closerMemoRange * 1000).toInt()}m")
+                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoRange * 1000).toInt()))
                     }
 
                     CommonDividingLine(modifier = Modifier.fillMaxWidth())
@@ -130,7 +130,7 @@ fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDial
                     CommonSliderOptionRow(closerNotiRange,
                         { newValue -> closerNotiRange = newValue }) {
                         Text(text = stringResource(R.string.search_range_setting_notification_title))
-                        Text(text = "${(closerNotiRange * 1000).toInt()}m")
+                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoRange * 1000).toInt()))
                     }
                 }
             }

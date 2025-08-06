@@ -10,7 +10,8 @@ sealed interface StatisticsData {
     data class WeeklyStatData(
         val mostCompletedDayOfWeek: String,
         val mostCompletedCount: Int,
-        val incompletedCount: Int
+        val incompletedCount: Int,
+        val completedCount: Int
     ) : StatisticsData
 
     data class MonthlyStatData (

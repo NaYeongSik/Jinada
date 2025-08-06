@@ -50,6 +50,12 @@ fun MyMemoScreen(memoViewModel: MemoViewModel, onMemoUpdateClick: (TodoItemData)
         memoViewModel.getMemoListBySelectedDate(memoUiState.selectedDate)
     }
 
+    LaunchedEffect(memoUiState.lastSuccessfulAction) {
+        if (memoUiState.lastSuccessfulAction == MemoViewModel.SUCCESSFUL_UPDATE_MEMO || memoUiState.lastSuccessfulAction == MemoViewModel.SUCCESSFUL_DELETE_MEMO) {
+            memoViewModel.getMemoListBySelectedDate(memoUiState.selectedDate)
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ){

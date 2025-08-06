@@ -24,6 +24,8 @@
     <string name="search_range_setting_memo_title">근처 메모 검색 범위</string>
     <string name="search_range_setting_notification_title">근처 메모 알림 범위</string>
     <string name="common_distance_meters">%1$d m</string>
+    <string name="button_delete">삭제</string>
+    <string name="button_edit">수정</string>
 
     <string name="tab_totally">전체</string>
     <string name="tab_monthly">월간</string>
@@ -65,6 +67,7 @@
 
     <string name="geo_fensing_notification_title">근처 메모 알림</string>
 
-    <string name="address_distance_info">%1$s / %2$.2fm</string>
+    <string name="address_distance_info">%1$s / %2$.1fm</string>
+    <string name="address_no_distance_info">%1$s</string>
 
 </resources>

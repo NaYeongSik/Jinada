@@ -1,5 +1,6 @@
 package com.youngsik.jinada.presentation.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,8 +83,8 @@ fun MemoWriteScreen(memoViewModel: MemoViewModel, todoItem: TodoItemData, onBack
                 if (todoItem.memoId.isBlank()) stringResource(R.string.write_memo_title) else stringResource(R.string.write_memo_title_update),
                 onCloseClick = { onBackEvent() },
                 onSaveClick = {
-                    if (todoItem.memoId.isBlank()) memoViewModel.createMemo(TodoItemData(content= memoText, locationName = todoItem.locationName, latitude = todoItem.latitude, longitude = todoItem.longitude, deadlineDate = selectedDate))
-                    else memoViewModel.updateMemo(TodoItemData(memoId= todoItem.memoId, content= memoText, deadlineDate = selectedDate))
+                    if (todoItem.memoId.isBlank()) memoViewModel.createMemo(todoItem.copy(content= memoText, deadlineDate = selectedDate))
+                    else memoViewModel.updateMemo(todoItem.copy(content= memoText, deadlineDate = selectedDate))
                 }
             )
 
@@ -95,7 +96,7 @@ fun MemoWriteScreen(memoViewModel: MemoViewModel, todoItem: TodoItemData, onBack
                     Column {
                         ListItemRow(
                             icon = Icons.Default.LocationOn,
-                            onClick = { /* TODO: 위치 선택 */ }
+                            onClick = { /* 위치 선택 */ }
                         ) {
                             Text(text = stringResource(R.string.selected_location), style = MaterialTheme.typography.bodySmall)
                             Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xxxSmall))

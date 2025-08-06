@@ -3,30 +3,28 @@ package com.youngsik.jinada.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.ActivityTransitionResult
 import com.google.android.gms.location.DetectedActivity
+import com.youngsik.jinada.manager.ActivityRecognitionManagerImpl.Companion.ACTION_ACTIVITY_TRANSITION_UPDATE
 import com.youngsik.jinada.service.ActivityRecognitionService
 
 class ActivityRecognitionReceiver : BroadcastReceiver() {
     private lateinit var targetIntent : Intent
     override fun onReceive(context: Context, intent: Intent?) {
-        if (intent?.action == "ACTION_ACTIVITY_TRANSITION_UPDATE") {
+        if (intent?.action == ACTION_ACTIVITY_TRANSITION_UPDATE) {
             if (ActivityTransitionResult.hasResult(intent)) {
                 if (!::targetIntent.isInitialized) {
                     targetIntent = Intent(context, ActivityRecognitionService::class.java)
                 }
                 val result = ActivityTransitionResult.extractResult(intent)
-                result?.transitionEvents?.forEach { event -> // TODO: forEach 제거
+                val movingEvent = result?.transitionEvents?.firstOrNull { event ->
+                    isMovingEvent(event.activityType) && event.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
+                }
 
-                    if (isMovingEvent(event.activityType) && event.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
-                    ) {
-                        Log.d("jinada_test", "ActivityRecognitionReceiver ${event.activityType}")
-                        targetIntent.action = ActivityRecognitionService.Companion.ACTION_UPDATE_GEOFENCING
-                        context.startForegroundService(targetIntent)
-                    }
+                if (movingEvent != null) {
+                    targetIntent.action = ActivityRecognitionService.ACTION_UPDATE_GEOFENCING
+                    context.startForegroundService(targetIntent)
                 }
             }
         }

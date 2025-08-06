@@ -49,10 +49,8 @@ class ActivityRecognitionService : Service(){
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("jinada_test", "ActivityRecognitionService onStartCommand")
         when (intent?.action) {
             ACTION_UPDATE_GEOFENCING -> {
-                Log.d("jinada_test", "ActivityRecognitionService ACTION_UPDATE_GEOFENCING")
                 startForegroundNotify()
                 serviceScope.launch {
                     val location = (locationRepository as CurrentLocationRepositoryImpl).getCurrentLocation()

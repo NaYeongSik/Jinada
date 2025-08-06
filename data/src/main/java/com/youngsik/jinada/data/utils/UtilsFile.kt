@@ -34,10 +34,11 @@ fun getWeeklyStatData(memoList: List<TodoItemData>): StatisticsData.WeeklyStatDa
 
     val dayOfWeek = filteredData.maxByOrNull { it.value }?.key?.getDisplayName(TextStyle.FULL,
         Locale.KOREAN) ?: ""
-    val completeCount = filteredData.maxByOrNull { it.value }?.value ?: 0
+    val mostCompletedCount = filteredData.maxByOrNull { it.value }?.value ?: 0
     val incompletedCount = memoList.filter { !it.isCompleted }.size
+    val completedCount = memoList.filter { it.isCompleted }.size
 
-    return StatisticsData.WeeklyStatData(dayOfWeek,completeCount,incompletedCount)
+    return StatisticsData.WeeklyStatData(dayOfWeek,mostCompletedCount,incompletedCount,completedCount)
 }
 
 fun getTotalyStatData(memoList: List<TodoItemData>): StatisticsData.TotallyStatData{

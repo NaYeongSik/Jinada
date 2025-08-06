@@ -134,10 +134,18 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xSmall))
-                Text(
-                    text = stringResource(R.string.address_distance_info,item.locationName,item.distance),
-                    style = MaterialTheme.typography.labelMedium
-                )
+                if (item.distance != 0.0){
+                    Text(
+                        text = stringResource(R.string.address_distance_info,item.locationName,item.distance),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+                else{
+                    Text(
+                        text = stringResource(R.string.address_no_distance_info,item.locationName),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
             }
 
             Box{
@@ -150,7 +158,7 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
                 }
                 DropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
                     DropdownMenuItem(
-                        text = { Text("수정") },
+                        text = { Text(stringResource(R.string.button_edit)) },
                         onClick = {
                             isExpanded = false
                             onEditClick()
@@ -158,7 +166,7 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
                         leadingIcon = { Icon(Icons.Default.Edit, "수정") }
                     )
                     DropdownMenuItem(
-                        text = { Text("삭제") },
+                        text = { Text(stringResource(R.string.button_delete)) },
                         onClick = {
                             isExpanded = false
                             onDeleteClick()
@@ -256,8 +264,8 @@ fun CommonSettingsDialog(title: String, onDismiss: () -> Unit, onSave: () -> Uni
                     OutlinedButton(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f)
-                    ) { Text("취소") }
-                    Button(onClick = onSave, modifier = Modifier.weight(1f)) { Text("저장") }
+                    ) { Text(stringResource(R.string.button_cancle)) }
+                    Button(onClick = onSave, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.button_save)) }
                 }
             }
         }

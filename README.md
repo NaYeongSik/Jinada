@@ -1,7 +1,7 @@
 # 🗺️ 지나다 (Jinada)
 **"이제 할 일을 잊고 지나치지 마세요! 당신이 지나가는 길, 할 일을 알려드려요."**
 
-**지나다**는 위치기반으로 메모를 등록하고, 근접한 위치를 지나갈 때 해당 메모에 대한 알림을 주는 Android 앱입니다.
+**지나다**는 위치기반으로 메모를 등록하고, 근접한 위치(500m)를 지나갈 때 해당 메모에 대한 자동으로 알림을 주는 Android 앱입니다.
 
 <img width="495" height="482" alt="image" src="https://github.com/user-attachments/assets/8ff0c068-d221-488c-bc29-753529f2b9f2" />
 
@@ -10,7 +10,7 @@
 
 ## 📝 프로젝트 개요
 - **앱 이름**: 지나다 (Jinada)
-- **개발 기간**: 25.06 ~ 진행중
+- **개발 기간**: 25.06 ~ 마켓 등록 준비중
 - **플랫폼**: Android
 - **개발 언어**: Kotlin
 - **개발 환경**: Android Studio
@@ -30,11 +30,12 @@
 |---------------|-----------|
 | 개발 언어     | Kotlin |
 | 아키텍처     | MVVM |
-| UI            | Jetpack Compose |
+| UI            | Jetpack Compose Material3 UI/UX|
 | Networking  | Retrofit2, Moshi, Firebase Firestore |
 | Local Storage  | DataStore |
 | Location  | Fused Location Provider API, Geofencing API, ActivityRecognition API |
 | Map     | Naver Map |
+|  Core Component | Service & Broadcast Receiver 를 이용한 근접 접근 자동 알림 구현|
 | Tools         | Github, Figma |
 
 ---
@@ -42,7 +43,7 @@
 ## ✨ 주요 기능
 
 ### 1️⃣ 위치 기반 메모 등록 및 관리
-- 지도에서 특정 위치를 선택하고 해당 위치에서 수행할 할 일을 등록
+- 지도에서 메모 할 위치를 선택하고 해당 위치에서 수행할 할 일을 등록
 - 인접한 위치의 메모를 지도에 마커로 표시
 - 등록된 메모를 날짜별로 확인하여 관리 가능
 - 완료/미완료 상태 관리 및 수정 가능

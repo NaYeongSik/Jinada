@@ -6,6 +6,7 @@ import com.youngsik.domain.model.DataResourceResult
 import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.data.utils.getCompleteRateData
+import com.youngsik.jinada.data.utils.getMonthlyStatData
 import com.youngsik.jinada.data.utils.getTotalyStatData
 import com.youngsik.jinada.data.utils.getWeeklyStatData
 import com.youngsik.jinada.presentation.common.StatTabMenu
@@ -98,7 +99,7 @@ class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
                     is DataResourceResult.Success -> {
                         when(selectedTabMenu){
                             StatTabMenu.WEEKLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = getCompleteRateData(result.data), statData = getWeeklyStatData(result.data)) }
-                            StatTabMenu.MONTHLY.name -> {}
+                            StatTabMenu.MONTHLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = getCompleteRateData(result.data), statData = getMonthlyStatData(result.data)) }
                             StatTabMenu.TOTALLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = getCompleteRateData(result.data), statData = getTotalyStatData(result.data)) }
                         }
                     }

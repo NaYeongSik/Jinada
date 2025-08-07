@@ -15,6 +15,9 @@ sealed interface StatisticsData {
     ) : StatisticsData
 
     data class MonthlyStatData (
-        val growthRate : Float,
+        val mostActiveWeekLabel: String,
+        val longestCompletionStreak: Int,
+        val earlyCompletionCount: Int,
+        val onTimeCompletionCount: Int
         ) : StatisticsData
 }

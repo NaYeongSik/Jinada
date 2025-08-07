@@ -10,19 +10,19 @@
     <string name="memo_progress_rate">메모 진행율</string>
 
     <string name="profile_image_content_description">프로필 이미지</string>
-    <string name="profile_name_format">%1$s#%2$s</string>
+    <string name="profile_name_format">%1$s 님</string>
     <string name="profile_setting_title">내 정보</string>
     <string name="notification_setting_title">알림 설정</string>
     <string name="help_title">도움말</string>
 
     <string name="nearby_memos_notification">인접 위치 알림</string>
     <string name="setting_title_search_range">메모 검색 범위 설정</string>
-    <string name="notification_setting_closer_title">인접 위치 알림</string>
-    <string name="notification_setting_closer_description">메모 위치 인접 시 알림</string>
+    <string name="notification_setting_closer_title">가까운 메모 알림</string>
+    <string name="notification_setting_closer_description">메모 위치 근접 시 알림</string>
     <string name="notification_setting_daily_title">일일 메모 알림</string>
     <string name="notification_setting_daily_description">진행할 일일 메모 알림</string>
-    <string name="search_range_setting_memo_title">근처 메모 검색 범위</string>
-    <string name="search_range_setting_notification_title">근처 메모 알림 범위</string>
+    <string name="search_range_setting_memo_title">가까운 메모 검색 범위</string>
+    <string name="search_range_setting_notification_title">근처 메모 알림 판단 범위</string>
     <string name="common_distance_meters">%1$d m</string>
     <string name="button_delete">삭제</string>
     <string name="button_edit">수정</string>
@@ -36,17 +36,25 @@
     <string name="incomplete_memos_title">미완료 메모</string>
     <string name="common_show_all">전체 보기</string>
     <string name="common_close">닫기</string>
+
     <string name="analysis_title_weekly">"\uD83D\uDDD3\uFE0F 주간 활동 분석"</string>
     <string name="analysis_title_monthly">"\uD83D\uDDD3\uFE0F 월간 활동 분석"</string>
     <string name="analysis_title_total">"\uD83D\uDDD3\uFE0F 전체 활동 분석"</string>
+
     <string name="analysis_weekly_most_completed_day">" \uD83D\uDD25 이번 주에는 %1$s에 가장 많은 메모(%2$d회)를 완료했어요!"</string>
     <string name="analysis_weekly_no_completed_memos">이번 주에는 아직 완료한 메모가 없어요.</string>
     <string name="analysis_weekly_upcoming_memos">"\uD83D\uDC40 이번 주에 마감일이 다가오는 메모가 %1$d개 있어요."</string>
     <string name="analysis_weekly_all_memos_completed">이번 주는 모든 메모를 완료했어요.✨</string>
     <string name="analysis_weekly_not_have_memos">이번 주는 아직 메모가 없어요. 새로운 메모를 생성하고 시작해보세요.🌱</string>
 
+    <string name="analysis_monthly_continuous_completion">최고 %1$d일 연속으로 메모를 완료했어요! 🔥</string>
+    <string name="analysis_monthly_most_completed_week">이번 달은 %1$s에 가장 활발했네요! 💪</string>
+    <string name="analysis_monthly_no_completed_memos">이번 달에는 아직 완료한 메모가 없어요. 메모를 시작해보세요.🌱</string>
+    <string name="analysis_monthly_complete_on_time">이번 달에는 마감일 당일에 완료한 메모가 %1$d개 있었어요. ⚡️</string>
+    <string name="analysis_monthly_complete_in_advance">이번 달에는 미리미리 메모를 완료했어요! ✨</string>
+
     <string name="analysis_total_completed_memos">"\uD83C\uDFC6 지금까지 총 %1$d개의 메모를 완료했어요!"</string>
-    <string name="analysis_common_no_completed_memos">아직 완료한 메모가 없어요.</string>
+    <string name="analysis_common_no_completed_memos">아직 완료한 메모가 없어요. 메모를 시작해보세요.🌱</string>
     <string name="analysis_total_best_month">"\uD83D\uDC51 지금까지 가장 생산적이었던 달은 %1$s입니다! (%2$d개 완료)"</string>
 
     <string name="tab_keyboard">키보드</string>

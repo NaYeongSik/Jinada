@@ -198,6 +198,12 @@ fun MonthlySummary(montlyStat: StatisticsData.MonthlyStatData){
         verticalArrangement = Arrangement.spacedBy(JinadaDimens.Spacer.xSmall)
     ){
         Text(text = stringResource(R.string.analysis_title_monthly), style = MaterialTheme.typography.bodyLarge)
+        if (montlyStat.mostActiveWeekLabel.isNotBlank()) Text(text = stringResource(R.string.analysis_monthly_most_completed_week,montlyStat.mostActiveWeekLabel),style = MaterialTheme.typography.bodyMedium)
+        if (montlyStat.earlyCompletionCount > montlyStat.onTimeCompletionCount) Text(text = stringResource(R.string.analysis_monthly_complete_in_advance),style = MaterialTheme.typography.bodyMedium)
+        else Text(text = stringResource(R.string.analysis_monthly_complete_on_time,montlyStat.onTimeCompletionCount),style = MaterialTheme.typography.bodyMedium)
+        if (montlyStat.longestCompletionStreak != 0) Text(text = stringResource(R.string.analysis_monthly_continuous_completion,montlyStat.longestCompletionStreak),style = MaterialTheme.typography.bodyMedium)
+        if (montlyStat.earlyCompletionCount == 0 && montlyStat.onTimeCompletionCount == 0) Text(text = stringResource(R.string.analysis_monthly_no_completed_memos),style = MaterialTheme.typography.bodyMedium)
+
     }
 }
 

@@ -6,7 +6,6 @@ import com.youngsik.jinada.data.dataclass.TodoItemDto
 import com.youngsik.jinada.data.utils.changeToLocalDate
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.data.utils.toLocalDate
-import com.youngsik.jinada.data.utils.toStringDistance
 import com.youngsik.jinada.data.utils.toTimestamp
 
 fun TodoItemDto.toDomainModel(memoId: String, distance: Double = 0.0): TodoItemData {

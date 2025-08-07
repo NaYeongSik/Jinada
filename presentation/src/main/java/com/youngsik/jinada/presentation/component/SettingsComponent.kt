@@ -20,6 +20,7 @@ import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.common.SettingOptionData
 import com.youngsik.jinada.presentation.common.SettingsData
 import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.presentation.uistate.SettingsUiState
 
 
 @Composable
@@ -71,19 +72,20 @@ fun SettingsGroup(title: String,optionList: List<SettingOptionData>, onClickEven
 }
 
 @Composable
-fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDialogState)-> Unit, onSaveNotificationOption: (Boolean, Boolean)-> Unit, onSaveSearchRange: (Float, Float)-> Unit){
-    // TODO: 저장된 설정 옵션 값으로 변경하기
-    var (isCheckedCloserNoti,onCloserSwitchChanged) = remember { mutableStateOf(true) }
-    var (isCheckedDailyNoti, onDailySwitchChanged) = remember { mutableStateOf(false) }
-    var closerMemoRange by remember { mutableFloatStateOf(0.3f) }
-    var closerNotiRange by remember { mutableFloatStateOf(0.3f) }
+fun DialogView(dialogRoute: SettingDialogState, settingsUiState: SettingsUiState,onChangedDialogType:(SettingDialogState)-> Unit, onSaveNotificationOption: (Boolean, Boolean)-> Unit, onSaveSearchRange: (Float, Float)-> Unit){
+    var (isCheckedCloserNoti,onCloserSwitchChanged) = remember { mutableStateOf(settingsUiState.closerNotiEnabled) }
+    var (isCheckedDailyNoti, onDailySwitchChanged) = remember { mutableStateOf(settingsUiState.dailyNotiEnabled) }
+    var closerMemoSearchingRange by remember { mutableFloatStateOf(settingsUiState.closerMemoSearchingRange) }
+    var closerMemoNotiRange by remember { mutableFloatStateOf(settingsUiState.closerMemoNotiRange) }
 
     when(dialogRoute){
         SettingDialogState.NOTIFICATION_RANGE -> {
             CommonSettingsDialog(
                 stringResource(R.string.notification_setting_title),
                 { onChangedDialogType(SettingDialogState.NONE) },
-                { onSaveNotificationOption(isCheckedCloserNoti, isCheckedDailyNoti) }) {
+                { onSaveNotificationOption(isCheckedCloserNoti, isCheckedDailyNoti)
+                    onChangedDialogType(SettingDialogState.NONE)})
+            {
                 Column {
                     CommonSwitchOptionRow(isCheckedCloserNoti, onCloserSwitchChanged) {
                         Text(
@@ -115,22 +117,24 @@ fun DialogView(dialogRoute: SettingDialogState, onChangedDialogType:(SettingDial
             CommonSettingsDialog(
                 stringResource(R.string.setting_title_search_range),
                 { onChangedDialogType(SettingDialogState.NONE) },
-                { onSaveSearchRange(closerMemoRange, closerNotiRange) }) {
+                { onSaveSearchRange(closerMemoSearchingRange, closerMemoNotiRange)
+                    onChangedDialogType(SettingDialogState.NONE)})
+            {
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    CommonSliderOptionRow(closerMemoRange,
-                        { newValue -> closerMemoRange = newValue }) {
+                    CommonSliderOptionRow(closerMemoSearchingRange,
+                        { newValue -> closerMemoSearchingRange = newValue }) {
                         Text(text = stringResource(R.string.search_range_setting_memo_title))
-                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoRange * 1000).toInt()))
+                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoSearchingRange * 1000).toInt()))
                     }
 
                     CommonDividingLine(modifier = Modifier.fillMaxWidth())
 
-                    CommonSliderOptionRow(closerNotiRange,
-                        { newValue -> closerNotiRange = newValue }) {
+                    CommonSliderOptionRow(closerMemoNotiRange,
+                        { newValue -> closerMemoNotiRange = newValue }) {
                         Text(text = stringResource(R.string.search_range_setting_notification_title))
-                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoRange * 1000).toInt()))
+                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoNotiRange * 1000).toInt()))
                     }
                 }
             }

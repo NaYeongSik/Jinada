@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">지나다</string>
 
-    <string name="nearby_memos_title">근처 메모</string>
+    <string name="nearby_memos_title">📝 근처 메모</string>
     <string name="search_map_placeholder">위치 검색</string>
     <string name="search_icon">검색</string>
     <string name="current_location_icon">현재 위치</string>

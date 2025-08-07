@@ -2,6 +2,7 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import android.app.Application
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
@@ -55,6 +56,17 @@ class MemoMapViewModel(application: Application, private val repository: MemoRep
                 BuildConfig.NAVER_MAP_CLIENT_SECRET,
                 "${todoItemData.longitude}, ${todoItemData.latitude}")
             _mapUiState.update { it.copy(targetLocationInfo = todoItemData.copy(locationName = locationName?:"")) }
+        }
+    }
+
+    fun getSearchPoi(query: String) {
+        viewModelScope.launch {
+            val poiList = naverRepository.getPoiFromInputString(
+                BuildConfig.X_NAVER_CLIENT_ID,
+                BuildConfig.X_NAVER_CLIENT_SECRET,
+                query
+            )
+            _mapUiState.update { it.copy(searchPoiList = poiList) }
         }
     }
 

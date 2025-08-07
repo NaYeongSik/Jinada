@@ -59,6 +59,10 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
         }
     }
 
+    LaunchedEffect(mapUiState.searchPoiList) {
+        mapController.showSearchItemMarkers(mapUiState.searchPoiList,onCreateMemoClick)
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             locationServiceManager.stopLocationTracking()
@@ -79,11 +83,7 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
                         style = MaterialTheme.typography.titleMedium
                     )
                     CommonLazyColumnCard(modifier = Modifier.weight(1f).fillMaxWidth(0.9f), memoList = mapUiState.nearByMemoList, onCheckChange = {
-                            item, isChecked ->
-                        val index = mapUiState.nearByMemoList.indexOf(item)
-                        if (index != -1) {
-                            memoMapViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))
-                        }
+                            item, isChecked -> memoMapViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))
                     }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoMapViewModel.deleteMemo(item.memoId) }
                     , { todoItemData -> mapController.moveToTargetLocation(LatLng(todoItemData.latitude,todoItemData.longitude))})
                 }
@@ -99,7 +99,7 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
             MapSearchBar(Modifier.align(Alignment.TopCenter)
                 .padding(JinadaDimens.Padding.medium)
                 .fillMaxWidth(0.9f)
-                ,inputText,{ it -> inputText = it})
+                ,inputText,{ it -> inputText = it}, { memoMapViewModel.getSearchPoi(inputText) })
 
             MyLocationButton(Modifier
                 .align(Alignment.BottomEnd)

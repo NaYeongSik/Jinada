@@ -21,11 +21,10 @@ import com.youngsik.jinada.presentation.uistate.MapUiState
 
 @Composable
 fun NaverMapView(mapController: MapController, mapUiState: MapUiState, onMapLongClick: (TodoItemData)-> Unit){
-    val context = LocalContext.current
     var mapView: MapView? by remember { mutableStateOf(null) }
     var selectedMarkerId by remember { mutableStateOf("") }
 
-    if (mapView != null) MapLifecycleEffect(context,mapView, mapUiState.myLocation,mapUiState.nearByMemoList,mapController,onMapLongClick,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
+    if (mapView != null) MapLifecycleEffect(mapView, mapUiState.myLocation,mapUiState.nearByMemoList,mapController,onMapLongClick,{ newSelectedMarkerId -> selectedMarkerId = newSelectedMarkerId })
 
     AndroidViewBinding(
         modifier = Modifier,
@@ -47,7 +46,7 @@ fun NaverMapView(mapController: MapController, mapUiState: MapUiState, onMapLong
 }
 
 @Composable
-fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng?, memoList: List<TodoItemData>, mapController: MapController, onMapLongClick: (TodoItemData)-> Unit, onMarkerClick: (String) -> Unit) {
+fun MapLifecycleEffect(mapView: MapView?, myPosition: LatLng?, memoList: List<TodoItemData>, mapController: MapController, onMapLongClick: (TodoItemData)-> Unit, onMarkerClick: (String) -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = object : DefaultLifecycleObserver {
@@ -56,7 +55,7 @@ fun MapLifecycleEffect(context: Context, mapView: MapView?, myPosition: LatLng?,
                 mapView?.let { mapView ->
                     mapView.onCreate(null)
                     mapView.getMapAsync { naverMap ->
-                        mapController.initMapController(naverMap,context)
+                        mapController.initMapController(naverMap)
                         mapController.updateMyLocationOverlay(myPosition)
                         mapController.setMapLongClickListener(onMapLongClick)
                         mapController.updateMemoMarkers(memoList, onMarkerClick)

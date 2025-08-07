@@ -145,3 +145,5 @@ fun LatLng.toLocation(): Location{
     return location
 }
 
+fun String.removeHtmlTags(): String = replace(Regex("<.*?>"), "")
+

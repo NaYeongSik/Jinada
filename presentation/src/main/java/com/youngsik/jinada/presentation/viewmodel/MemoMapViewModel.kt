@@ -2,15 +2,14 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import android.app.Application
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.youngsik.domain.model.DataResourceResult
 import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
-import com.youngsik.jinada.data.impl.NaverRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
+import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.data.repository.NaverRepository
 import com.youngsik.jinada.data.utils.toLocation
@@ -56,7 +55,6 @@ class MemoMapViewModel(application: Application, private val repository: MemoRep
                 BuildConfig.NAVER_MAP_CLIENT_SECRET,
                 "${todoItemData.longitude}, ${todoItemData.latitude}")
             _mapUiState.update { it.copy(targetLocationInfo = todoItemData.copy(locationName = locationName?:"")) }
-            Log.d("jinada_test", "getTargetLocationInfo: $locationName")
         }
     }
 
@@ -68,7 +66,6 @@ class MemoMapViewModel(application: Application, private val repository: MemoRep
                     is DataResourceResult.Success -> {
                         val nearByMemoList = result.data.filter { todoItemData -> !todoItemData.isCompleted }
                         _mapUiState.update { it.copy(isLoading = false, isSuccessful = true, nearByMemoList = nearByMemoList) }
-                        Log.d("jinada_test", "getMemosNearby: ${nearByMemoList.size}")
                     }
                     is DataResourceResult.Failure -> _mapUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }

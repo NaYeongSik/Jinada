@@ -15,10 +15,14 @@ import com.youngsik.jinada.receiver.ActivityRecognitionReceiver
 
 class ActivityRecognitionManagerImpl(private val context: Context) : ActivityRecognitionManager{
 
+    companion object{
+        const val ACTION_ACTIVITY_TRANSITION_UPDATE = "ACTION_ACTIVITY_TRANSITION_UPDATE"
+    }
+
     @RequiresPermission(anyOf = [Manifest.permission.ACTIVITY_RECOGNITION, "com.google.android.gms.permission.ACTIVITY_RECOGNITION"])
     override fun startActivityRecognition() {
         val intent = Intent(context, ActivityRecognitionReceiver::class.java).apply {
-            action = "ACTION_ACTIVITY_TRANSITION_UPDATE"
+            action = ACTION_ACTIVITY_TRANSITION_UPDATE
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,

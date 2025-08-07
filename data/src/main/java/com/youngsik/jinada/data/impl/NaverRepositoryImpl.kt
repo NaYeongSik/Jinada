@@ -13,11 +13,9 @@ class NaverRepositoryImpl(): NaverRepository {
         coords: String
     ): String? {
         val response = apiClient.getAddressFromCoordinates(clientId, clientSecret, coords)
-        Log.d("jinada_test", "getAddressFromCoordinates Status Code: ${response.status.code}")
         if (response.status.code != 0 || response.results.isEmpty()) {
             return null
         }
-        Log.d("jinada_test", "getAddressFromCoordinates Response: ${response.results.size}")
         val roadAddressResult = response.results.firstOrNull { it.name == "roadaddr" }
 
         var finalAddress: String? = null

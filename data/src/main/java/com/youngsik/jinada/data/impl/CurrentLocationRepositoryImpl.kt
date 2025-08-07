@@ -41,7 +41,6 @@ class CurrentLocationRepositoryImpl(context: Context) : CurrentLocationRepositor
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
                     trySend(location).isSuccess
-                    Log.d("jinada_test", "CurrentLocationRepositoryImpl getCurrentLocationUpdates: $location")
                 }
             }
         }

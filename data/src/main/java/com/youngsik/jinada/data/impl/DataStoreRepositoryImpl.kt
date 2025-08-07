@@ -7,23 +7,33 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class DataStoreRepositoryImpl(val dataStoreDataSource: DataStoreDataSource): DataStoreRepository {
-    override suspend fun setNickname(nickname: String): Flow<DataResourceResult<Unit>> = flow{
+    override suspend fun setUserInfo(nickname: String, uuid: String): Flow<DataResourceResult<Unit>> = flow{
         emit(DataResourceResult.Loading)
-        emit(dataStoreDataSource.setNickname(nickname))
+        emit(dataStoreDataSource.setUserInfo(nickname,uuid))
     }
 
-    override suspend fun setNotificationEnabled(enabled: Boolean): Flow<DataResourceResult<Unit>> = flow{
+    override suspend fun setNotificationEnabled(isCheckedCloserNoti: Boolean,isCheckedDailyNoti: Boolean): Flow<DataResourceResult<Unit>> = flow{
         emit(DataResourceResult.Loading)
-        emit(dataStoreDataSource.setNotificationEnabled(enabled))
+        emit(dataStoreDataSource.setNotificationEnabled(isCheckedCloserNoti,isCheckedDailyNoti))
     }
 
-    override suspend fun getNickname(): Flow<DataResourceResult<String>> = flow{
+    override suspend fun setRangeOption(closerMemoSearchingRange: Float, closerMemoNotiRange: Float): Flow<DataResourceResult<Unit>> = flow{
         emit(DataResourceResult.Loading)
-        emit(dataStoreDataSource.getNickname())
+        emit(dataStoreDataSource.setRangeOption(closerMemoSearchingRange,closerMemoNotiRange))
     }
 
-    override suspend fun getNotificationEnabled(): Flow<DataResourceResult<Boolean>> = flow{
+    override suspend fun getUserInfo(): Flow<DataResourceResult<Map<String,String>>> = flow{
+        emit(DataResourceResult.Loading)
+        emit(dataStoreDataSource.getUserInfo())
+    }
+
+    override suspend fun getNotificationEnabled(): Flow<DataResourceResult<Map<String,Boolean>>> = flow{
         emit(DataResourceResult.Loading)
         emit(dataStoreDataSource.getNotificationEnabled())
+    }
+
+    override suspend fun getRangeOption(): Flow<DataResourceResult<Map<String, Float>>> = flow{
+        emit(DataResourceResult.Loading)
+        emit(dataStoreDataSource.getRangeOption())
     }
 }

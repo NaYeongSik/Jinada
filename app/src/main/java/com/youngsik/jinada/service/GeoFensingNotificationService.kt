@@ -39,14 +39,12 @@ class GeoFensingNotificationService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("jinada_test","GeoFensingNotificationService onStartCommand")
         startForegroundNotify()
 
         val memoIdList = intent?.getStringArrayListExtra("memoIds")
         serviceScope.launch {
             memoIdList?.let {
                 it.forEach { memoId ->
-                    Log.d("jinada_test", "GeoFensingNotificationService memoIdList: $memoId")
                     memoRepository.getMemoById(memoId).collect { result ->
                         when (result) {
                             is DataResourceResult.Success -> {
@@ -93,7 +91,6 @@ class GeoFensingNotificationService: Service() {
     }
 
     fun showGeoFencingNotification(context: Context, todoItemData: TodoItemData){
-        // 알림을 클릭했을 때 실행할 Intent (예: 앱의 MainActivity 열기)
         val notifyIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }

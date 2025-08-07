@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -47,11 +48,14 @@ import com.youngsik.domain.manager.ActivityRecognitionManager
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.theme.JinadaDimens
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
+import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_SET_USER_INFO
+import java.util.UUID
 
 
 @Composable
 fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionManager: ActivityRecognitionManager, onSuccessOnboarding: () -> Unit){
     val context = LocalContext.current
+    val settingsUiState by settingsViewModel.settingsUiState.collectAsStateWithLifecycle()
     var isDonePermmisionRequest by remember { mutableStateOf(false) }
     var showBackgroundPermissionRationale by remember { mutableStateOf(false) }
 
@@ -165,9 +169,15 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionMa
 
 
     if (isDonePermmisionRequest) NicknameInputDialog{ nickname ->
-        // TODO: UUID 생성해서 닉네임에 붙이기
-        settingsViewModel.saveNickName(nickname)
-        onSuccessOnboarding()
+        val uuid = UUID.randomUUID().toString()
+        settingsViewModel.setUserInfo(nickname,uuid)
+    }
+
+    LaunchedEffect(settingsUiState.lastSuccessfulAction) {
+        if (settingsUiState.lastSuccessfulAction == SUCCESSFUL_SET_USER_INFO){
+            settingsViewModel.resetLastSuccessfulAction()
+            onSuccessOnboarding()
+        }
     }
 
     if (showBackgroundPermissionRationale) {
@@ -210,33 +220,24 @@ fun checkPhoneGpsSettings(
     onGpsEnabled: () -> Unit,
     onGpsSettingResolve: (IntentSenderRequest) -> Unit
 ) {
-    //위치 요청 설정 (정확도, 간격 등)
     val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,
         1000).build()
 
-    //현재 단말기의 GPS 설정이 위치 요청을 만족하는지 확인하기 위한 빌더
     val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
     val client: SettingsClient = LocationServices.getSettingsClient(context)
 
-    //설정 확인 요청 실행
     val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
 
-    //성공 리스너 (GPS가 켜져 있음)
     task.addOnSuccessListener {
-        // GPS가 켜져 있으므로 성공 콜백 호출
         onGpsEnabled()
     }
 
-    //실패 리스너 (GPS가 꺼져 있음)
     task.addOnFailureListener { exception ->
         if (exception is ResolvableApiException) {
-            // 사용자가 직접 GPS 설정을 변경할 수 있는 경우
             try {
-                // GPS 활성화 다이얼로그를 띄우기 위한 요청 생성 후 콜백 호출
                 val intentSenderRequest = IntentSenderRequest.Builder(exception.resolution).build()
                 onGpsSettingResolve(intentSenderRequest)
             } catch (sendEx: IntentSender.SendIntentException) {
-                // 다이얼로그를 보여줄 수 없는 예외적인 경우, 시스템 설정 화면으로 직접 이동하여 사용자가 직접 on 설정유도
                 context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
         }

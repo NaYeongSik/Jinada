@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.component.DialogView
@@ -31,15 +31,16 @@ import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 
 @Composable
 fun MyPageScreen(settingsViewModel: SettingsViewModel){
+    val settingsUiState by settingsViewModel.settingsUiState.collectAsStateWithLifecycle()
     var dialogRoute by remember { mutableStateOf(SettingDialogState.NONE) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        DialogView(dialogRoute,{ newRoute -> dialogRoute = newRoute })
+        DialogView(dialogRoute,settingsUiState,{ newRoute -> dialogRoute = newRoute },{ isCheckedCloserNoti, isCheckedDailyNoti -> settingsViewModel.setNotificationEnabled(isCheckedCloserNoti,isCheckedDailyNoti) },{ closerMemoRange, closerNotiRange -> settingsViewModel.setRangeOption(closerMemoRange,closerNotiRange) })
 
-        ProfileSection()
+        ProfileSection(settingsUiState.nickname)
 
         Column(
             modifier = Modifier.fillMaxWidth().weight(1f).background(MaterialTheme.colorScheme.background),
@@ -52,7 +53,7 @@ fun MyPageScreen(settingsViewModel: SettingsViewModel){
 
 
 @Composable
-fun ProfileSection(){
+fun ProfileSection(nickname: String){
     Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight(0.3f).background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,7 +64,7 @@ fun ProfileSection(){
             contentDescription = stringResource(R.string.profile_image_content_description),
             modifier = Modifier.size(JinadaDimens.Common.xLarge)
         )
-        Text(text = stringResource(R.string.profile_name_format,"김메모","723552"), // TODO: 유저 정보 가져오기
+        Text(text = stringResource(R.string.profile_name_format,nickname),
             modifier = Modifier,
             style = MaterialTheme.typography.bodyLarge)
     }

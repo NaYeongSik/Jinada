@@ -24,7 +24,7 @@ import java.time.temporal.TemporalAdjusters
 
 class FirestoreMemoDataSourceImpl : MemoDataSource {
     private val memoCollection = Firebase.firestore.collection("memo")
-    private val userId = "EgQ5odyd7yj0yxcactCv" // TODO: sharedPreference에 저장된 uuid 가져오기
+    private val userId = "EgQ5odyd7yj0yxcactCv" // TODO: DataStore에 저장된 값 사용하기
 
     override suspend fun createMemo(todoItemData: TodoItemData): DataResourceResult<Unit> = runCatching {
         val location = GeoLocation(todoItemData.latitude, todoItemData.longitude)
@@ -106,7 +106,7 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
 
     override suspend fun getNearByMemoList(location: Location): DataResourceResult<List<TodoItemData>> = runCatching {
         val targetLocation = GeoLocation(location.latitude, location.longitude)
-        val rangeDistanceInMeters = 1500.0 // TODO: SharedPreference에 저장된 거리 가져오기
+        val rangeDistanceInMeters = 1500.0 // TODO: DataStore에 저장된 값으로 사용하기
         val queryBounds = GeoFireUtils.getGeoHashQueryBounds(targetLocation, rangeDistanceInMeters)
 
         val tasks = queryBounds

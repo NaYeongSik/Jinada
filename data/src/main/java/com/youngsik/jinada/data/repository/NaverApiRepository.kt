@@ -10,7 +10,7 @@ interface NaverApiRepository {
     suspend fun getAddressFromCoordinates(
         @Header("X-NCP-APIGW-API-KEY-ID") clientId: String,
         @Header("X-NCP-APIGW-API-KEY") clientSecret: String,
-        @Query("coords") coords: String, // "경도,위도" 형태의 문자열
+        @Query("coords") coords: String,
         @Query("orders") orders: String = "addr,roadaddr",
         @Query("output") output: String = "json"
     ): ReverseGeocodeResponseDto

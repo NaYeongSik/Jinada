@@ -1,12 +1,11 @@
 package com.youngsik.jinada.presentation.map
 
 import android.content.Context
-import android.util.Log
+import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
@@ -17,23 +16,24 @@ import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
+import com.youngsik.domain.model.PoiItem
 import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class MapController(private val context: Context){
     private var mapView: NaverMap? = null
-    private var markers: MutableList<Marker> = mutableListOf() // 근처 메모에 대한 마커 리스트
-    private var infoWindow: InfoWindow = InfoWindow() // 근처 메모에 대한 인포윈도우
+    private var memoMarkers: MutableList<Marker> = mutableListOf() // 근처 메모에 대한 마커 리스트
+    private var memoInfoWindow: InfoWindow = InfoWindow() // 근처 메모에 대한 인포윈도우
     private var locationOverlay: LocationOverlay? = null // 사용자 위치 오버레이
 
     private var tempMarker: Marker? = null // 사용자 롱클릭 이벤트 지점에 대한 마커
     private var tempInfoWindow: InfoWindow = InfoWindow() // 사용자 롱클릭 이벤트 지점에 대한 인포윈도우
 
-    internal fun initMapController(naverMap: NaverMap,context: Context){
+    private var searchMarkers: MutableList<Marker> = mutableListOf() // 검색 결과에 대한 마커 리스트
+
+    internal fun initMapController(naverMap: NaverMap){
         this.mapView = naverMap
         this.locationOverlay = mapView?.locationOverlay
     }
@@ -61,10 +61,7 @@ class MapController(private val context: Context){
     }
 
     fun updateMemoMarkers(memoList: List<TodoItemData>,onMarkerClick: (String) -> Unit){
-        markers.forEach { maker ->
-            maker.map = null
-        }
-        markers.clear()
+        clearMemoMarkers()
 
         memoList.forEach { memo ->
             if (memo.latitude != 0.0 && memo.longitude != 0.0){
@@ -80,20 +77,20 @@ class MapController(private val context: Context){
                         true
                     }
                 }
-                markers.add(newMaker)
+                memoMarkers.add(newMaker)
             }
         }
     }
 
     fun showInfoWindow(memoList: List<TodoItemData>,selectedMarkerId: String){
         if (selectedMarkerId.isBlank()) {
-            infoWindow.close()
+            memoInfoWindow.close()
         } else {
-            val selectedMarker = markers.find { it.tag == selectedMarkerId }
+            val selectedMarker = memoMarkers.find { it.tag == selectedMarkerId }
             val selectedMemo = memoList.find { it.memoId == selectedMarkerId }
 
-            if (selectedMarker != null && selectedMemo != null && context != null) {
-                infoWindow.adapter = object : InfoWindow.DefaultViewAdapter(context!!){
+            if (selectedMarker != null && selectedMemo != null) {
+                memoInfoWindow.adapter = object : InfoWindow.DefaultViewAdapter(context){
                     override fun getContentView(infoWindow: InfoWindow): View {
                         return TextView(context).apply {
                             text = selectedMemo.content
@@ -101,15 +98,16 @@ class MapController(private val context: Context){
                     }
 
                 }
-                infoWindow.open(selectedMarker)
+                memoInfoWindow.open(selectedMarker)
             } else {
-                infoWindow.close()
+                memoInfoWindow.close()
             }
         }
     }
 
     fun showTemporaryMarker(todoItemData: TodoItemData,onCreateMemo: (TodoItemData) -> Unit) {
         clearTemporaryMarker()
+        clearSearchMarkers()
 
         val targetLocation = LatLng(todoItemData.latitude, todoItemData.longitude)
 
@@ -125,7 +123,7 @@ class MapController(private val context: Context){
             }
         }
 
-        tempInfoWindow.adapter = object : InfoWindow.DefaultViewAdapter(context!!) {
+        tempInfoWindow.adapter = object : InfoWindow.DefaultViewAdapter(context) {
             override fun getContentView(infoWindow: InfoWindow): View {
                 return TextView(context).apply { text = todoItemData.locationName }
             }
@@ -134,11 +132,53 @@ class MapController(private val context: Context){
         moveToTargetLocation(targetLocation)
     }
 
+    fun showSearchItemMarkers(poiItemList: List<PoiItem>, onCreateMemo: (TodoItemData) -> Unit) {
+        clearTemporaryMarker()
+        clearSearchMarkers()
+
+        poiItemList.forEach { poiData ->
+            if (poiData.latitude != 0.0 && poiData.longitude != 0.0){
+                val newMaker = Marker().apply {
+                    icon = OverlayImage.fromResource(R.drawable.jinada_temp_marker)
+                    position = LatLng(poiData.latitude,poiData.longitude)
+                    map = mapView
+                    tag = poiData.buildingName
+                    width = 225
+                    height = 240
+                    captionText = poiData.buildingName.ifBlank { poiData.roadAddress }
+                    captionTextSize = 14f
+                    captionColor = Color.BLACK
+                    captionHaloColor = Color.WHITE
+                    setOnClickListener {
+                        onCreateMemo(TodoItemData(latitude = poiData.latitude, longitude = poiData.longitude, locationName = poiData.buildingName, deadlineDate = changeToStringDate(LocalDate.now())))
+                        true
+                    }
+                }
+                searchMarkers.add(newMaker)
+            }
+        }
+    }
+
+    fun clearMemoMarkers(){
+        memoMarkers.forEach { maker ->
+            maker.map = null
+        }
+        memoInfoWindow.close()
+        memoMarkers.clear()
+    }
+
 
     fun clearTemporaryMarker() {
         tempMarker?.map = null
         tempInfoWindow.close()
         tempMarker = null
+    }
+
+    fun clearSearchMarkers(){
+        searchMarkers.forEach { maker ->
+            maker.map = null
+        }
+        searchMarkers.clear()
     }
 
 }

@@ -83,7 +83,7 @@
 
 | 메모 진행사항 통계 |
 |--------------------|
-|![통계](https://github.com/user-attachments/assets/7599b370-869b-46e7-85f6-47b317aa5ebb)|
+|![통계](https://github.com/user-attachments/assets/d0eb5dba-d9e6-49dd-9c6f-882591673d38)|
 | 사용자의 메모 진행률, 완료율을 기반으로 통계를 보여주고<br> 전체,월간,주간 단위로 요약을 제공해 동기를 부여합니다.|
 
 ---

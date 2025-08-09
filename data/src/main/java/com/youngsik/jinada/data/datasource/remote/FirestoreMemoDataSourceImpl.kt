@@ -104,9 +104,9 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         DataResourceResult.Success(memoListResult)
     }.getOrElse { DataResourceResult.Failure(it) }
 
-    override suspend fun getNearByMemoList(location: Location): DataResourceResult<List<TodoItemData>> = runCatching {
+    override suspend fun getNearByMemoList(location: Location, range: Float): DataResourceResult<List<TodoItemData>> = runCatching {
         val targetLocation = GeoLocation(location.latitude, location.longitude)
-        val rangeDistanceInMeters = 1500.0 // TODO: DataStore에 저장된 값으로 사용하기
+        val rangeDistanceInMeters = (range * 1000).toDouble()
         val queryBounds = GeoFireUtils.getGeoHashQueryBounds(targetLocation, rangeDistanceInMeters)
 
         val tasks = queryBounds

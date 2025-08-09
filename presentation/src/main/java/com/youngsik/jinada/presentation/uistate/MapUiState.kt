@@ -12,5 +12,6 @@ data class MapUiState(
     val myLocation: LatLng? = null,
     val cameraPosition: LatLng? = null,
     val targetLocationInfo: TodoItemData? = null,
-    val searchPoiList: List<PoiItem> = emptyList()
+    val searchPoiList: List<PoiItem> = emptyList(),
+    val closerMemoSearchingRange: Float = 0.3f
 )

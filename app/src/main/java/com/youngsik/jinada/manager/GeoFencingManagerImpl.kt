@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
@@ -21,8 +20,8 @@ class GeoFencingManagerImpl(private val context: Context) : GeoFencingManager{
     }
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    override fun updateGeoPencing(memoList: List<TodoItemData>) {
-
+    override fun updateGeoPencing(memoList: List<TodoItemData>, notiRange: Float) {
+        geofencingClient.removeGeofences(geofencePendingIntent) // 이전 등록된 지오펜싱 이벤트 제거 (최대 100개 이벤트만 등록 가능하기때문에)
 
         val geofenceList = memoList.map { memo ->
             Geofence.Builder()
@@ -30,7 +29,7 @@ class GeoFencingManagerImpl(private val context: Context) : GeoFencingManager{
                 .setCircularRegion(
                     memo.latitude,
                     memo.longitude,
-                    300f // TODO: 설정으로 저장된 알람 반경에 맞춰서 설정하도록 수정 (미터 단위)
+                    notiRange * 1000 // 미터 단위
                 )
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
@@ -43,10 +42,9 @@ class GeoFencingManagerImpl(private val context: Context) : GeoFencingManager{
             .build()
 
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)
-        Log.d("jinada_test", "GeoFencingManagerImpl addGeoPencing: ${memoList.size}")
     }
 
-    override fun removeGeoPencing(memo: TodoItemData) {
-        // TODO: GeoFencing 등록 취소
+    override fun removeGeoPencing() {
+        geofencingClient.removeGeofences(geofencePendingIntent)
     }
 }

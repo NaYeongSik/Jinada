@@ -46,7 +46,6 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
 
     LaunchedEffect(Unit) {
         locationServiceManager.startLocationTracking()
-        memoMapViewModel.observeCurrentLocation()
     }
 
     LaunchedEffect(mapUiState.cameraPosition) {

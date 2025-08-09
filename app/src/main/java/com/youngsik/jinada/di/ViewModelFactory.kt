@@ -24,7 +24,7 @@ class ViewModelFactory(private val repository: MemoRepository, private val locat
                 MemoViewModel(repository) as T
 
             modelClass.isAssignableFrom(MemoMapViewModel::class.java) ->
-                MemoMapViewModel(application, repository,locationRepository,naverRepository) as T
+                MemoMapViewModel(application, repository,locationRepository,naverRepository,dataStoreRepository) as T
 
             modelClass.isAssignableFrom(SettingsViewModel::class.java) ->
                 SettingsViewModel(dataStoreRepository) as T

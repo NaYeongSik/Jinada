@@ -40,8 +40,8 @@ class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
         emit(memoDataSource.getMemoListBySelectedStatTabMenu(selectedTabMenu))
     }
 
-    override suspend fun getNearByMemoList(location: Location) = flow {
+    override suspend fun getNearByMemoList(location: Location, range: Float) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.getNearByMemoList(location))
+        emit(memoDataSource.getNearByMemoList(location,range))
     }.catch { emit(DataResourceResult.Failure(it)) }
 }

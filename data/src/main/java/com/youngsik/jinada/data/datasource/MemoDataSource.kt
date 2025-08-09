@@ -12,5 +12,5 @@ interface MemoDataSource {
     suspend fun getMemoById(memoId: String): DataResourceResult<TodoItemData>
     suspend fun getMemoListBySelectedDate(date: String): DataResourceResult<List<TodoItemData>>
     suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String): DataResourceResult<List<TodoItemData>>
-    suspend fun getNearByMemoList(location: Location): DataResourceResult<List<TodoItemData>>
+    suspend fun getNearByMemoList(location: Location, range: Float): DataResourceResult<List<TodoItemData>>
 }

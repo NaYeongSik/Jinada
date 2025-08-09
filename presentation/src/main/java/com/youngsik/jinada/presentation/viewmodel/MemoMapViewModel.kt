@@ -2,7 +2,6 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import android.app.Application
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
@@ -19,33 +18,40 @@ import com.youngsik.jinada.presentation.uistate.MapUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MemoMapViewModel(application: Application, private val repository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val naverRepository: NaverRepository) : AndroidViewModel(application) {
+class MemoMapViewModel(application: Application, private val memoRepository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val naverRepository: NaverRepository, private val dataStoreRepository: DataStoreRepository) : AndroidViewModel(application) {
     private val _mapUiState = MutableStateFlow(MapUiState())
     val mapUiState get() = _mapUiState.asStateFlow()
 
-    fun observeCurrentLocation() {
+
+    init {
         viewModelScope.launch {
-            (locationRepository as CurrentLocationRepositoryImpl).latestLocationState
-                .collect { location ->
-                    if (location != null) {
-                        _mapUiState.update { currentState ->
-                            if (_mapUiState.value.cameraPosition == null) {
-                                currentState.copy(
-                                    myLocation = LatLng(location.latitude, location.longitude),
-                                    cameraPosition = LatLng(location.latitude, location.longitude)
-                                )
-                            } else {
-                                currentState.copy(
-                                    myLocation = LatLng(location.latitude, location.longitude)
-                                )
-                            }
+            combine(
+                (locationRepository as CurrentLocationRepositoryImpl).latestLocationState,
+                dataStoreRepository.userSettings
+            ){ location, userSettings ->
+                Pair(location, userSettings)
+            }.collect { (location, userSettings) ->
+                if (location != null) {
+                    _mapUiState.update { currentState ->
+                        if (_mapUiState.value.cameraPosition == null) {
+                            currentState.copy(
+                                myLocation = LatLng(location.latitude, location.longitude),
+                                cameraPosition = LatLng(location.latitude, location.longitude)
+                            )
+                        } else {
+                            currentState.copy(
+                                myLocation = LatLng(location.latitude, location.longitude)
+                            )
                         }
-                        getMemosNearby(location)
                     }
+                    getMemosNearby(location,userSettings.closerMemoSearchingRange)
                 }
+                _mapUiState.update { it.copy(closerMemoSearchingRange = userSettings.closerMemoSearchingRange) }
+            }
         }
     }
 
@@ -70,9 +76,9 @@ class MemoMapViewModel(application: Application, private val repository: MemoRep
         }
     }
 
-    fun getMemosNearby(myLocation: Location) {
+    fun getMemosNearby(myLocation: Location, range: Float) {
         viewModelScope.launch {
-            repository.getNearByMemoList(myLocation).collect { result ->
+            memoRepository.getNearByMemoList(myLocation,range).collect { result ->
                 when(result){
                     is DataResourceResult.Loading -> _mapUiState.update { it.copy(isLoading = true) }
                     is DataResourceResult.Success -> {
@@ -87,10 +93,10 @@ class MemoMapViewModel(application: Application, private val repository: MemoRep
 
     fun updateMemo(todoItemData: TodoItemData){
         viewModelScope.launch {
-            repository.updateMemo(todoItemData).collectLatest{ result ->
+            memoRepository.updateMemo(todoItemData).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _mapUiState.update { it.copy(isLoading = true) }
-                    is DataResourceResult.Success -> getMemosNearby(_mapUiState.value.myLocation!!.toLocation())
+                    is DataResourceResult.Success -> getMemosNearby(_mapUiState.value.myLocation!!.toLocation(),_mapUiState.value.closerMemoSearchingRange)
                     is DataResourceResult.Failure -> _mapUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }
@@ -99,10 +105,10 @@ class MemoMapViewModel(application: Application, private val repository: MemoRep
 
     fun deleteMemo(memoId: String){
         viewModelScope.launch {
-            repository.deleteMemo(memoId).collectLatest{ result ->
+            memoRepository.deleteMemo(memoId).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _mapUiState.update { it.copy(isLoading = true) }
-                    is DataResourceResult.Success -> getMemosNearby(_mapUiState.value.myLocation!!.toLocation())
+                    is DataResourceResult.Success -> getMemosNearby(_mapUiState.value.myLocation!!.toLocation(),_mapUiState.value.closerMemoSearchingRange)
                     is DataResourceResult.Failure -> _mapUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }

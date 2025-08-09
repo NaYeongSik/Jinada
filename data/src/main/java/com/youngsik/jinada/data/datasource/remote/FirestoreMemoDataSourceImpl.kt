@@ -3,12 +3,9 @@ package com.youngsik.jinada.data.datasource.remote
 import android.location.Location
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.naver.maps.geometry.LatLng
 import com.youngsik.domain.model.DataResourceResult
 import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
@@ -104,9 +101,9 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         DataResourceResult.Success(memoListResult)
     }.getOrElse { DataResourceResult.Failure(it) }
 
-    override suspend fun getNearByMemoList(location: Location): DataResourceResult<List<TodoItemData>> = runCatching {
+    override suspend fun getNearByMemoList(location: Location, range: Float): DataResourceResult<List<TodoItemData>> = runCatching {
         val targetLocation = GeoLocation(location.latitude, location.longitude)
-        val rangeDistanceInMeters = 1500.0 // TODO: DataStore에 저장된 값으로 사용하기
+        val rangeDistanceInMeters = (range * 1000).toDouble()
         val queryBounds = GeoFireUtils.getGeoHashQueryBounds(targetLocation, rangeDistanceInMeters)
 
         val tasks = queryBounds

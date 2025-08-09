@@ -8,7 +8,6 @@ import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.youngsik.domain.manager.GeoFencingManager
@@ -17,10 +16,10 @@ import com.youngsik.jinada.data.datasource.local.DataStoreDataSourceImpl
 import com.youngsik.jinada.data.datasource.remote.FirestoreMemoDataSourceImpl
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
 import com.youngsik.jinada.data.impl.DataStoreRepositoryImpl
-import com.youngsik.jinada.data.repository.CurrentLocationRepository
-import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.data.impl.MemoRepositoryImpl
+import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.DataStoreRepository
+import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.di.LocationRepositoryProvider
 import com.youngsik.jinada.manager.GeoFencingManagerImpl
 import kotlinx.coroutines.CoroutineScope

@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.youngsik.domain.model.DataResourceResult
 import com.youngsik.domain.model.TodoItemData
-import com.youngsik.domain.model.UserSettings
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.DataStoreRepository
@@ -17,12 +16,9 @@ import com.youngsik.jinada.data.utils.toLocation
 import com.youngsik.jinada.presentation.BuildConfig
 import com.youngsik.jinada.presentation.uistate.MapUiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 

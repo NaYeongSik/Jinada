@@ -42,7 +42,7 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
     val mapUiState by memoMapViewModel.mapUiState.collectAsStateWithLifecycle()
     var inputText by remember { mutableStateOf("") }
     val scaffoldState = rememberBottomSheetScaffoldState()
-    var mapController = rememberMapController(LocalContext.current)
+    val mapController = rememberMapController(LocalContext.current)
 
     LaunchedEffect(Unit) {
         locationServiceManager.startLocationTracking()

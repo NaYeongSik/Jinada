@@ -3,12 +3,9 @@ package com.youngsik.jinada.data.datasource.remote
 import android.location.Location
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.naver.maps.geometry.LatLng
 import com.youngsik.domain.model.DataResourceResult
 import com.youngsik.domain.model.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto

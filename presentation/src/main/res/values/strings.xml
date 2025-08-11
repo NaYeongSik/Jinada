@@ -68,6 +68,8 @@
     <string name="input_memo">메모를 입력해주세요..</string>
 
     <string name="request_nickname_title">사용하실 닉네임을 입력해주세요.</string>
+    <string name="nickname_already_exists">이미 사용 중인 닉네임입니다.</string>
+    <string name="nickname_is_not_exists">사용 가능한 닉네임입니다.</string>
     <string name="background_location_permission_title">백그라운드 위치 권한 안내</string>
     <string name="background_location_permission_description">\'지나다\'는 앱이 꺼져있을 때도 근처 메모를 알려드리기 위해, 위치 권한을 \'항상 허용\'으로 설정해야 합니다.</string>
     <string name="move_to_settings">설정으로 이동</string>

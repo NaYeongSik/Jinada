@@ -5,8 +5,8 @@ import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.PropertyName
 
 data class TodoItemDto(
-    @get:PropertyName("uuid") @set:PropertyName("uuid")
-    var uuid: String = "",
+    @get:PropertyName("nickname") @set:PropertyName("nickname")
+    var nickname: String = "",
     @get:PropertyName("content") @set:PropertyName("content")
     var content: String = "",
     @get:PropertyName("completed") @set:PropertyName("completed")

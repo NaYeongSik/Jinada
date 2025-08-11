@@ -6,11 +6,11 @@ import com.youngsik.domain.model.TodoItemData
 import kotlinx.coroutines.flow.Flow
 
 interface MemoRepository {
-    suspend fun createMemo(todoItemData: TodoItemData) : Flow<DataResourceResult<Unit>>
-    suspend fun updateMemo(todoItemData: TodoItemData) : Flow<DataResourceResult<Unit>>
+    suspend fun createMemo(todoItemData: TodoItemData,nickname: String) : Flow<DataResourceResult<Unit>>
+    suspend fun updateMemo(todoItemData: TodoItemData,nickname: String) : Flow<DataResourceResult<Unit>>
     suspend fun deleteMemo(memoId: String) : Flow<DataResourceResult<Unit>>
     suspend fun getMemoById(memoId: String) : Flow<DataResourceResult<TodoItemData>>
-    suspend fun getMemoListBySelectedDate(date: String) : Flow<DataResourceResult<List<TodoItemData>>>
-    suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String) : Flow<DataResourceResult<List<TodoItemData>>>
-    suspend fun getNearByMemoList(location: Location,range: Float) : Flow<DataResourceResult<List<TodoItemData>>>
+    suspend fun getMemoListBySelectedDate(date: String,nickname: String) : Flow<DataResourceResult<List<TodoItemData>>>
+    suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String,nickname: String) : Flow<DataResourceResult<List<TodoItemData>>>
+    suspend fun getNearByMemoList(nickname: String,location: Location,range: Float) : Flow<DataResourceResult<List<TodoItemData>>>
 }

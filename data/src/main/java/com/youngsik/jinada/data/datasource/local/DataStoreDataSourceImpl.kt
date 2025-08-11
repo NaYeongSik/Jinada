@@ -28,7 +28,7 @@ class DataStoreDataSourceImpl(private val context: Context): DataStoreDataSource
     override val userInfoFlow: Flow<UserInfo> = context.dataStore.data.map { preferences ->
         UserInfo(
             uuid = preferences[PreferencesKeys.UUID] ?: "",
-            nickName = preferences[PreferencesKeys.NICKNAME] ?: ""
+            nickname = preferences[PreferencesKeys.NICKNAME] ?: ""
         )
     }
 
@@ -44,7 +44,7 @@ class DataStoreDataSourceImpl(private val context: Context): DataStoreDataSource
 
     override suspend fun setUserInfo(nickname: String, uuid: String):DataResourceResult<Unit> = runCatching {
         context.dataStore.edit { settings ->
-            settings[PreferencesKeys.NICKNAME] = nickname
+            settings[PreferencesKeys.NICKNAME] = nickname.trim()
             settings[PreferencesKeys.UUID] = uuid
         }
         DataResourceResult.Success(Unit)

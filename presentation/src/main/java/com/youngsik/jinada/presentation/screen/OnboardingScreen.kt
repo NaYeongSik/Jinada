@@ -47,8 +47,12 @@ import com.google.android.gms.tasks.Task
 import com.youngsik.domain.manager.ActivityRecognitionManager
 import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.jinada.presentation.uistate.SettingsUiState
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
+import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CHECK_NICKNAME
+import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CREATE_USER_INFO
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_SET_USER_INFO
+import kotlinx.coroutines.delay
 import java.util.UUID
 
 
@@ -168,12 +172,16 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionMa
     }
 
 
-    if (isDonePermmisionRequest) NicknameInputDialog{ nickname ->
+    if (isDonePermmisionRequest) NicknameInputDialog(settingsViewModel,settingsUiState){ nickname ->
         val uuid = UUID.randomUUID().toString()
-        settingsViewModel.setUserInfo(nickname,uuid)
+        settingsViewModel.createUserInfoInFirestore(nickname,uuid)
     }
 
     LaunchedEffect(settingsUiState.lastSuccessfulAction) {
+        if (settingsUiState.lastSuccessfulAction == SUCCESSFUL_CREATE_USER_INFO){
+            settingsViewModel.setUserInfo(settingsUiState.nickname,settingsUiState.uuid)
+        }
+
         if (settingsUiState.lastSuccessfulAction == SUCCESSFUL_SET_USER_INFO){
             settingsViewModel.resetLastSuccessfulAction()
             onSuccessOnboarding()
@@ -192,22 +200,37 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionMa
             }
         )
     }
+
 }
 
 @Composable
-fun NicknameInputDialog(onSuccess: (String) -> Unit) {
+fun NicknameInputDialog(settingsViewModel: SettingsViewModel,settingsUiState: SettingsUiState,onSuccess: (String) -> Unit) {
     var nickname by remember { mutableStateOf("") }
+
+    LaunchedEffect(nickname) {
+        if (nickname.isNotBlank()) {
+            delay(1000L)
+            settingsViewModel.checkNicknameExists(nickname.trim())
+        } else {
+            settingsViewModel.resetNicknameAvailable()
+        }
+    }
 
     Dialog(onDismissRequest = { /* 닫기 방지 */ }) {
         Card {
             Column(modifier = Modifier.padding(JinadaDimens.Padding.medium)) {
                 Text(text= stringResource(R.string.request_nickname_title),style = MaterialTheme.typography.bodyMedium)
-                TextField(value = nickname, onValueChange = { nickname = it }) // TODO: 닉네임 중복 체크 필요
+                TextField(value = nickname, onValueChange = { nickname = it })
+                if (settingsUiState.lastSuccessfulAction == SUCCESSFUL_CHECK_NICKNAME){
+                    if (settingsUiState.isNicknameAvailable) Text(text= stringResource(R.string.nickname_is_not_exists), style = MaterialTheme.typography.bodyMedium)
+                    else Text(text= stringResource(R.string.nickname_already_exists), style = MaterialTheme.typography.bodyMedium)
+                }
+
                 Row(
                     modifier = Modifier.padding(top = JinadaDimens.Padding.medium).align(Alignment.End)
                 ) {
-                    Button(onClick = { onSuccess(nickname) }) {
-                        Text(text= stringResource(R.string.button_save), style = MaterialTheme.typography.bodyMedium) // TODO: 닉네임 중복이 아닐때만 활성화 필요
+                    Button(onClick = { onSuccess(nickname) }, enabled = settingsUiState.isNicknameAvailable && !settingsUiState.isLoading) {
+                        Text(text= stringResource(R.string.button_save), style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }

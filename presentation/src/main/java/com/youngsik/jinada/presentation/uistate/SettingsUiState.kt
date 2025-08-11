@@ -9,5 +9,6 @@ data class SettingsUiState(
     val closerNotiEnabled: Boolean = false,
     val dailyNotiEnabled: Boolean = false,
     val closerMemoSearchingRange: Float = 0.3f,
-    val closerMemoNotiRange: Float = 0.3f
+    val closerMemoNotiRange: Float = 0.3f,
+    val isNicknameAvailable: Boolean = false
 )

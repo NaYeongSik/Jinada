@@ -16,5 +16,6 @@ data class MemoUiState(
     val selectedTabMenu: StatTabMenu = StatTabMenu.WEEKLY,
     val completeRateData: CompleteRateData = CompleteRateData(0f,0,0),
     val statData: StatisticsData = StatisticsData.WeeklyStatData("",0,0,0),
-    val memoListInSelectedTab: List<TodoItemData> = emptyList()
+    val memoListInSelectedTab: List<TodoItemData> = emptyList(),
+    val nickname: String = ""
 )

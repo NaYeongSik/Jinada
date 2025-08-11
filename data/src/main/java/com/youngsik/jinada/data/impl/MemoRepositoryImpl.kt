@@ -9,15 +9,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
-    override suspend fun createMemo(todoItemData: TodoItemData) = flow {
+    override suspend fun createMemo(todoItemData: TodoItemData,nickname: String) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.createMemo(todoItemData))
+        emit(memoDataSource.createMemo(todoItemData,nickname))
     }.catch { emit(DataResourceResult.Failure(it)) }
 
 
-    override suspend fun updateMemo(todoItemData: TodoItemData) = flow {
+    override suspend fun updateMemo(todoItemData: TodoItemData,nickname: String) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.updateMemo(todoItemData))
+        emit(memoDataSource.updateMemo(todoItemData,nickname))
     }.catch { emit(DataResourceResult.Failure(it)) }
 
     override suspend fun deleteMemo(memoId: String) = flow {
@@ -30,18 +30,18 @@ class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
         emit(memoDataSource.getMemoById(memoId))
     }.catch { emit(DataResourceResult.Failure(it)) }
 
-    override suspend fun getMemoListBySelectedDate(date: String) = flow {
+    override suspend fun getMemoListBySelectedDate(date: String,nickname: String) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.getMemoListBySelectedDate(date))
+        emit(memoDataSource.getMemoListBySelectedDate(date,nickname))
     }.catch { emit(DataResourceResult.Failure(it)) }
 
-    override suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String) = flow {
+    override suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String,nickname: String) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.getMemoListBySelectedStatTabMenu(selectedTabMenu))
+        emit(memoDataSource.getMemoListBySelectedStatTabMenu(selectedTabMenu,nickname))
     }
 
-    override suspend fun getNearByMemoList(location: Location, range: Float) = flow {
+    override suspend fun getNearByMemoList(nickname: String,location: Location, range: Float) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.getNearByMemoList(location,range))
+        emit(memoDataSource.getNearByMemoList(nickname,location,range))
     }.catch { emit(DataResourceResult.Failure(it)) }
 }

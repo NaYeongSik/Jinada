@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youngsik.domain.model.DataResourceResult
 import com.youngsik.domain.model.TodoItemData
+import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.data.utils.getCompleteRateData
 import com.youngsik.jinada.data.utils.getMonthlyStatData
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
+class MemoViewModel(private val repository: MemoRepository, private val dataStoreRepository: DataStoreRepository) : ViewModel(){
     companion object{
         const val NONE = "NONE"
         const val SUCCESSFUL_GET_MEMO = "SUCCESSFUL_GET_MEMO"
@@ -28,6 +29,14 @@ class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
     }
     private val _memoUiState = MutableStateFlow(MemoUiState())
     val memoUiState get() = _memoUiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            dataStoreRepository.userInfo.collectLatest { userInfo ->
+                _memoUiState.update { it.copy(nickname = userInfo.nickname) }
+            }
+        }
+    }
 
     fun changeSelectedDate(date: String){
         _memoUiState.update { it.copy(selectedDate = date) }
@@ -45,7 +54,7 @@ class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
 
     fun createMemo(todoItemData: TodoItemData){
         viewModelScope.launch {
-            repository.createMemo(todoItemData).collectLatest{ result ->
+            repository.createMemo(todoItemData,_memoUiState.value.nickname).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_CREATE_MEMO) }
@@ -57,7 +66,7 @@ class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
 
     fun updateMemo(todoItemData: TodoItemData){
         viewModelScope.launch {
-            repository.updateMemo(todoItemData).collectLatest{ result ->
+            repository.updateMemo(todoItemData,_memoUiState.value.nickname).collectLatest{ result ->
             when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_UPDATE_MEMO) }
@@ -81,7 +90,7 @@ class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
 
     fun getMemoListBySelectedDate(date: String){
         viewModelScope.launch {
-            repository.getMemoListBySelectedDate(date).collectLatest{ result ->
+            repository.getMemoListBySelectedDate(date,_memoUiState.value.nickname).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_MEMO, memoList = result.data) }
@@ -93,7 +102,7 @@ class MemoViewModel(private val repository: MemoRepository) : ViewModel(){
 
     fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String){
         viewModelScope.launch {
-            repository.getMemoListBySelectedStatTabMenu(selectedTabMenu).collectLatest{ result ->
+            repository.getMemoListBySelectedStatTabMenu(selectedTabMenu,_memoUiState.value.nickname).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> {

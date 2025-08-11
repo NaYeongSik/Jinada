@@ -7,4 +7,5 @@ interface UserDataSource {
     suspend fun createUserInfo(userInfo: UserInfo): DataResourceResult<Unit>
     suspend fun updateUserInfo(userInfo: UserInfo): DataResourceResult<Unit>
     suspend fun getUserInfo(uuid: String): DataResourceResult<UserInfo>
+    suspend fun isNicknameAvailable(nickname: String): DataResourceResult<Boolean>
 }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -59,11 +60,13 @@ class ActivityRecognitionService : Service(){
             ACTION_UPDATE_GEOFENCING -> {
                 startForegroundNotify()
                 serviceScope.launch {
-                    dataStoreRepository.userSettings.collect { settings ->
+                    combine(dataStoreRepository.userSettings, dataStoreRepository.userInfo) { settings, userInfo ->
+                        settings to userInfo
+                    }.collect { (settings, userInfo) ->
                         if (settings.closerNotificationEnabled){
                             val location = (locationRepository as CurrentLocationRepositoryImpl).getCurrentLocation()
                             if (location != null){
-                                memoRepository.getNearByMemoList(location,settings.closerMemoSearchingRange).collect { result ->
+                                memoRepository.getNearByMemoList(userInfo.nickname,location,settings.closerMemoSearchingRange).collect { result ->
                                     when (result) {
                                         is DataResourceResult.Success -> {
                                             if (ActivityCompat.checkSelfPermission(applicationContext,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -80,6 +83,9 @@ class ActivityRecognitionService : Service(){
                         } else {
                             geoFencingManager.removeGeoPencing()
                         }
+                    }
+                    dataStoreRepository.userSettings.collect { settings ->
+
                     }
 
                 }

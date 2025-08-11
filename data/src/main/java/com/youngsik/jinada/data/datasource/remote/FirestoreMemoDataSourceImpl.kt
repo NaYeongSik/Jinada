@@ -1,6 +1,7 @@
 package com.youngsik.jinada.data.datasource.remote
 
 import android.location.Location
+import android.util.Log
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Tasks
@@ -21,22 +22,21 @@ import java.time.temporal.TemporalAdjusters
 
 class FirestoreMemoDataSourceImpl : MemoDataSource {
     private val memoCollection = Firebase.firestore.collection("memo")
-    private val userId = "EgQ5odyd7yj0yxcactCv" // TODO: DataStore에 저장된 값 사용하기
 
-    override suspend fun createMemo(todoItemData: TodoItemData): DataResourceResult<Unit> = runCatching {
+    override suspend fun createMemo(todoItemData: TodoItemData, nickname: String): DataResourceResult<Unit> = runCatching {
         val location = GeoLocation(todoItemData.latitude, todoItemData.longitude)
         val geohash = GeoFireUtils.getGeoHashForLocation(location)
-        memoCollection.add(todoItemData.toDto(userId,geohash)).await()
+        memoCollection.add(todoItemData.toDto(nickname,geohash)).await()
 
         DataResourceResult.Success(Unit)
     }.getOrElse {
         DataResourceResult.Failure(it)
     }
 
-    override suspend fun updateMemo(todoItemData: TodoItemData): DataResourceResult<Unit> = runCatching {
+    override suspend fun updateMemo(todoItemData: TodoItemData,nickname: String): DataResourceResult<Unit> = runCatching {
         val location = GeoLocation(todoItemData.latitude, todoItemData.longitude)
         val geohash = GeoFireUtils.getGeoHashForLocation(location)
-        memoCollection.document(todoItemData.memoId).set(todoItemData.toDto(userId,geohash)).await()
+        memoCollection.document(todoItemData.memoId).set(todoItemData.toDto(nickname,geohash)).await()
         DataResourceResult.Success(Unit)
     }.getOrElse {
         DataResourceResult.Failure(it)
@@ -59,8 +59,8 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         }
     }.getOrElse { DataResourceResult.Failure(it) }
 
-    override suspend fun getMemoListBySelectedDate(date: String): DataResourceResult<List<TodoItemData>> = runCatching {
-        val snapShot = memoCollection.whereEqualTo("uuid", userId)
+    override suspend fun getMemoListBySelectedDate(date: String,nickname: String): DataResourceResult<List<TodoItemData>> = runCatching {
+        val snapShot = memoCollection.whereEqualTo("nickname", nickname)
             .whereGreaterThanOrEqualTo("deadline_date", changeToLocalDate(date).toTimestamp())
             .get().await()
 
@@ -75,16 +75,17 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         DataResourceResult.Success(filteredList)
     }.getOrElse { DataResourceResult.Failure(it) }
 
-    override suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String): DataResourceResult<List<TodoItemData>> = runCatching {
-        val query = memoCollection.whereEqualTo("uuid", userId)
+    override suspend fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String,nickname: String): DataResourceResult<List<TodoItemData>> = runCatching {
+        val query = memoCollection.whereEqualTo("nickname", nickname)
+        val date = LocalDate.now()
 
         val finalQuery = when (selectedTabMenu) {
             "WEEKLY" -> {
-                val startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                val startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
                 query.whereGreaterThanOrEqualTo("deadline_date", startOfWeek.toTimestamp())
             }
             "MONTHLY" -> {
-                val startOfMonth = LocalDate.now().withDayOfMonth(1)
+                val startOfMonth = date.withDayOfMonth(1)
                 query.whereGreaterThanOrEqualTo("deadline_date", startOfMonth.toTimestamp())
             }
             "TOTALLY" -> {
@@ -101,14 +102,16 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         DataResourceResult.Success(memoListResult)
     }.getOrElse { DataResourceResult.Failure(it) }
 
-    override suspend fun getNearByMemoList(location: Location, range: Float): DataResourceResult<List<TodoItemData>> = runCatching {
+    override suspend fun getNearByMemoList(nickname: String,location: Location, range: Float): DataResourceResult<List<TodoItemData>> = runCatching {
         val targetLocation = GeoLocation(location.latitude, location.longitude)
         val rangeDistanceInMeters = (range * 1000).toDouble()
         val queryBounds = GeoFireUtils.getGeoHashQueryBounds(targetLocation, rangeDistanceInMeters)
+        Log.d("jinada_test","getNearByMemoList nickname: ${nickname}")
 
         val tasks = queryBounds
             .map { bound ->
                 memoCollection
+                    .whereEqualTo("nickname", nickname)
                     .orderBy("geohash")
                     .startAt(bound.startHash)
                     .endAt(bound.endHash)
@@ -131,6 +134,8 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
                 }
             }
 
-        DataResourceResult.Success(nearbyMemos)
+        val memoList = nearbyMemos.filter { todoItemData -> changeToLocalDate(todoItemData.deadlineDate) >= LocalDate.now() }
+
+        DataResourceResult.Success(memoList)
     }.getOrElse { DataResourceResult.Failure(it) }
 }

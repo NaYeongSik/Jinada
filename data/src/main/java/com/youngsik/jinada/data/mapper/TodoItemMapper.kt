@@ -24,7 +24,7 @@ fun TodoItemDto.toDomainModel(memoId: String, distance: Double = 0.0): TodoItemD
 
 fun TodoItemData.toDto(uuid: String,geohash: String): TodoItemDto {
     return TodoItemDto(
-        uuid = uuid,
+        nickname = uuid,
         content = this.content,
         isCompleted = this.isCompleted,
         locationName = this.locationName,

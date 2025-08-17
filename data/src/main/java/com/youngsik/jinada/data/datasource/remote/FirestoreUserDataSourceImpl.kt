@@ -2,8 +2,8 @@ package com.youngsik.jinada.data.datasource.remote
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.UserInfo
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.UserInfo
 import com.youngsik.jinada.data.dataclass.UserInfoDto
 import com.youngsik.jinada.data.datasource.UserDataSource
 import com.youngsik.jinada.data.mapper.toDomainModel

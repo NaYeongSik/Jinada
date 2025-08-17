@@ -3,20 +3,15 @@ package com.youngsik.jinada.data.utils
 import android.location.Location
 import com.google.firebase.Timestamp
 import com.naver.maps.geometry.LatLng
-import com.youngsik.domain.model.CompleteRateData
-import com.youngsik.domain.model.StatisticsData
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.shared.model.CompleteRateData
+import com.youngsik.shared.model.StatisticsData
+import com.youngsik.domain.entity.TodoItemData
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.Locale
-
-val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
-
-fun changeToStringDate(date: LocalDate): String = date.format(formatter)
-fun changeToLocalDate(dateString: String) = LocalDate.parse(dateString,formatter)
 
 fun getCompleteRateData(memoList: List<TodoItemData>): CompleteRateData{
     val totalMemoCount = memoList.size
@@ -134,7 +129,10 @@ fun getMaxConsecutiveDays(memoList: List<TodoItemData>): Int {
     return maxOf(maxStreak, currentStreak)
 }
 
+val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
 
+fun changeToStringDate(date: LocalDate): String = date.format(formatter)
+fun changeToLocalDate(dateString: String) = LocalDate.parse(dateString,formatter)
 fun Timestamp.toLocalDate(): LocalDate = this.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 fun LocalDate.toTimestamp(): Timestamp = Timestamp(this.atStartOfDay(ZoneId.systemDefault()).toEpochSecond(), 0)
 

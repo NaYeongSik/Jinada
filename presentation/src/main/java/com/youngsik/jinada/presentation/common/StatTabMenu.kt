@@ -1,7 +1,7 @@
 package com.youngsik.jinada.presentation.common
 
 import androidx.annotation.StringRes
-import com.youngsik.jinada.presentation.R
+import com.youngsik.shared.R
 
 enum class StatTabMenu(@StringRes val titleResId: Int) {
     TOTALLY(R.string.tab_totally),

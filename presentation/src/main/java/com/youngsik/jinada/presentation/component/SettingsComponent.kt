@@ -15,12 +15,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.common.SettingOptionData
 import com.youngsik.jinada.presentation.common.SettingsData
-import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
+import com.youngsik.shared.R
 
 
 @Composable

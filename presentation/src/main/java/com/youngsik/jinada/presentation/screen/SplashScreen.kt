@@ -11,10 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.shared.theme.JinadaDimens
+import com.youngsik.shared.R
 
-@Preview
 @Composable
 fun SplashScreen(){
     Box(

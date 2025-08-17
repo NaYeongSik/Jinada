@@ -1,8 +1,8 @@
 package com.youngsik.jinada.presentation.uistate
 
 import com.naver.maps.geometry.LatLng
-import com.youngsik.domain.model.PoiItem
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.domain.entity.PoiItem
+import com.youngsik.domain.entity.TodoItemData
 
 data class MapUiState(
     val isLoading: Boolean = false,

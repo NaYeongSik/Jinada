@@ -1,7 +1,7 @@
 package com.youngsik.jinada.data.mapper
 
 import com.google.firebase.firestore.GeoPoint
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
 import com.youngsik.jinada.data.utils.changeToLocalDate
 import com.youngsik.jinada.data.utils.changeToStringDate

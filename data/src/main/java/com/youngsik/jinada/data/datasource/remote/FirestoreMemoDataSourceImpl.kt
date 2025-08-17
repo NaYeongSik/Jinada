@@ -7,8 +7,8 @@ import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
 import com.youngsik.jinada.data.datasource.MemoDataSource
 import com.youngsik.jinada.data.mapper.toDomainModel

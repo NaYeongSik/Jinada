@@ -5,8 +5,8 @@ import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.DataStoreRepository

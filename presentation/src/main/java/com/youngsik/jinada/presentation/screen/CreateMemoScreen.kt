@@ -1,6 +1,5 @@
 package com.youngsik.jinada.presentation.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,8 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youngsik.domain.model.TodoItemData
-import com.youngsik.jinada.presentation.R
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.presentation.component.DatePickerModal
 import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
 import com.youngsik.jinada.presentation.common.MemoWriteTabMenu
@@ -46,8 +44,9 @@ import com.youngsik.jinada.presentation.component.CommonDividingLine
 import com.youngsik.jinada.presentation.component.CommonTabRow
 import com.youngsik.jinada.presentation.component.ListItemRow
 import com.youngsik.jinada.presentation.component.commonTabRow
-import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
+import com.youngsik.shared.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)

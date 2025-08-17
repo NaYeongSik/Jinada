@@ -1,6 +1,6 @@
 package com.youngsik.jinada.data.repository
 
-import com.youngsik.domain.model.PoiItem
+import com.youngsik.domain.entity.PoiItem
 
 interface NaverRepository {
     suspend fun getAddressFromCoordinates(

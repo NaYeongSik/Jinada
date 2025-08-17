@@ -45,13 +45,13 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
 import com.youngsik.domain.manager.ActivityRecognitionManager
-import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CHECK_NICKNAME
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CREATE_USER_INFO
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_SET_USER_INFO
+import com.youngsik.shared.R
 import kotlinx.coroutines.delay
 import java.util.UUID
 

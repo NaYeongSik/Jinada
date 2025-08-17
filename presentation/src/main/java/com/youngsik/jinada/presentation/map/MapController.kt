@@ -16,10 +16,10 @@ import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
-import com.youngsik.domain.model.PoiItem
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.domain.entity.PoiItem
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
-import com.youngsik.jinada.presentation.R
+import com.youngsik.shared.R
 import java.time.LocalDate
 
 class MapController(private val context: Context){

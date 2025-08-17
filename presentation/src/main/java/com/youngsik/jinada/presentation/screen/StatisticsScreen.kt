@@ -18,16 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.presentation.component.IncompleteTodosSection
 import com.youngsik.jinada.presentation.component.MainStatisticsSection
 import com.youngsik.jinada.presentation.component.MemoCard
 import com.youngsik.jinada.presentation.component.MemoCountCardSection
-import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel.Companion.SUCCESSFUL_DELETE_MEMO
-import com.youngsik.jinada.presentation.viewmodel.MemoViewModel.Companion.SUCCESSFUL_GET_STATISTICS
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel.Companion.SUCCESSFUL_UPDATE_MEMO
 import java.time.LocalDate
 

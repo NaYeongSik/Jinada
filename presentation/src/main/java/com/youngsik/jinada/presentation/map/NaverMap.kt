@@ -1,6 +1,5 @@
 package com.youngsik.jinada.presentation.map
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -8,16 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapView
-import com.youngsik.domain.model.TodoItemData
-import com.youngsik.jinada.presentation.databinding.MapContainerLayoutBinding
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.presentation.uistate.MapUiState
+import com.youngsik.shared.databinding.MapContainerLayoutBinding
 
 @Composable
 fun NaverMapView(mapController: MapController, mapUiState: MapUiState, onMapLongClick: (TodoItemData)-> Unit){

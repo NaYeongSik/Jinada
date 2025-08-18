@@ -1,8 +1,8 @@
 package com.youngsik.jinada.data.repository
 
 import android.location.Location
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.TodoItemData
 import kotlinx.coroutines.flow.Flow
 
 interface MemoRepository {

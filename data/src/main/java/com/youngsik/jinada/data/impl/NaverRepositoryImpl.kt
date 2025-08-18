@@ -1,6 +1,6 @@
 package com.youngsik.jinada.data.impl
 
-import com.youngsik.domain.model.PoiItem
+import com.youngsik.domain.entity.PoiItem
 import com.youngsik.jinada.data.repository.NaverRepository
 import com.youngsik.jinada.data.datasource.remote.NaverApiClient
 import com.youngsik.jinada.data.mapper.toDomainModel

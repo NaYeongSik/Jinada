@@ -21,12 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.youngsik.jinada.presentation.R
 import com.youngsik.jinada.presentation.common.SettingDialogState
 import com.youngsik.jinada.presentation.component.DialogView
 import com.youngsik.jinada.presentation.component.SettingsSection
-import com.youngsik.jinada.presentation.theme.JinadaDimens
+import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
+import com.youngsik.shared.R
 
 
 @Composable

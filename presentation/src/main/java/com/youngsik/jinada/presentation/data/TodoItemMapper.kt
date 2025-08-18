@@ -1,6 +1,6 @@
 package com.youngsik.jinada.presentation.data
 
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.domain.entity.TodoItemData
 
 fun TodoItemData.toParcelable(): TodoItemParcelable {
     return TodoItemParcelable(

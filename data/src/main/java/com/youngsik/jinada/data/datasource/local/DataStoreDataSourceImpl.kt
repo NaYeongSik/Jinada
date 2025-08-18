@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.UserInfo
-import com.youngsik.domain.model.UserSettings
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.UserInfo
+import com.youngsik.domain.entity.UserSettings
 import com.youngsik.jinada.data.datasource.DataStoreDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

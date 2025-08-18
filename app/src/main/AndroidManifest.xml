@@ -28,25 +28,25 @@
             android:value="${NAVER_MAP_CLIENT_ID}"/>
 
         <receiver
-            android:name=".receiver.ActivityRecognitionReceiver"
+            android:name=".presentation.receiver.ActivityRecognitionReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="ACTION_ACTIVITY_TRANSITION_UPDATE" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".receiver.GeoFencingReceiver"
+            android:name=".presentation.receiver.GeoFencingReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="ACTION_GEOFENCE_TRANSITION" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.CurrentLocationService"
+        <service android:name=".presentation.service.CurrentLocationService"
             android:foregroundServiceType="location"/>
-        <service android:name=".service.ActivityRecognitionService"
+        <service android:name=".presentation.service.ActivityRecognitionService"
             android:foregroundServiceType="location"/>
-        <service android:name=".service.GeoFensingNotificationService"
+        <service android:name=".presentation.service.GeoFensingNotificationService"
             android:foregroundServiceType="location"/>
 
         <activity
@@ -58,7 +58,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <data android:scheme="jinada" android:host="main" />
+            </intent-filter>
+
         </activity>
+        <profileable android:shell="true"/>
     </application>
 
 </manifest>

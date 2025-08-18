@@ -1,8 +1,5 @@
 package com.youngsik.jinada.presentation.component
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,17 +13,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import com.naver.maps.geometry.LatLng
-import com.youngsik.jinada.data.utils.changeToStringDate
-import com.youngsik.jinada.presentation.R
-import com.youngsik.jinada.presentation.theme.JinadaDimens
-import java.time.LocalDate
+import com.youngsik.shared.theme.JinadaDimens
+import com.youngsik.shared.R
 
 
 @Composable

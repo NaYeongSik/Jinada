@@ -1,10 +1,10 @@
 package com.youngsik.jinada.presentation.uistate
 
-import com.youngsik.domain.model.CompleteRateData
-import com.youngsik.domain.model.StatisticsData
-import com.youngsik.domain.model.TodoItemData
-import com.youngsik.jinada.data.utils.changeToStringDate
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.presentation.common.StatTabMenu
+import com.youngsik.shared.model.CompleteRateData
+import com.youngsik.shared.model.StatisticsData
+import com.youngsik.shared.utils.changeToStringDate
 import java.time.LocalDate
 
 data class MemoUiState(

@@ -1,7 +1,7 @@
 package com.youngsik.jinada.data.datasource
 
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.UserInfo
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.UserInfo
 
 interface UserDataSource {
     suspend fun createUserInfo(userInfo: UserInfo): DataResourceResult<Unit>

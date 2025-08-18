@@ -2,7 +2,6 @@ package com.youngsik.jinada.di
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
-import com.youngsik.jinada.data.datasource.DataStoreDataSource
 import com.youngsik.jinada.data.datasource.local.DataStoreDataSourceImpl
 import com.youngsik.jinada.data.datasource.remote.FirestoreMemoDataSourceImpl
 import com.youngsik.jinada.data.datasource.remote.FirestoreUserDataSourceImpl
@@ -15,6 +14,8 @@ import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.data.repository.NaverRepository
 import com.youngsik.jinada.data.repository.UserRepository
+import com.youngsik.jinada.presentation.factory.ViewModelFactory
+import com.youngsik.jinada.presentation.provider.LocationRepositoryProvider
 
 interface AppContainer {
     val userRepository: UserRepository
@@ -42,6 +43,12 @@ class AppContainerImpl(private val applicationContext: Context) : AppContainer {
         NaverRepositoryImpl()
     }
     override val viewModelFactory: ViewModelProvider.Factory by lazy {
-        ViewModelFactory(userRepository,memoRepository, locationRepository, dataStoreRepository, naverRepository)
+        ViewModelFactory(
+            userRepository,
+            memoRepository,
+            locationRepository,
+            dataStoreRepository,
+            naverRepository
+        )
     }
 }

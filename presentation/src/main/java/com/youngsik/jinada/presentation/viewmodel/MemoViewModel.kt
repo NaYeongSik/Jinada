@@ -2,8 +2,8 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youngsik.domain.model.DataResourceResult
-import com.youngsik.domain.model.TodoItemData
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.jinada.data.utils.getCompleteRateData

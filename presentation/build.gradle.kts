@@ -50,6 +50,8 @@ secrets {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":shared"))
+
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))
 
@@ -58,6 +60,7 @@ dependencies {
 
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.viewbinding)
+    implementation(libs.kotlinx.serialization.json)
 
     debugImplementation(libs.androidx.ui.tooling)
 

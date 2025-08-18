@@ -1,5 +1,6 @@
 package com.youngsik.jinada.presentation.navigation.graph
 
+import android.content.Context
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -29,8 +30,7 @@ import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 import kotlin.reflect.typeOf
 
 @Composable
-fun EntryPointMainScreen(viewModelFactory: ViewModelProvider.Factory){
-    val context = LocalContext.current
+fun EntryPointMainScreen(context: Context,viewModelFactory: ViewModelProvider.Factory){
     val navController = rememberNavController()
     val locationServiceManager: LocationServiceManager = remember { LocationServiceManagerImpl(context) }
 

@@ -26,6 +26,9 @@ import com.youngsik.shared.model.StatisticsData
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.shared.R
+import com.youngsik.shared.components.CommonCard
+import com.youngsik.shared.components.CommonTabRow
+import com.youngsik.shared.components.commonTabRow
 
 @Composable
 fun MainStatisticsSection(selectedTab: StatTabMenu, statData: StatisticsData, completeRateData: CompleteRateData, onChangeTab: (StatTabMenu)-> Unit){
@@ -42,8 +45,8 @@ fun MainStatisticsSection(selectedTab: StatTabMenu, statData: StatisticsData, co
         ) {
             CommonTabRow(
                 Modifier
-                .commonTabRow()
-                .height(JinadaDimens.Common.medium),
+                    .commonTabRow()
+                    .height(JinadaDimens.Common.medium),
                 selectedTab,
                 tabs,
                 onClickEvent = { newSelect ->

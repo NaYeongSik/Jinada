@@ -1,11 +1,10 @@
 package com.youngsik.jinada.data.utils
 
-import android.location.Location
 import com.google.firebase.Timestamp
-import com.naver.maps.geometry.LatLng
+import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.shared.model.CompleteRateData
 import com.youngsik.shared.model.StatisticsData
-import com.youngsik.domain.entity.TodoItemData
+import com.youngsik.shared.utils.changeToLocalDate
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -129,19 +128,6 @@ fun getMaxConsecutiveDays(memoList: List<TodoItemData>): Int {
     return maxOf(maxStreak, currentStreak)
 }
 
-val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
-
-fun changeToStringDate(date: LocalDate): String = date.format(formatter)
-fun changeToLocalDate(dateString: String) = LocalDate.parse(dateString,formatter)
 fun Timestamp.toLocalDate(): LocalDate = this.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 fun LocalDate.toTimestamp(): Timestamp = Timestamp(this.atStartOfDay(ZoneId.systemDefault()).toEpochSecond(), 0)
-
-fun LatLng.toLocation(): Location{
-    val location = Location("location")
-    location.latitude = this.latitude
-    location.longitude = this.longitude
-    return location
-}
-
-fun String.removeHtmlTags(): String = replace(Regex("<.*?>"), "")
 

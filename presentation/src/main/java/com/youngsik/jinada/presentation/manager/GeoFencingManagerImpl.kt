@@ -36,6 +36,8 @@ class GeoFencingManagerImpl(private val context: Context) : GeoFencingManager{
                 .build()
         }
 
+        if (geofenceList.isEmpty()) return
+
         val geofencingRequest = GeofencingRequest.Builder()
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
             .addGeofences(geofenceList)

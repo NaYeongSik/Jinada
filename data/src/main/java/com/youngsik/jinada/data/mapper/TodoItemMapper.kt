@@ -3,10 +3,10 @@ package com.youngsik.jinada.data.mapper
 import com.google.firebase.firestore.GeoPoint
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
-import com.youngsik.jinada.data.utils.changeToLocalDate
-import com.youngsik.jinada.data.utils.changeToStringDate
 import com.youngsik.jinada.data.utils.toLocalDate
 import com.youngsik.jinada.data.utils.toTimestamp
+import com.youngsik.shared.utils.changeToLocalDate
+import com.youngsik.shared.utils.changeToStringDate
 
 fun TodoItemDto.toDomainModel(memoId: String, distance: Double = 0.0): TodoItemData {
     return TodoItemData(

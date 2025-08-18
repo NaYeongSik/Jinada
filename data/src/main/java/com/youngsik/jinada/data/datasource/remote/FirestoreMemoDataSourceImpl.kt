@@ -7,14 +7,14 @@ import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
 import com.youngsik.jinada.data.datasource.MemoDataSource
 import com.youngsik.jinada.data.mapper.toDomainModel
 import com.youngsik.jinada.data.mapper.toDto
-import com.youngsik.jinada.data.utils.changeToLocalDate
 import com.youngsik.jinada.data.utils.toTimestamp
+import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.shared.utils.changeToLocalDate
 import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
 import java.time.LocalDate

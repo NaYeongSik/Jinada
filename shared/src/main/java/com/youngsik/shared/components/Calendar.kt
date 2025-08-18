@@ -1,4 +1,4 @@
-package com.youngsik.jinada.presentation.component
+package com.youngsik.shared.components
 
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -7,8 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import com.youngsik.jinada.data.utils.changeToStringDate
-import com.youngsik.jinada.presentation.common.DatePickerSelectableDates
+import com.youngsik.shared.common.DatePickerSelectableDates
+import com.youngsik.shared.utils.changeToStringDate
 import java.time.Instant
 import java.time.ZoneId
 

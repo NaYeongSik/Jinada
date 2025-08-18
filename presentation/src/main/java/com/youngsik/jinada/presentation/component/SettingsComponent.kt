@@ -21,6 +21,12 @@ import com.youngsik.jinada.presentation.common.SettingsData
 import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
 import com.youngsik.shared.R
+import com.youngsik.shared.components.CommonCard
+import com.youngsik.shared.components.CommonDividingLine
+import com.youngsik.shared.components.CommonSettingsDialog
+import com.youngsik.shared.components.CommonSliderOptionRow
+import com.youngsik.shared.components.CommonSwitchOptionRow
+import com.youngsik.shared.components.ListItemRow
 
 
 @Composable
@@ -83,8 +89,10 @@ fun DialogView(dialogRoute: SettingDialogState, settingsUiState: SettingsUiState
             CommonSettingsDialog(
                 stringResource(R.string.notification_setting_title),
                 { onChangedDialogType(SettingDialogState.NONE) },
-                { onSaveNotificationOption(isCheckedCloserNoti, isCheckedDailyNoti)
-                    onChangedDialogType(SettingDialogState.NONE)})
+                {
+                    onSaveNotificationOption(isCheckedCloserNoti, isCheckedDailyNoti)
+                    onChangedDialogType(SettingDialogState.NONE)
+                })
             {
                 Column {
                     CommonSwitchOptionRow(isCheckedCloserNoti, onCloserSwitchChanged) {
@@ -117,24 +125,38 @@ fun DialogView(dialogRoute: SettingDialogState, settingsUiState: SettingsUiState
             CommonSettingsDialog(
                 stringResource(R.string.setting_title_search_range),
                 { onChangedDialogType(SettingDialogState.NONE) },
-                { onSaveSearchRange(closerMemoSearchingRange, closerMemoNotiRange)
-                    onChangedDialogType(SettingDialogState.NONE)})
+                {
+                    onSaveSearchRange(closerMemoSearchingRange, closerMemoNotiRange)
+                    onChangedDialogType(SettingDialogState.NONE)
+                })
             {
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    CommonSliderOptionRow(closerMemoSearchingRange,
+                    CommonSliderOptionRow(
+                        closerMemoSearchingRange,
                         { newValue -> closerMemoSearchingRange = newValue }) {
                         Text(text = stringResource(R.string.search_range_setting_memo_title))
-                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoSearchingRange * 1000).toInt()))
+                        Text(
+                            text = stringResource(
+                                R.string.common_distance_meters,
+                                (closerMemoSearchingRange * 1000).toInt()
+                            )
+                        )
                     }
 
                     CommonDividingLine(modifier = Modifier.fillMaxWidth())
 
-                    CommonSliderOptionRow(closerMemoNotiRange,
+                    CommonSliderOptionRow(
+                        closerMemoNotiRange,
                         { newValue -> closerMemoNotiRange = newValue }) {
                         Text(text = stringResource(R.string.search_range_setting_notification_title))
-                        Text(text = stringResource(R.string.common_distance_meters, (closerMemoNotiRange * 1000).toInt()))
+                        Text(
+                            text = stringResource(
+                                R.string.common_distance_meters,
+                                (closerMemoNotiRange * 1000).toInt()
+                            )
+                        )
                     }
                 }
             }

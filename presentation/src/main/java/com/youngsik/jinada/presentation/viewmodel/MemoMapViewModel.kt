@@ -80,10 +80,7 @@ class MemoMapViewModel(application: Application, private val memoRepository: Mem
             memoRepository.getNearByMemoList(_mapUiState.value.nickname,myLocation,range).collect { result ->
                 when(result){
                     is DataResourceResult.Loading -> _mapUiState.update { it.copy(isLoading = true) }
-                    is DataResourceResult.Success -> {
-                        val nearByMemoList = result.data.filter { todoItemData -> !todoItemData.isCompleted }
-                        _mapUiState.update { it.copy(isLoading = false, isSuccessful = true, nearByMemoList = nearByMemoList) }
-                    }
+                    is DataResourceResult.Success -> _mapUiState.update { it.copy(isLoading = false, isSuccessful = true, nearByMemoList = result.data.sortedBy { it -> it.distance }) }
                     is DataResourceResult.Failure -> _mapUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }

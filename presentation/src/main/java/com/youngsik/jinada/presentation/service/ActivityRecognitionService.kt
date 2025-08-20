@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 class ActivityRecognitionService : Service(){
     companion object {
         private const val NOTIFICATION_ID = 10002
+        private const val SEARCHING_RANGE = 5.0f // 5km
         const val ACTION_UPDATE_GEOFENCING = "ACTION_UPDATE_GEOFENCING"
     }
 
@@ -67,7 +68,7 @@ class ActivityRecognitionService : Service(){
                         if (settings.closerNotificationEnabled){
                             val location = (locationRepository as CurrentLocationRepositoryImpl).getCurrentLocation()
                             if (location != null){
-                                memoRepository.getNearByMemoList(userInfo.nickname,location,settings.closerMemoSearchingRange).collect { result ->
+                                memoRepository.getNearByMemoList(userInfo.nickname,location,SEARCHING_RANGE).collect { result ->
                                     when (result) {
                                         is DataResourceResult.Success -> {
                                             if (ActivityCompat.checkSelfPermission(applicationContext,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

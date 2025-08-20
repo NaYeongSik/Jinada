@@ -1,7 +1,6 @@
 package com.youngsik.jinada.data.datasource.remote
 
 import android.location.Location
-import android.util.Log
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Tasks
@@ -106,7 +105,6 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
         val targetLocation = GeoLocation(location.latitude, location.longitude)
         val rangeDistanceInMeters = (range * 1000).toDouble()
         val queryBounds = GeoFireUtils.getGeoHashQueryBounds(targetLocation, rangeDistanceInMeters)
-        Log.d("jinada_test","getNearByMemoList nickname: ${nickname}")
 
         val tasks = queryBounds
             .map { bound ->
@@ -134,7 +132,7 @@ class FirestoreMemoDataSourceImpl : MemoDataSource {
                 }
             }
 
-        val memoList = nearbyMemos.filter { todoItemData -> changeToLocalDate(todoItemData.deadlineDate) >= LocalDate.now() }
+        val memoList = nearbyMemos.filter { todoItemData -> !todoItemData.isCompleted && changeToLocalDate(todoItemData.deadlineDate) >= LocalDate.now() }
 
         DataResourceResult.Success(memoList)
     }.getOrElse { DataResourceResult.Failure(it) }

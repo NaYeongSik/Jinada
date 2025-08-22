@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
@@ -11,8 +12,10 @@ import com.google.android.gms.location.LocationServices
 import com.youngsik.domain.manager.GeoFencingManager
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.presentation.receiver.GeoFencingReceiver
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class GeoFencingManagerImpl(private val context: Context) : GeoFencingManager{
+class GeoFencingManagerImpl @Inject constructor(@param:ApplicationContext private val context: Context) : GeoFencingManager{
     private val geofencingClient = LocationServices.getGeofencingClient(context)
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(context, GeoFencingReceiver::class.java)
@@ -43,6 +46,7 @@ class GeoFencingManagerImpl(private val context: Context) : GeoFencingManager{
             .addGeofences(geofenceList)
             .build()
 
+        Log.d("jinada_test","GeoFencingManagerImpl updateGeoPencing: ${geofenceList.size}")
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)
     }
 

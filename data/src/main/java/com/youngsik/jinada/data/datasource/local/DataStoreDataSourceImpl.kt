@@ -6,15 +6,17 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.domain.entity.UserSettings
 import com.youngsik.jinada.data.datasource.DataStoreDataSource
+import com.youngsik.shared.model.DataResourceResult
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 private val Context.dataStore by preferencesDataStore(name = "jinada_settings")
-class DataStoreDataSourceImpl(private val context: Context): DataStoreDataSource {
+class DataStoreDataSourceImpl @Inject constructor(@param:ApplicationContext private val context: Context): DataStoreDataSource {
 
     private object PreferencesKeys {
         val NICKNAME = stringPreferencesKey("nickname")

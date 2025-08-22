@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +21,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class CurrentLocationRepositoryImpl(context: Context) : CurrentLocationRepository {
+class CurrentLocationRepositoryImpl @Inject constructor(@param:ApplicationContext private val context: Context) : CurrentLocationRepository {
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private val _latestLocation = MutableStateFlow<Location?>(null)
     val latestLocationState: Flow<Location?> = _latestLocation.asStateFlow()

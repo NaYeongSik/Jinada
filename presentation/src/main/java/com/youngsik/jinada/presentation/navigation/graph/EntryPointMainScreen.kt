@@ -1,22 +1,16 @@
 package com.youngsik.jinada.presentation.navigation.graph
 
-import android.content.Context
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.youngsik.domain.manager.LocationServiceManager
 import com.youngsik.jinada.presentation.data.TodoItemParcelable
 import com.youngsik.jinada.presentation.data.toDomainModel
 import com.youngsik.jinada.presentation.data.toParcelable
-import com.youngsik.jinada.presentation.manager.LocationServiceManagerImpl
 import com.youngsik.jinada.presentation.navigation.route.ScreenRouteDef
 import com.youngsik.jinada.presentation.navigation.type.parcelableType
 import com.youngsik.jinada.presentation.screen.MainScreen
@@ -30,13 +24,12 @@ import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 import kotlin.reflect.typeOf
 
 @Composable
-fun EntryPointMainScreen(context: Context,viewModelFactory: ViewModelProvider.Factory){
+fun EntryPointMainScreen(){
     val navController = rememberNavController()
-    val locationServiceManager: LocationServiceManager = remember { LocationServiceManagerImpl(context) }
 
-    val memoViewModel: MemoViewModel = viewModel(factory = viewModelFactory)
-    val memoMapViewModel: MemoMapViewModel = viewModel(factory = viewModelFactory)
-    val settingsViewModel: SettingsViewModel = viewModel(factory = viewModelFactory)
+    val memoViewModel: MemoViewModel = hiltViewModel()
+    val memoMapViewModel: MemoMapViewModel = hiltViewModel()
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
 
     AppScaffold(navController = navController) { innerPadding ->
         NavHost(
@@ -45,7 +38,7 @@ fun EntryPointMainScreen(context: Context,viewModelFactory: ViewModelProvider.Fa
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<ScreenRouteDef.BottomNavigation.MainTab>{
-                MainScreen(memoMapViewModel,locationServiceManager,onCreateMemoClick = { todoItemData ->
+                MainScreen(memoMapViewModel,onCreateMemoClick = { todoItemData ->
                         val todoItemParcelable = todoItemData.toParcelable()
                         navController.navigate(ScreenRouteDef.MemoManagementTab.CreateMemo(todoItemParcelable))
                     },

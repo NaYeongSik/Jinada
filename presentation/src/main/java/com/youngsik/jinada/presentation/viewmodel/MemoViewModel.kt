@@ -2,7 +2,6 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
@@ -12,13 +11,17 @@ import com.youngsik.jinada.data.utils.getTotalyStatData
 import com.youngsik.jinada.data.utils.getWeeklyStatData
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.jinada.presentation.uistate.MemoUiState
+import com.youngsik.shared.model.DataResourceResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MemoViewModel(private val repository: MemoRepository, private val dataStoreRepository: DataStoreRepository) : ViewModel(){
+@HiltViewModel
+class MemoViewModel @Inject constructor(private val repository: MemoRepository, private val dataStoreRepository: DataStoreRepository) : ViewModel(){
     companion object{
         const val NONE = "NONE"
         const val SUCCESSFUL_GET_MEMO = "SUCCESSFUL_GET_MEMO"

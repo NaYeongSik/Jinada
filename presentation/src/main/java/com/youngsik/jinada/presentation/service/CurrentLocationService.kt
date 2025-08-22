@@ -9,7 +9,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
-import com.youngsik.jinada.presentation.provider.LocationRepositoryProvider
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -17,18 +17,19 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class CurrentLocationService : Service() {
 
     companion object {
         const val NOTIFICATION_ID = 10003
     }
+    @Inject lateinit var locationRepository: CurrentLocationRepository
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val locationRepository: CurrentLocationRepository by lazy {
-        LocationRepositoryProvider.getInstance(applicationContext)
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -72,7 +73,8 @@ class CurrentLocationService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        serviceScope.cancel()
+        stopSelf()
+        if (serviceScope.isActive) serviceScope.cancel()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null

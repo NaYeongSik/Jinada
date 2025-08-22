@@ -7,8 +7,9 @@ import com.youngsik.jinada.data.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class UserRepositoryImpl(val userDataSource: UserDataSource): UserRepository {
+class UserRepositoryImpl @Inject constructor(val userDataSource: UserDataSource): UserRepository {
     override suspend fun getUserInfo(uuid: String): Flow<DataResourceResult<UserInfo>> = flow{
          emit(DataResourceResult.Loading)
          emit(userDataSource.getUserInfo(uuid))

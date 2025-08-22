@@ -4,16 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
+import com.youngsik.domain.manager.ActivityRecognitionManager
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.UserRepository
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(private val userRepository: UserRepository, private val dataStoreRepository: DataStoreRepository): ViewModel() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(private val userRepository: UserRepository, private val dataStoreRepository: DataStoreRepository, private val activityRecognitionManager: ActivityRecognitionManager): ViewModel() {
     companion object{
         const val NONE = "NONE"
         const val SUCCESSFUL_SET_USER_INFO = "SUCCESSFUL_SET_USER_INFO"
@@ -45,6 +49,14 @@ class SettingsViewModel(private val userRepository: UserRepository, private val 
         }
     }
 
+    fun startActivityRecognition(){
+        activityRecognitionManager.startActivityRecognition()
+    }
+
+    fun stopActivityRecognition(){
+        activityRecognitionManager.stopActivityRecognition()
+    }
+
 
     fun resetLastSuccessfulAction(){
         _settingsUiState.update { it.copy(lastSuccessfulAction = NONE) }
@@ -65,7 +77,6 @@ class SettingsViewModel(private val userRepository: UserRepository, private val 
             }
         }
     }
-
 
 
     fun setUserInfo(nickname: String, uuid: String){

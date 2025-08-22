@@ -7,8 +7,9 @@ import com.youngsik.jinada.data.datasource.DataStoreDataSource
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class DataStoreRepositoryImpl(val dataStoreDataSource: DataStoreDataSource): DataStoreRepository {
+class DataStoreRepositoryImpl @Inject constructor(val dataStoreDataSource: DataStoreDataSource): DataStoreRepository {
     override val userInfo: Flow<UserInfo>
         get() = dataStoreDataSource.userInfoFlow
     override val userSettings: Flow<UserSettings>

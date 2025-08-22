@@ -9,8 +9,9 @@ import com.youngsik.jinada.data.datasource.UserDataSource
 import com.youngsik.jinada.data.mapper.toDomainModel
 import com.youngsik.jinada.data.mapper.toDto
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class FirestoreUserDataSourceImpl: UserDataSource {
+class FirestoreUserDataSourceImpl @Inject constructor() : UserDataSource {
     private val userCollection = Firebase.firestore.collection("user_info")
 
     override suspend fun createUserInfo(userInfo: UserInfo): DataResourceResult<Unit> = runCatching{

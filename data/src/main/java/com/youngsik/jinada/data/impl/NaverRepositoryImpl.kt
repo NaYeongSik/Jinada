@@ -1,25 +1,25 @@
 package com.youngsik.jinada.data.impl
 
 import com.youngsik.domain.entity.PoiItem
-import com.youngsik.jinada.data.repository.NaverRepository
-import com.youngsik.jinada.data.datasource.remote.NaverApiClient
 import com.youngsik.jinada.data.mapper.toDomainModel
+import com.youngsik.jinada.data.repository.NaverApiRepository
+import com.youngsik.jinada.data.repository.NaverRepository
+import javax.inject.Inject
+import javax.inject.Named
 
-class NaverRepositoryImpl(): NaverRepository {
+class NaverRepositoryImpl @Inject constructor(@Named("mapApi") private val mapApi: NaverApiRepository, @Named("searchApi") private val searchApi: NaverApiRepository): NaverRepository {
     
     companion object{
         const val ROADADDR = "roadaddr" // 도로명 주소
         const val ADDR = "addr" // 지번 주소
     }
-    val MapApiClient = NaverApiClient.naverMapApi
-    val SearchApiClient = NaverApiClient.naverSearchApi
 
     override suspend fun getAddressFromCoordinates(
         clientId: String,
         clientSecret: String,
         coords: String
     ): String? {
-        val response = MapApiClient.getAddressFromCoordinates(clientId, clientSecret, coords)
+        val response = mapApi.getAddressFromCoordinates(clientId, clientSecret, coords)
         if (response.status.code != 0 || response.results.isEmpty()) {
             return null
         }
@@ -55,7 +55,7 @@ class NaverRepositoryImpl(): NaverRepository {
         clientSecret: String,
         query: String
     ): List<PoiItem> {
-        val response = SearchApiClient.getPoiFromInputString(clientId, clientSecret, query)
+        val response = searchApi.getPoiFromInputString(clientId, clientSecret, query)
 
         return response.toDomainModel()
     }

@@ -1,6 +1,6 @@
 [versions]
 agp = "8.11.1"
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,25 +10,45 @@ activityCompose = "1.10.1"
 composeBom = "2025.06.01"
 materialIconsExtendedAndroid = "1.7.8"
 navigationCompose = "2.9.0"
-naverMap = "3.22.0"
 playServicesLocation = "21.3.0"
-kotlinxSerializationJson = "1.8.1"
 appcompat = "1.7.1"
 material = "1.12.0"
-firebaseBom = "33.16.0"
-firebaseFirestoreKtx = "25.1.4"
 googleGmsServices = "4.4.3"
 constraintlayout = "2.2.1"
 uiViewbinding = "1.8.2"
-moshiKotlin = "1.15.2"
 lifecycleViewmodelCompose = "2.9.2"
 jetbrainsKotlinJvm = "2.1.21"
+
+#secrets
 secretsGradlePlugin = "2.0.1"
+
+#naver map
+naverMap = "3.22.0"
+
+#firebase
+firebaseBom = "33.16.0"
+firebaseFirestoreKtx = "25.1.4"
 geofireAndroidCommon = "3.2.0"
-firebaseMessagingKtx = "24.1.2"
+
+#retrofit
 retrofit = "3.0.0"
+
+#moshi
+moshiKotlin = "1.15.2"
 converterMoshi = "3.0.0"
+
+#serializable
+kotlinxSerializationJson = "1.8.1"
+
+#data store
 datastorePreferences = "1.1.7"
+
+#hilt
+hilt = "2.57"
+hiltNavigationCompose = "1.2.0"
+
+#ksp
+ksp = "2.2.0-2.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +75,7 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
+converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "converterMoshi" }
 
 # AndroidViewBinding
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -70,10 +91,15 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 geofire-android-common = { group = "com.firebase", name = "geofire-android-common", version.ref = "geofireAndroidCommon" }
 
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
-firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "converterMoshi" }
+
+#datastore 내부 저장소
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+
+#hilt
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 
 [plugins]
@@ -86,6 +112,8 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsServices" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin",  version.ref = "secretsGradlePlugin" }
+kotlin-android-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [bundles]
 compose-runtime = [

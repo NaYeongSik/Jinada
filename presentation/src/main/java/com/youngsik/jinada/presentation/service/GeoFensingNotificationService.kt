@@ -10,31 +10,30 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
-import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.TodoItemData
-import com.youngsik.jinada.data.datasource.remote.FirestoreMemoDataSourceImpl
-import com.youngsik.jinada.data.impl.MemoRepositoryImpl
 import com.youngsik.jinada.data.repository.MemoRepository
 import com.youngsik.shared.R
+import com.youngsik.shared.model.DataResourceResult
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class GeoFensingNotificationService: Service() {
     companion object{
         private const val NOTIFICATION_ID = 10001
     }
+    @Inject lateinit var memoRepository: MemoRepository
 
     override fun onBind(p0: Intent?): IBinder? = null
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val memoRepository : MemoRepository by lazy {
-        MemoRepositoryImpl(FirestoreMemoDataSourceImpl())
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForegroundNotify()
@@ -57,7 +56,7 @@ class GeoFensingNotificationService: Service() {
             stopGeoFencingNotification()
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     private lateinit var notificationManager: NotificationManager

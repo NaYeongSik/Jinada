@@ -11,17 +11,12 @@ import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.youngsik.domain.manager.GeoFencingManager
-import com.youngsik.shared.model.DataResourceResult
-import com.youngsik.jinada.data.datasource.local.DataStoreDataSourceImpl
-import com.youngsik.jinada.data.datasource.remote.FirestoreMemoDataSourceImpl
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
-import com.youngsik.jinada.data.impl.DataStoreRepositoryImpl
-import com.youngsik.jinada.data.impl.MemoRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.MemoRepository
-import com.youngsik.jinada.presentation.manager.GeoFencingManagerImpl
-import com.youngsik.jinada.presentation.provider.LocationRepositoryProvider
+import com.youngsik.shared.model.DataResourceResult
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,7 +25,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ActivityRecognitionService : Service(){
     companion object {
         private const val NOTIFICATION_ID = 10002
@@ -38,22 +35,12 @@ class ActivityRecognitionService : Service(){
         const val ACTION_UPDATE_GEOFENCING = "ACTION_UPDATE_GEOFENCING"
     }
 
+    @Inject lateinit var locationRepository: CurrentLocationRepository
+    @Inject lateinit var dataStoreRepository: DataStoreRepository
+    @Inject lateinit var geoFencingManager: GeoFencingManager
+    @Inject lateinit var memoRepository: MemoRepository
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val locationRepository: CurrentLocationRepository by lazy {
-        LocationRepositoryProvider.getInstance(applicationContext)
-    }
-
-    private val memoRepository : MemoRepository by lazy {
-        MemoRepositoryImpl(FirestoreMemoDataSourceImpl())
-    }
-
-    private val dataStoreRepository : DataStoreRepository by lazy {
-        DataStoreRepositoryImpl(DataStoreDataSourceImpl(applicationContext))
-    }
-
-    private val geoFencingManager : GeoFencingManager by lazy {
-        GeoFencingManagerImpl(applicationContext)
-    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 

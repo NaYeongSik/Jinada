@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityTransition
@@ -12,8 +11,10 @@ import com.google.android.gms.location.ActivityTransitionRequest
 import com.google.android.gms.location.DetectedActivity
 import com.youngsik.domain.manager.ActivityRecognitionManager
 import com.youngsik.jinada.presentation.receiver.ActivityRecognitionReceiver
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class ActivityRecognitionManagerImpl(private val context: Context) : ActivityRecognitionManager{
+class ActivityRecognitionManagerImpl @Inject constructor(@param:ApplicationContext private val context: Context) : ActivityRecognitionManager{
 
     companion object{
         const val ACTION_ACTIVITY_TRANSITION_UPDATE = "ACTION_ACTIVITY_TRANSITION_UPDATE"
@@ -52,12 +53,7 @@ class ActivityRecognitionManagerImpl(private val context: Context) : ActivityRec
         )
         val request = ActivityTransitionRequest(transitions)
 
-        ActivityRecognition.getClient(context).requestActivityTransitionUpdates(request, pendingIntent).addOnSuccessListener {
-            Log.d("jinada_test", "startActivityRecognition: success")
-
-        }.addOnFailureListener {
-            Log.d("jinada_test", "startActivityRecognition: fail")
-        }
+        ActivityRecognition.getClient(context).requestActivityTransitionUpdates(request, pendingIntent)
     }
 
     @RequiresPermission(anyOf = [Manifest.permission.ACTIVITY_RECOGNITION, "com.google.android.gms.permission.ACTIVITY_RECOGNITION"])

@@ -7,8 +7,9 @@ import com.youngsik.jinada.data.datasource.MemoDataSource
 import com.youngsik.jinada.data.repository.MemoRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class MemoRepositoryImpl(val memoDataSource: MemoDataSource) : MemoRepository {
+class MemoRepositoryImpl @Inject constructor(val memoDataSource: MemoDataSource) : MemoRepository {
     override suspend fun createMemo(todoItemData: TodoItemData,nickname: String) = flow {
         emit(DataResourceResult.Loading)
         emit(memoDataSource.createMemo(todoItemData,nickname))

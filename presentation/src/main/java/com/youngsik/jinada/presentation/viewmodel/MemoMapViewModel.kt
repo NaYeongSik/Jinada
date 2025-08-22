@@ -1,11 +1,11 @@
 package com.youngsik.jinada.presentation.viewmodel
 
-import android.app.Application
 import android.location.Location
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.youngsik.domain.entity.TodoItemData
+import com.youngsik.domain.manager.LocationServiceManager
 import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
 import com.youngsik.jinada.data.repository.CurrentLocationRepository
 import com.youngsik.jinada.data.repository.DataStoreRepository
@@ -15,13 +15,16 @@ import com.youngsik.jinada.presentation.BuildConfig
 import com.youngsik.jinada.presentation.uistate.MapUiState
 import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.shared.utils.toLocation
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MemoMapViewModel(application: Application, private val memoRepository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val naverRepository: NaverRepository, private val dataStoreRepository: DataStoreRepository) : AndroidViewModel(application) {
+@HiltViewModel
+class MemoMapViewModel @Inject constructor(private val memoRepository: MemoRepository, private val locationRepository: CurrentLocationRepository, private val naverRepository: NaverRepository, private val dataStoreRepository: DataStoreRepository, private val locationServiceManager: LocationServiceManager) : ViewModel() {
     private val _mapUiState = MutableStateFlow(MapUiState())
     val mapUiState get() = _mapUiState.asStateFlow()
 
@@ -52,6 +55,14 @@ class MemoMapViewModel(application: Application, private val memoRepository: Mem
                 }
             }
         }
+    }
+
+    fun startLocationTracking(){
+        locationServiceManager.startLocationTracking()
+    }
+
+    fun stopLocationTracking(){
+        locationServiceManager.stopLocationTracking()
     }
 
     fun getTargetLocationInfo(todoItemData: TodoItemData){

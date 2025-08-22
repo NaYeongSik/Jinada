@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
 import com.youngsik.domain.entity.TodoItemData
-import com.youngsik.domain.manager.LocationServiceManager
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.component.MapSearchBar
 import com.youngsik.jinada.presentation.component.MyLocationButton
@@ -38,14 +37,14 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: LocationServiceManager,onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
+fun MainScreen(memoMapViewModel: MemoMapViewModel,onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
     val mapUiState by memoMapViewModel.mapUiState.collectAsStateWithLifecycle()
     var inputText by remember { mutableStateOf("") }
     val scaffoldState = rememberBottomSheetScaffoldState()
     val mapController = rememberMapController(LocalContext.current)
 
     LaunchedEffect(Unit) {
-        locationServiceManager.startLocationTracking()
+        memoMapViewModel.startLocationTracking()
     }
 
     LaunchedEffect(mapUiState.cameraPosition) {
@@ -64,7 +63,7 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
 
     DisposableEffect(Unit) {
         onDispose {
-            locationServiceManager.stopLocationTracking()
+            memoMapViewModel.stopLocationTracking()
         }
     }
 
@@ -103,7 +102,7 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel, locationServiceManager: Locat
             MyLocationButton(Modifier
                 .align(Alignment.BottomEnd)
                 .padding(JinadaDimens.Padding.medium)
-                ,{ mapUiState.myLocation?.let { mapController.moveToTargetLocation(it) } })
+            ) { mapUiState.myLocation?.let { mapController.moveToTargetLocation(it) } }
         }
     }
 

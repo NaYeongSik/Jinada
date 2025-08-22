@@ -50,20 +50,19 @@ import com.google.android.gms.location.LocationSettingsResponse
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
-import com.youngsik.domain.manager.ActivityRecognitionManager
-import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CHECK_NICKNAME
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CREATE_USER_INFO
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_SET_USER_INFO
 import com.youngsik.shared.R
+import com.youngsik.shared.theme.JinadaDimens
 import kotlinx.coroutines.delay
 import java.util.UUID
 
 
 @Composable
-fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionManager: ActivityRecognitionManager, onSuccessOnboarding: () -> Unit){
+fun OnboardingScreen(settingsViewModel: SettingsViewModel, onSuccessOnboarding: () -> Unit){
     val context = LocalContext.current
     val settingsUiState by settingsViewModel.settingsUiState.collectAsStateWithLifecycle()
     var isDonePermmisionRequest by remember { mutableStateOf(false) }
@@ -110,7 +109,7 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionMa
                     if (permissions.getOrDefault(Manifest.permission.ACCESS_BACKGROUND_LOCATION, false))
                     {
                         checkGpsAndStartService()
-                        checkAndStartActivityRecognition(context,activityRecognitionManager)
+                        checkAndStartActivityRecognition(context,settingsViewModel)
                     } else {
                         isDonePermmisionRequest = true
                     }
@@ -132,7 +131,7 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionMa
                             showBackgroundPermissionRationale = true
                         } else {
                             checkGpsAndStartService()
-                            checkAndStartActivityRecognition(context,activityRecognitionManager)
+                            checkAndStartActivityRecognition(context,settingsViewModel)
                         }
 
                     } else {
@@ -172,7 +171,7 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, activityRecognitionMa
 
             if (hasLocationPermission && hasActivityPermission && hasNotificationPermission && hasBackgroundPermission) {
                 // 이미 권한이 있으면 GPS 확인 및 서비스 시작
-                checkAndStartActivityRecognition(context,activityRecognitionManager)
+                checkAndStartActivityRecognition(context,settingsViewModel)
                 onSuccessOnboarding()
             } else {
                 // 권한이 없으면 요청
@@ -288,7 +287,7 @@ fun checkPhoneGpsSettings(
 }
 
 @RequiresPermission(anyOf = [Manifest.permission.ACTIVITY_RECOGNITION, "com.google.android.gms.permission.ACTIVITY_RECOGNITION"])
-fun checkAndStartActivityRecognition(context: Context, activityRecognitionManager: ActivityRecognitionManager) {
+fun checkAndStartActivityRecognition(context: Context, settingsViewModel: SettingsViewModel) {
     val permissionToCheck = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) Manifest.permission.ACTIVITY_RECOGNITION else "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
 
     if (ActivityCompat.checkSelfPermission(
@@ -296,7 +295,7 @@ fun checkAndStartActivityRecognition(context: Context, activityRecognitionManage
             permissionToCheck
         ) == PackageManager.PERMISSION_GRANTED
     ) {
-        activityRecognitionManager.startActivityRecognition()
+        settingsViewModel.startActivityRecognition()
     }
 }
 

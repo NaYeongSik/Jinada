@@ -18,8 +18,9 @@ import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
+import javax.inject.Inject
 
-class FirestoreMemoDataSourceImpl : MemoDataSource {
+class FirestoreMemoDataSourceImpl @Inject constructor() : MemoDataSource {
     private val memoCollection = Firebase.firestore.collection("memo")
 
     override suspend fun createMemo(todoItemData: TodoItemData, nickname: String): DataResourceResult<Unit> = runCatching {

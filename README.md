@@ -30,7 +30,7 @@
 | 분야          | 기술 스택 |
 |---------------|-----------|
 | 개발 언어     | Kotlin |
-| 아키텍처     | MVVM |
+| 아키텍처     | MVVM, Hilt |
 | UI            | Jetpack Compose Material3 UI/UX|
 | Networking  | Retrofit2, Moshi, Firebase Firestore |
 | Local Storage  | DataStore |

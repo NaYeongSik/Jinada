@@ -49,10 +49,15 @@
 - 등록된 메모를 날짜별로 확인하여 관리 가능
 - 완료/미완료 상태 관리 및 수정 가능
 
-| 위치기반 메모 생성 | 메모 완료 및 삭제 | 메모 수정 | 장소 검색 |
-|--------------------|--------------------|--------------------|--------------------|
-| ![메모생성](https://github.com/user-attachments/assets/703f33e9-5c40-449e-bf21-eedf429a5d63)|![메모완료및삭제](https://github.com/user-attachments/assets/f0010873-4edc-4378-ac39-37b93b8aa76e)|![메모수정](https://github.com/user-attachments/assets/d24f37b5-34cf-4d71-8463-0ef207064188)|![검색](https://github.com/user-attachments/assets/0b37a912-205a-4a15-9c87-f80704725c47)|
-| 네이버 지도를 길게 눌러 위치정보를 마커를 통해 확인하고<br> 마커를 탭해 현재 선택된 위치로 메모를 생성합니다.|체크박스를 탭하여 메모를 완료 처리하고<br>더보기 아이콘을 탭하여 삭제 처리 할 수 있습니다.| 더보기 메뉴를 통해 메모의 내용 및 마감일을 수정 할 수 있습니다.    | 검색바를 통한 장소 검색과 검색 결과를 메모로 등록 할 수 있습니다.   |
+| 위치기반 메모 생성 |  장소 검색 |
+|--------------------|--------------------|
+| <img src="https://github.com/user-attachments/assets/703f33e9-5c40-449e-bf21-eedf429a5d63" width="300"/> | <img src="https://github.com/user-attachments/assets/0b37a912-205a-4a15-9c87-f80704725c47" width="300"/> |
+| 네이버 지도를 길게 눌러 위치정보를 확인하고<br>메모를 생성합니다. | 검색바를 통한 장소 검색과 검색 결과를 메모로<br> 등록 할 수 있습니다.  |
+
+| 메모 수정 | 메모 완료 및 삭제 |
+|--------------------|--------------------|
+| <img src="https://github.com/user-attachments/assets/d24f37b5-34cf-4d71-8463-0ef207064188" width="300"/> | <img src="https://github.com/user-attachments/assets/f0010873-4edc-4378-ac39-37b93b8aa76e" width="300"/> |
+| 더보기 메뉴를 통해 메모의 내용 및 마감일을<br> 수정 할 수 있습니다. | 체크박스를 탭하여 메모를 완료하고 더보기<br> 아이콘을 탭하여 삭제 처리 할 수 있습니다. |
 
 ---
 
@@ -61,9 +66,8 @@
 
 | 인접 위치 메모 알림 |
 |--------------------|
-|![인접위치알림](https://github.com/user-attachments/assets/1dc83954-931c-4eab-b8ba-6b30b4c85106)|
-| 사용자 위치에 인접한 메모가 있을 때 알림을 보내주고<br> 알림을 탭하면 메인화면으로 이동시킵니다.|
-
+| <img src="https://github.com/user-attachments/assets/1dc83954-931c-4eab-b8ba-6b30b4c85106" width="300"/> |
+| 사용자 위치에 인접한 메모가 있을 때 알림을 보내주고<br> 알림을 탭하면 메인화면으로 이동시킵니다. |
 
 ---
 
@@ -72,8 +76,8 @@
 
 | 알림 및 범위 설정 |
 |--------------------|
-|![마이페이지](https://github.com/user-attachments/assets/06f210b0-6c41-49d8-8fc4-283cdd5c3b62)|
-| 인접한 메모의 알림 여부 설정과 인접한 메모 판단 범위를 설정합니다.|
+| <img src="https://github.com/user-attachments/assets/06f210b0-6c41-49d8-8fc4-283cdd5c3b62" width="300"/> |
+| 인접한 메모의 알림 여부 설정과 인접한 메모 판단 범위를 설정합니다. |
 
 ---
 
@@ -83,12 +87,13 @@
 
 | 메모 진행사항 통계 |
 |--------------------|
-|![통계](https://github.com/user-attachments/assets/d0eb5dba-d9e6-49dd-9c6f-882591673d38)|
-| 사용자의 메모 진행률, 완료율을 기반으로 통계를 보여주고<br> 전체,월간,주간 단위로 요약을 제공해 동기를 부여합니다.|
+| <img src="https://github.com/user-attachments/assets/d0eb5dba-d9e6-49dd-9c6f-882591673d38" width="300"/> |
+| 사용자의 메모 진행률, 완료율을 기반으로 통계를 보여주고<br> 전체,월간,주간 단위로 요약을 제공해 동기를 부여합니다. |
 
 ---
 
 ## 🚀 향후 계획
+- ML Kit 디지털 잉크를 이용한 터치스크린 메모 입력
 - 지도 클러스터링 및 위치 기반 자동 추천
 
 ---

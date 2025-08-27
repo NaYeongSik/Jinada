@@ -88,7 +88,7 @@ fun MemoCard(item: TodoItemData, onCheckBoxChange: (Boolean) -> Unit, onEditClic
 
             Column(modifier = Modifier.weight(1f).clickable{ onClick?.invoke() }) {
                 Text(
-                    text = "마감일: ${ item.deadlineDate }",
+                    text = stringResource(R.string.deadline_date,item.deadlineDate),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(JinadaDimens.Spacer.xSmall))

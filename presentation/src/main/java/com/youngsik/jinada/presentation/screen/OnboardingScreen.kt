@@ -54,6 +54,7 @@ import com.youngsik.jinada.presentation.uistate.SettingsUiState
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CHECK_NICKNAME
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_CREATE_USER_INFO
+import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_INIT_SETTINGS
 import com.youngsik.jinada.presentation.viewmodel.SettingsViewModel.Companion.SUCCESSFUL_SET_USER_INFO
 import com.youngsik.shared.R
 import com.youngsik.shared.theme.JinadaDimens
@@ -65,141 +66,109 @@ import java.util.UUID
 fun OnboardingScreen(settingsViewModel: SettingsViewModel, onSuccessOnboarding: () -> Unit){
     val context = LocalContext.current
     val settingsUiState by settingsViewModel.settingsUiState.collectAsStateWithLifecycle()
-    var isDonePermmisionRequest by remember { mutableStateOf(false) }
+    var needInputNickname by remember { mutableStateOf(false) }
     var showBackgroundPermissionRationale by remember { mutableStateOf(false) }
+
+    val settingResultLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode != RESULT_OK) {
+                Toast.makeText(context, "GPS 활성화가 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    fun checkGpsAndStartService() {
+        checkPhoneGpsSettings(
+            context = context,
+            onGpsEnabled = { needInputNickname = true },
+            onGpsSettingResolve = { settingResultLauncher.launch(it) }
+        )
+    }
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
+            val locationGranted = perms[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    perms[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            val activityGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                perms[Manifest.permission.ACTIVITY_RECOGNITION] == true
+            } else true
+            val notificationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                perms[Manifest.permission.POST_NOTIFICATIONS] == true
+            } else true
+
+            if (locationGranted && activityGranted && notificationGranted) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) showBackgroundPermissionRationale = true
+                else {
+                    if (settingsUiState.nickname.isNotBlank()){
+                        checkGpsAndStartService()
+                        checkAndStartActivityRecognition(context, settingsViewModel)
+                    }
+                    else needInputNickname = true
+                }
+            } else {
+                Toast.makeText(context, "정상적인 이용을 위해 모든 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    val backgroundPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
+            if (perms[Manifest.permission.ACCESS_BACKGROUND_LOCATION] == true) {
+                checkGpsAndStartService()
+                checkAndStartActivityRecognition(context, settingsViewModel)
+            } else {
+                needInputNickname = true
+            }
+        }
 
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         Image(
             painter = painterResource(R.drawable.jinada_logo),
             contentDescription = "",
             modifier = Modifier.size(JinadaDimens.Common.xxxLarge)
         )
 
-        // GPS 설정 요청 결과 처리
-        val settingResultLauncher =
-            rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartIntentSenderForResult()
-            ) { activityResult ->
-                if (activityResult.resultCode != RESULT_OK) {
-                    Toast.makeText(context, "GPS 활성화가 필요합니다.", Toast.LENGTH_SHORT).show()
-                }
+        if (needInputNickname) {
+            NicknameInputDialog(settingsViewModel, settingsUiState) { nickname ->
+                val uuid = UUID.randomUUID().toString()
+                settingsViewModel.createUserInfoInFirestore(nickname, uuid)
             }
-
-        fun checkGpsAndStartService() {
-            checkPhoneGpsSettings(
-                context = context,
-                onGpsEnabled = {
-                    isDonePermmisionRequest = true
-                },
-                onGpsSettingResolve = { intentSenderRequest ->
-                    // GPS를 켜야 하는 경우, 다이얼로그 요청
-                    settingResultLauncher.launch(intentSenderRequest)
-                }
-            )
-        }
-
-        val backgroundPermissionLauncher =
-            rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestMultiplePermissions(),
-                onResult = { permissions ->
-                    // 권한이 부여되었는지 확인
-                    if (permissions.getOrDefault(Manifest.permission.ACCESS_BACKGROUND_LOCATION, false))
-                    {
-                        checkGpsAndStartService()
-                        checkAndStartActivityRecognition(context,settingsViewModel)
-                    } else {
-                        isDonePermmisionRequest = true
-                    }
-                }
-            )
-
-        // 권한 요청 결과 처리
-        val permissionLauncher =
-            rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestMultiplePermissions(),
-                onResult = { permissions ->
-                    // 권한이 부여되었는지 확인
-                    if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
-                        permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) ||
-                        permissions.getOrDefault(Manifest.permission.ACTIVITY_RECOGNITION, false) ||
-                        permissions.getOrDefault(Manifest.permission.POST_NOTIFICATIONS, false)
-                    ) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            showBackgroundPermissionRationale = true
-                        } else {
-                            checkGpsAndStartService()
-                            checkAndStartActivityRecognition(context,settingsViewModel)
-                        }
-
-                    } else {
-                        Toast.makeText(context, "정상적인 이용을 위해선 모든 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            )
-
-        // 화면이 처음 렌더링될 때 권한 상태 확인 및 요청
-        LaunchedEffect(Unit) {
-            val locationPermissions = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            )
-
-            val hasLocationPermission = locationPermissions.all {
-                ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-            }
-
-            val hasActivityPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ContextCompat.checkSelfPermission(context, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
-            } else {
-                true
-            }
-
-            val hasNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-            } else {
-                true
-            }
-
-            val hasBackgroundPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
-            } else {
-                true
-            }
-
-            if (hasLocationPermission && hasActivityPermission && hasNotificationPermission && hasBackgroundPermission) {
-                // 이미 권한이 있으면 GPS 확인 및 서비스 시작
-                checkAndStartActivityRecognition(context,settingsViewModel)
-                onSuccessOnboarding()
-            } else {
-                // 권한이 없으면 요청
-                val permissionsToRequest = mutableListOf(*locationPermissions)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    permissionsToRequest.add(Manifest.permission.ACTIVITY_RECOGNITION)
-                }
-                permissionLauncher.launch(permissionsToRequest.toTypedArray())
-            }
-        }
-
-
-        if (isDonePermmisionRequest) NicknameInputDialog(settingsViewModel,settingsUiState){ nickname ->
-            val uuid = UUID.randomUUID().toString()
-            settingsViewModel.createUserInfoInFirestore(nickname,uuid)
         }
 
         LaunchedEffect(settingsUiState.lastSuccessfulAction) {
-            if (settingsUiState.lastSuccessfulAction == SUCCESSFUL_CREATE_USER_INFO){
-                settingsViewModel.setUserInfo(settingsUiState.nickname,settingsUiState.uuid)
-            }
+            when (settingsUiState.lastSuccessfulAction) {
+                SUCCESSFUL_INIT_SETTINGS -> {
+                    val permissions = mutableListOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) permissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) permissions.add(Manifest.permission.POST_NOTIFICATIONS)
 
-            if (settingsUiState.lastSuccessfulAction == SUCCESSFUL_SET_USER_INFO){
-                settingsViewModel.resetLastSuccessfulAction()
-                onSuccessOnboarding()
+                    val granted = permissions.all {
+                        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+                    }
+
+                    if (granted){
+                        if (settingsUiState.nickname.isNotBlank()) {
+                            checkAndStartActivityRecognition(context, settingsViewModel)
+                            settingsViewModel.resetLastSuccessfulAction()
+                            onSuccessOnboarding()
+                        } else {
+                            needInputNickname = true
+                        }
+                    }
+                    else permissionLauncher.launch(permissions.toTypedArray())
+
+                }
+                SUCCESSFUL_CREATE_USER_INFO -> {
+                    settingsViewModel.setUserInfo(settingsUiState.nickname, settingsUiState.uuid)
+                }
+                SUCCESSFUL_SET_USER_INFO -> {
+                    settingsViewModel.resetLastSuccessfulAction()
+                    onSuccessOnboarding()
+                }
             }
         }
 
@@ -211,14 +180,16 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, onSuccessOnboarding: 
                 },
                 onDismiss = {
                     showBackgroundPermissionRationale = false
-                    isDonePermmisionRequest = true
+                    if(settingsUiState.nickname.isNotBlank()) {
+                        checkAndStartActivityRecognition(context, settingsViewModel)
+                        settingsViewModel.resetLastSuccessfulAction()
+                        onSuccessOnboarding()
+                    }
+                    else needInputNickname = true
                 }
             )
         }
-
     }
-
-
 
 }
 
@@ -228,7 +199,7 @@ fun NicknameInputDialog(settingsViewModel: SettingsViewModel,settingsUiState: Se
 
     LaunchedEffect(nickname) {
         if (nickname.isNotBlank()) {
-            delay(1000L)
+            delay(300L)
             settingsViewModel.checkNicknameExists(nickname.trim())
         } else {
             settingsViewModel.resetNicknameAvailable()
@@ -256,6 +227,7 @@ fun NicknameInputDialog(settingsViewModel: SettingsViewModel,settingsUiState: Se
         }
     }
 }
+
 
 fun checkPhoneGpsSettings(
     context: Context,
@@ -286,15 +258,11 @@ fun checkPhoneGpsSettings(
     }
 }
 
-@RequiresPermission(anyOf = [Manifest.permission.ACTIVITY_RECOGNITION, "com.google.android.gms.permission.ACTIVITY_RECOGNITION"])
+@RequiresPermission(Manifest.permission.ACTIVITY_RECOGNITION)
 fun checkAndStartActivityRecognition(context: Context, settingsViewModel: SettingsViewModel) {
-    val permissionToCheck = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) Manifest.permission.ACTIVITY_RECOGNITION else "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
-
-    if (ActivityCompat.checkSelfPermission(
-            context,
-            permissionToCheck
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (ActivityCompat.checkSelfPermission(context,Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) settingsViewModel.startActivityRecognition()
+    } else {
         settingsViewModel.startActivityRecognition()
     }
 }

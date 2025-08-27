@@ -2,16 +2,18 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.domain.manager.ActivityRecognitionManager
 import com.youngsik.jinada.data.repository.DataStoreRepository
 import com.youngsik.jinada.data.repository.UserRepository
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
+import com.youngsik.shared.model.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(private val userRepository: UserRepository, private val dataStoreRepository: DataStoreRepository, private val activityRecognitionManager: ActivityRecognitionManager): ViewModel() {
     companion object{
         const val NONE = "NONE"
+        const val SUCCESSFUL_INIT_SETTINGS = "SUCCESSFUL_INIT_SETTINGS"
         const val SUCCESSFUL_SET_USER_INFO = "SUCCESSFUL_SET_USER_INFO"
         const val SUCCESSFUL_CREATE_USER_INFO = "SUCCESSFUL_CREATE_USER_INFO"
         const val SUCCESSFUL_SET_NOTIFICATION_ENABLED = "SUCCESSFUL_SET_NOTIFICATION_ENABLED"
@@ -31,6 +34,19 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     init {
         viewModelScope.launch {
+            val userInfo = dataStoreRepository.userInfo.first()
+            val userSettings = dataStoreRepository.userSettings.first()
+
+            _settingsUiState.value = SettingsUiState(
+                nickname = userInfo.nickname,
+                uuid = userInfo.uuid,
+                closerNotiEnabled = userSettings.closerNotificationEnabled,
+                dailyNotiEnabled = userSettings.dailyNotificationEnabled,
+                closerMemoSearchingRange = userSettings.closerMemoSearchingRange,
+                closerMemoNotiRange = userSettings.closerMemoNotiRange,
+                lastSuccessfulAction = SUCCESSFUL_INIT_SETTINGS
+            )
+
             combine(
                 dataStoreRepository.userInfo,
                 dataStoreRepository.userSettings
@@ -50,7 +66,7 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
     }
 
     fun startActivityRecognition(){
-        activityRecognitionManager.startActivityRecognition()
+        if (_settingsUiState.value.closerNotiEnabled) activityRecognitionManager.startActivityRecognition()
     }
 
     fun stopActivityRecognition(){
@@ -68,9 +84,9 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     fun checkNicknameExists(nickname: String){
         viewModelScope.launch {
-            userRepository.isNicknameAvailable(nickname).collect { result ->
+            userRepository.isNicknameAvailable(nickname).collectLatest { result ->
                 when (result) {
-                    is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true) }
+                    is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_CHECK_NICKNAME,isNicknameAvailable = result.data) }
                     is DataResourceResult.Failure -> _settingsUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }

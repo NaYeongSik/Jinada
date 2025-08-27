@@ -79,5 +79,6 @@
 
     <string name="address_distance_info">%1$s / %2$.1fm</string>
     <string name="address_no_distance_info">%1$s</string>
+    <string name="deadline_date">마감일: %1$s</string>
 
 </resources>

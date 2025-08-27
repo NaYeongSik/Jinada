@@ -46,7 +46,6 @@ class GeoFencingManagerImpl @Inject constructor(@param:ApplicationContext privat
             .addGeofences(geofenceList)
             .build()
 
-        Log.d("jinada_test","GeoFencingManagerImpl updateGeoPencing: ${geofenceList.size}")
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)
     }
 

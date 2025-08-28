@@ -50,17 +50,19 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
             combine(
                 dataStoreRepository.userInfo,
                 dataStoreRepository.userSettings
-            ) { userInfo, userSettings ->
-                SettingsUiState(
-                    nickname = userInfo.nickname,
-                    uuid = userInfo.uuid,
-                    closerNotiEnabled = userSettings.closerNotificationEnabled,
-                    dailyNotiEnabled = userSettings.dailyNotificationEnabled,
-                    closerMemoSearchingRange = userSettings.closerMemoSearchingRange,
-                    closerMemoNotiRange = userSettings.closerMemoNotiRange
-                )
-            }.collect { newState ->
-                _settingsUiState.value = newState
+            ) { updatedUserInfo, updatedUserSettings ->
+                Pair(updatedUserInfo, updatedUserSettings)
+            }.collect { (newUserInfo, newUserSettings) ->
+                _settingsUiState.update { currentState ->
+                    currentState.copy(
+                        nickname = newUserInfo.nickname,
+                        uuid = newUserInfo.uuid,
+                        closerNotiEnabled = newUserSettings.closerNotificationEnabled,
+                        dailyNotiEnabled = newUserSettings.dailyNotificationEnabled,
+                        closerMemoSearchingRange = newUserSettings.closerMemoSearchingRange,
+                        closerMemoNotiRange = newUserSettings.closerMemoNotiRange
+                    )
+                }
             }
         }
     }

@@ -35,7 +35,7 @@
 | Networking  | Retrofit2, Moshi, Firebase Firestore |
 | Local Storage  | DataStore |
 | Location  | Fused Location Provider API, Geofencing API, ActivityRecognition API |
-| Map     | Naver Map |
+| Map     | Naver Map, Naver Search API |
 |  Core Component | **Service & Broadcast Receiver 를 이용한 근접 접근 자동 알림 구현** |
 | Tools         | Github, Figma |
 

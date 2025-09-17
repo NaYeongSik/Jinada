@@ -72,7 +72,7 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, onSuccessOnboarding: 
     val settingResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode != RESULT_OK) {
-                Toast.makeText(context, "GPS 활성화가 필요합니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.gps_not_enabled, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -105,7 +105,7 @@ fun OnboardingScreen(settingsViewModel: SettingsViewModel, onSuccessOnboarding: 
                     else needInputNickname = true
                 }
             } else {
-                Toast.makeText(context, "정상적인 이용을 위해 모든 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.permission_denied, Toast.LENGTH_SHORT).show()
             }
         }
 

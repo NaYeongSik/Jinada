@@ -79,8 +79,8 @@ class GeoFensingNotificationService: Service() {
 
         val notification = NotificationCompat.Builder(this, "geofence_channel")
             .setSmallIcon(R.drawable.jinada_logo)
-            .setContentTitle("지나다 알림 서비스")
-            .setContentText("근처 메모를 확인하는 중입니다.")
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(getString(R.string.search_nearby_memos_notification))
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
 
@@ -92,7 +92,7 @@ class GeoFensingNotificationService: Service() {
             Intent.ACTION_VIEW,
             "jinada://main".toUri()
         ).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         val notifyPendingIntent = PendingIntent.getActivity(
             context, 0, notifyIntent,
@@ -102,7 +102,7 @@ class GeoFensingNotificationService: Service() {
         // 알림 생성
         val notification = NotificationCompat.Builder(context, "geofence_channel")
             .setSmallIcon(R.drawable.jinada_logo)
-            .setContentTitle("현재 위치에서 가까운 메모가 있어요.")
+            .setContentTitle(getString(R.string.nearby_memos_notification_title))
             .setContentText(todoItemData.content)
             .setWhen(System.currentTimeMillis())
             .setPriority(NotificationCompat.PRIORITY_HIGH)

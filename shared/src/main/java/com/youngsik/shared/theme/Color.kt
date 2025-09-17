@@ -21,7 +21,7 @@ val TextSecondary = Color(0xFF888888)      // 보조 텍스트 색상 (회색)
 val DividerColor = Color(0xFFF0F0F0)        // 구분선 색상
 
 // --- 다크 모드용 색상 ---
-val DarkBackground = Color(0xFF1C1C1E)      // 다크 모드 배경
-val DarkSurface = Color(0xFF2C2C2E)        // 다크 모드 카드 배경
-val TextOnDark = Color(0xFFE5E5E7)          // 다크 모드 기본 텍스트
-val TextSecondaryOnDark = Color(0xFFAAAAAA)  // 다크 모드 보조 텍스트
+val DarkBackground = Color(0xFFFFFBF9)       // 다크 모드 배경
+val DarkSurface = Color(0xFFFFFFFF)        // 다크 모드 카드 배경
+val TextOnDark = Color(0xFF333333)         // 다크 모드 기본 텍스트
+val TextSecondaryOnDark = Color(0xFF888888)  // 다크 모드 보조 텍스트

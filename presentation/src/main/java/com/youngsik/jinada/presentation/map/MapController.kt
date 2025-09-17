@@ -182,6 +182,14 @@ class MapController(private val context: Context){
         searchMarkers.clear()
     }
 
+    fun clearMapController(){
+        clearMemoMarkers()
+        clearTemporaryMarker()
+        clearSearchMarkers()
+        locationOverlay = null
+        mapView = null
+    }
+
 }
 
 @Composable

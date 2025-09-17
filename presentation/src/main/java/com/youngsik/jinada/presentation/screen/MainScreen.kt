@@ -1,5 +1,6 @@
 package com.youngsik.jinada.presentation.screen
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,8 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.MapView
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.component.MapSearchBar
@@ -37,11 +42,12 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(memoMapViewModel: MemoMapViewModel,onCreateMemoClick: (TodoItemData)-> Unit, onMemoUpdateClick: (TodoItemData)-> Unit){
+fun MainScreen(memoMapViewModel: MemoMapViewModel, onCreateMemoClick: (TodoItemData) -> Unit, onMemoUpdateClick: (TodoItemData) -> Unit) {
     val mapUiState by memoMapViewModel.mapUiState.collectAsStateWithLifecycle()
     var inputText by remember { mutableStateOf("") }
     val scaffoldState = rememberBottomSheetScaffoldState()
-    val mapController = rememberMapController(LocalContext.current)
+    val ctx = LocalContext.current
+    val mapController = rememberMapController(ctx)
 
     LaunchedEffect(Unit) {
         memoMapViewModel.startLocationTracking()
@@ -53,17 +59,18 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel,onCreateMemoClick: (TodoItemDa
 
     LaunchedEffect(mapUiState.targetLocationInfo) {
         mapUiState.targetLocationInfo?.let {
-            mapController.showTemporaryMarker(it,onCreateMemoClick)
+            mapController.showTemporaryMarker(it, onCreateMemoClick)
         }
     }
 
     LaunchedEffect(mapUiState.searchPoiList) {
-        mapController.showSearchItemMarkers(mapUiState.searchPoiList,onCreateMemoClick)
+        mapController.showSearchItemMarkers(mapUiState.searchPoiList, onCreateMemoClick)
     }
 
     DisposableEffect(Unit) {
         onDispose {
             memoMapViewModel.stopLocationTracking()
+            mapController.clearMapController()
         }
     }
 
@@ -71,37 +78,87 @@ fun MainScreen(memoMapViewModel: MemoMapViewModel,onCreateMemoClick: (TodoItemDa
         scaffoldState = scaffoldState,
         sheetPeekHeight = JinadaDimens.Common.xxLarge,
         sheetContent = {
-            Column(modifier = Modifier.fillMaxHeight(0.7f) ) {
+            Column(modifier = Modifier.fillMaxHeight(0.7f)) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.nearby_memos_title),
-                        modifier = Modifier.align(Alignment.Start).padding(start = JinadaDimens.Padding.large, bottom = JinadaDimens.Padding.xSmall),
+                    Text(
+                        text = stringResource(R.string.nearby_memos_title),
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(
+                                start = JinadaDimens.Padding.large,
+                                bottom = JinadaDimens.Padding.xSmall
+                            ),
                         style = MaterialTheme.typography.titleMedium
                     )
-                    CommonLazyColumnCard(modifier = Modifier.weight(1f).fillMaxWidth(0.9f), memoList = mapUiState.nearByMemoList, onCheckChange = {
-                            item, isChecked -> memoMapViewModel.updateMemo(item.copy(isCompleted = isChecked, completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null))
-                    }, { todoItemData ->  onMemoUpdateClick(todoItemData) }, { item -> memoMapViewModel.deleteMemo(item.memoId) }
-                    , { todoItemData -> mapController.moveToTargetLocation(LatLng(todoItemData.latitude,todoItemData.longitude))})
+                    CommonLazyColumnCard(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(0.9f),
+                        memoList = mapUiState.nearByMemoList,
+                        onCheckChange = { item, isChecked ->
+                            memoMapViewModel.updateMemo(
+                                item.copy(
+                                    isCompleted = isChecked,
+                                    completeDate = if (isChecked) changeToStringDate(LocalDate.now()) else null
+                                )
+                            )
+                        },
+                        { todoItemData -> onMemoUpdateClick(todoItemData) },
+                        { item -> memoMapViewModel.deleteMemo(item.memoId) },
+                        { todoItemData ->
+                            mapController.moveToTargetLocation(
+                                LatLng(
+                                    todoItemData.latitude,
+                                    todoItemData.longitude
+                                )
+                            )
+                        })
                 }
             }
         },
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)){
-
-            NaverMapView(mapController,mapUiState){ todoItemData ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            val mapView = remember {
+                MapView(ctx)
+            }
+            val lifecycleOwner = LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner) {
+                val lifecycleObserver = LifecycleEventObserver { _, event ->
+                    when (event) {
+                        Lifecycle.Event.ON_CREATE -> mapView.onCreate(Bundle())
+                        Lifecycle.Event.ON_START -> mapView.onStart()
+                        Lifecycle.Event.ON_RESUME -> mapView.onResume()
+                        Lifecycle.Event.ON_PAUSE -> mapView.onPause()
+                        Lifecycle.Event.ON_STOP -> mapView.onStop()
+                        Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
+                        else -> {}
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+                onDispose {
+                    lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+                }
+            }
+            NaverMapView(mapView, mapController, mapUiState) { todoItemData ->
                 memoMapViewModel.getTargetLocationInfo(todoItemData)
             }
 
-            MapSearchBar(Modifier.align(Alignment.TopCenter)
-                .padding(JinadaDimens.Padding.medium)
-                .fillMaxWidth(0.9f)
-                ,inputText,{ it -> inputText = it}, { memoMapViewModel.getSearchPoi(inputText) })
+            MapSearchBar(
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(JinadaDimens.Padding.medium)
+                    .fillMaxWidth(0.9f),
+                inputText,
+                { it -> inputText = it },
+                { memoMapViewModel.getSearchPoi(inputText) })
 
-            MyLocationButton(Modifier
-                .align(Alignment.BottomEnd)
-                .padding(JinadaDimens.Padding.medium)
+            MyLocationButton(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(JinadaDimens.Padding.medium)
             ) { mapUiState.myLocation?.let { mapController.moveToTargetLocation(it) } }
         }
     }

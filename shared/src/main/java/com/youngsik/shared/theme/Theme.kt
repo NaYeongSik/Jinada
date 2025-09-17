@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = SoftPink.copy(alpha = 0.8f), // 다크모드에서는 Primary를 살짝 연하게
+    primary = SoftPink.copy(alpha = 0.8f),
     onPrimary = TextPrimary,
     primaryContainer = DarkerPinkText,
     onPrimaryContainer = LightPinkContainer,
@@ -61,7 +61,7 @@ fun JinadaTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
 

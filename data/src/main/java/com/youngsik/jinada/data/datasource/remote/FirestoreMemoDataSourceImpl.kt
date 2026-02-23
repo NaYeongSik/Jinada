@@ -4,8 +4,7 @@ import android.location.Location
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.CollectionReference
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.data.dataclass.TodoItemDto
 import com.youngsik.jinada.data.datasource.MemoDataSource
@@ -19,9 +18,9 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
+import javax.inject.Named
 
-class FirestoreMemoDataSourceImpl @Inject constructor() : MemoDataSource {
-    private val memoCollection = Firebase.firestore.collection("memo")
+class FirestoreMemoDataSourceImpl @Inject constructor(@Named("memoCollection") private val memoCollection: CollectionReference) : MemoDataSource {
 
     override suspend fun createMemo(todoItemData: TodoItemData, nickname: String): DataResourceResult<Unit> = runCatching {
         val location = GeoLocation(todoItemData.latitude, todoItemData.longitude)

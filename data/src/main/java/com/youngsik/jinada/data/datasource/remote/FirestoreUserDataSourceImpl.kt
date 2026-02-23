@@ -1,7 +1,6 @@
 package com.youngsik.jinada.data.datasource.remote
 
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.CollectionReference
 import com.youngsik.shared.model.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.jinada.data.dataclass.UserInfoDto
@@ -10,9 +9,9 @@ import com.youngsik.jinada.data.mapper.toDomainModel
 import com.youngsik.jinada.data.mapper.toDto
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Named
 
-class FirestoreUserDataSourceImpl @Inject constructor() : UserDataSource {
-    private val userCollection = Firebase.firestore.collection("user_info")
+class FirestoreUserDataSourceImpl @Inject constructor(@Named("userCollection") private val userCollection: CollectionReference) : UserDataSource {
 
     override suspend fun createUserInfo(userInfo: UserInfo): DataResourceResult<Unit> = runCatching{
         userCollection.add(userInfo.toDto()).await()

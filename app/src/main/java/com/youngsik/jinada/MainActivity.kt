@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("jinada_test","MainActivity onCreate")
         enableEdgeToEdge()
         setContent {
             JinadaTheme {
@@ -28,7 +27,6 @@ class MainActivity : ComponentActivity() {
 
    override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
        super.onNewIntent(intent, caller)
-       Log.e("jinada_test","MainActivity onNewIntent")
        setContent {
            JinadaTheme {
                EntryPointMainScreen()

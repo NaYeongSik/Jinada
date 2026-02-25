@@ -1,25 +1,20 @@
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jinada.android.application)
+    alias(libs.plugins.jinada.android.compose)
+    alias(libs.plugins.jinada.android.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.gms.google.services)
-    alias(libs.plugins.hilt.plugin)
-    alias(libs.plugins.kotlin.android.ksp)
     alias(libs.plugins.secrets.gradle.plugin)
 }
 
 
 android {
     namespace = "com.youngsik.jinada"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.youngsik.jinada"
-        minSdk = 26
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -35,18 +30,9 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
     buildFeatures {
-        compose = true
         buildConfig = true
     }
-}
-
-kotlin{
-    jvmToolchain(21)
 }
 
 secrets {
@@ -59,21 +45,11 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":shared"))
 
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.navigation.compose)
-
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

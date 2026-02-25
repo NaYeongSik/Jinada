@@ -1,28 +1,22 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jinada.android.library)
+    alias(libs.plugins.jinada.android.compose)
+    alias(libs.plugins.jinada.android.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.hilt.plugin)
-    alias(libs.plugins.kotlin.android.ksp)
     alias(libs.plugins.secrets.gradle.plugin)
 }
 
 
 android {
     namespace = "com.youngsik.jinada.presentation"
-    compileSdk = 36
 
     defaultConfig {
-        minSdk = 26
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures {
-        compose = true
         viewBinding = true
         buildConfig = true
     }
@@ -36,14 +30,6 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-}
-
-kotlin{
-    jvmToolchain(21)
 }
 
 secrets {
@@ -55,23 +41,9 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":shared"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-
-    implementation(libs.bundles.compose.runtime)
     implementation(libs.bundles.location)
-
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.viewbinding)
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
-    debugImplementation(libs.androidx.ui.tooling)
-
-    testImplementation(libs.bundles.test.android)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.bundles.compose.androidTest)
 }

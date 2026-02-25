@@ -1,22 +1,17 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jinada.android.library)
+    alias(libs.plugins.jinada.android.compose)
 }
 
 android {
     namespace = "com.youngsik.shared"
-    compileSdk = 36
 
     defaultConfig {
-        minSdk = 26
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures {
-        compose = true
         viewBinding = true
         buildConfig = true
         dataBinding = true
@@ -31,29 +26,10 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-}
-
-kotlin{
-    jvmToolchain(21)
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-
-    implementation(libs.bundles.compose.runtime)
     implementation(libs.bundles.location)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.viewbinding)
-
-    debugImplementation(libs.androidx.ui.tooling)
-
-    testImplementation(libs.bundles.test.android)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.bundles.compose.androidTest)
 }

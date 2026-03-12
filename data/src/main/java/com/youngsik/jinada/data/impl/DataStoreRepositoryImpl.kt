@@ -1,10 +1,10 @@
 package com.youngsik.jinada.data.impl
 
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.domain.entity.UserSettings
+import com.youngsik.domain.repository.DataStoreRepository
 import com.youngsik.jinada.data.datasource.DataStoreDataSource
-import com.youngsik.jinada.data.repository.DataStoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

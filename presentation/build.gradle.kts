@@ -38,7 +38,6 @@ secrets {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":data"))
     implementation(project(":shared"))
 
     implementation(libs.bundles.location)

@@ -23,7 +23,7 @@ class GeoFencingManagerImpl @Inject constructor(@param:ApplicationContext privat
     }
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    override fun updateGeoPencing(memoList: List<TodoItemData>, notiRange: Float) {
+    override fun updateGeoFencing(memoList: List<TodoItemData>, notiRange: Float) {
         geofencingClient.removeGeofences(geofencePendingIntent) // 이전 등록된 지오펜싱 이벤트 제거 (최대 100개 이벤트만 등록 가능하기때문에)
 
         val geofenceList = memoList.map { memo ->
@@ -49,7 +49,7 @@ class GeoFencingManagerImpl @Inject constructor(@param:ApplicationContext privat
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)
     }
 
-    override fun removeGeoPencing() {
+    override fun removeGeoFencing() {
         geofencingClient.removeGeofences(geofencePendingIntent)
     }
 }

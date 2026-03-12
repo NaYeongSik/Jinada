@@ -2,24 +2,24 @@ package com.youngsik.jinada.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.domain.manager.ActivityRecognitionManager
-import com.youngsik.jinada.data.repository.DataStoreRepository
-import com.youngsik.jinada.data.repository.UserRepository
+import com.youngsik.domain.usecase.bundle.UserUseCases
 import com.youngsik.jinada.presentation.uistate.SettingsUiState
-import com.youngsik.shared.model.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(private val userRepository: UserRepository, private val dataStoreRepository: DataStoreRepository, private val activityRecognitionManager: ActivityRecognitionManager): ViewModel() {
+class SettingsViewModel @Inject constructor(
+    private val activityRecognitionManager: ActivityRecognitionManager,
+    private val userUseCases: UserUseCases
+): ViewModel() {
     companion object{
         const val NONE = "NONE"
         const val SUCCESSFUL_INIT_SETTINGS = "SUCCESSFUL_INIT_SETTINGS"
@@ -34,33 +34,16 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     init {
         viewModelScope.launch {
-            val userInfo = dataStoreRepository.userInfo.first()
-            val userSettings = dataStoreRepository.userSettings.first()
-
-            _settingsUiState.value = SettingsUiState(
-                nickname = userInfo.nickname,
-                uuid = userInfo.uuid,
-                closerNotiEnabled = userSettings.closerNotificationEnabled,
-                dailyNotiEnabled = userSettings.dailyNotificationEnabled,
-                closerMemoSearchingRange = userSettings.closerMemoSearchingRange,
-                closerMemoNotiRange = userSettings.closerMemoNotiRange,
-                lastSuccessfulAction = SUCCESSFUL_INIT_SETTINGS
-            )
-
-            combine(
-                dataStoreRepository.userInfo,
-                dataStoreRepository.userSettings
-            ) { updatedUserInfo, updatedUserSettings ->
-                Pair(updatedUserInfo, updatedUserSettings)
-            }.collect { (newUserInfo, newUserSettings) ->
+            userUseCases.initSettings().collectLatest { (userInfo, userSettings) ->
                 _settingsUiState.update { currentState ->
                     currentState.copy(
-                        nickname = newUserInfo.nickname,
-                        uuid = newUserInfo.uuid,
-                        closerNotiEnabled = newUserSettings.closerNotificationEnabled,
-                        dailyNotiEnabled = newUserSettings.dailyNotificationEnabled,
-                        closerMemoSearchingRange = newUserSettings.closerMemoSearchingRange,
-                        closerMemoNotiRange = newUserSettings.closerMemoNotiRange
+                        nickname = userInfo.nickname,
+                        uuid = userInfo.uuid,
+                        closerNotiEnabled = userSettings.closerNotificationEnabled,
+                        dailyNotiEnabled = userSettings.dailyNotificationEnabled,
+                        closerMemoSearchingRange = userSettings.closerMemoSearchingRange,
+                        closerMemoNotiRange = userSettings.closerMemoNotiRange,
+                        lastSuccessfulAction = SUCCESSFUL_INIT_SETTINGS
                     )
                 }
             }
@@ -86,20 +69,19 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     fun checkNicknameExists(nickname: String){
         viewModelScope.launch {
-            userRepository.isNicknameAvailable(nickname).collectLatest { result ->
+            userUseCases.checkNickname(nickname).collectLatest { result ->
                 when (result) {
                     is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
-                    is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_CHECK_NICKNAME,isNicknameAvailable = result.data) }
+                    is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_CHECK_NICKNAME, isNicknameAvailable = result.data) }
                     is DataResourceResult.Failure -> _settingsUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }
         }
     }
 
-
     fun setUserInfo(nickname: String, uuid: String){
         viewModelScope.launch {
-            dataStoreRepository.setUserInfo(nickname,uuid).collect { result ->
+            userUseCases.saveUserInfo(UserInfo(uuid, nickname)).collectLatest { result ->
                 when (result) {
                     is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true) }
                     is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_SET_USER_INFO, nickname = nickname, uuid = uuid) }
@@ -111,7 +93,7 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     fun createUserInfoInFirestore(nickname: String, uuid: String){
         viewModelScope.launch {
-            userRepository.createUserInfo(UserInfo(uuid,nickname)).collect { result ->
+            userUseCases.saveUserInfo(UserInfo(uuid, nickname)).collectLatest { result ->
                 when (result) {
                     is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true) }
                     is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_CREATE_USER_INFO, nickname = nickname, uuid = uuid) }
@@ -123,10 +105,14 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     fun setNotificationEnabled(isCheckedCloserNoti: Boolean, isCheckedDailyNoti: Boolean){
         viewModelScope.launch {
-            dataStoreRepository.setNotificationEnabled(isCheckedCloserNoti,isCheckedDailyNoti).collect { result ->
+            userUseCases.updateNotificationSettings(isCheckedCloserNoti, isCheckedDailyNoti).collectLatest { result ->
                 when (result) {
                     is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true) }
-                    is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_SET_NOTIFICATION_ENABLED,closerNotiEnabled = isCheckedCloserNoti, dailyNotiEnabled = isCheckedDailyNoti) }
+                    is DataResourceResult.Success -> {
+                        if (isCheckedCloserNoti) activityRecognitionManager.startActivityRecognition()
+                        else activityRecognitionManager.stopActivityRecognition()
+                        _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_SET_NOTIFICATION_ENABLED, closerNotiEnabled = isCheckedCloserNoti, dailyNotiEnabled = isCheckedDailyNoti) }
+                    }
                     is DataResourceResult.Failure -> _settingsUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }
@@ -135,15 +121,13 @@ class SettingsViewModel @Inject constructor(private val userRepository: UserRepo
 
     fun setRangeOption(closerMemoSearchingRange: Float, closerMemoNotiRange: Float){
         viewModelScope.launch {
-            dataStoreRepository.setRangeOption(closerMemoSearchingRange,closerMemoNotiRange).collect { result ->
+            userUseCases.updateRangeSettings(closerMemoSearchingRange, closerMemoNotiRange).collectLatest { result ->
                 when (result) {
                     is DataResourceResult.Loading -> _settingsUiState.update { it.copy(isLoading = true) }
-                    is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_SET_RANGE_OPTION,closerMemoSearchingRange = closerMemoSearchingRange, closerMemoNotiRange = closerMemoNotiRange)}
+                    is DataResourceResult.Success -> _settingsUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_SET_RANGE_OPTION, closerMemoSearchingRange = closerMemoSearchingRange, closerMemoNotiRange = closerMemoNotiRange) }
                     is DataResourceResult.Failure -> _settingsUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }
         }
     }
-
-
 }

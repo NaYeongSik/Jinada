@@ -1,10 +1,11 @@
 package com.youngsik.jinada.data.impl
 
 import android.location.Location
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
+import com.youngsik.domain.entity.LocationEntity
 import com.youngsik.domain.entity.TodoItemData
+import com.youngsik.domain.repository.MemoRepository
 import com.youngsik.jinada.data.datasource.MemoDataSource
-import com.youngsik.jinada.data.repository.MemoRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -41,8 +42,12 @@ class MemoRepositoryImpl @Inject constructor(val memoDataSource: MemoDataSource)
         emit(memoDataSource.getMemoListBySelectedStatTabMenu(selectedTabMenu,nickname))
     }
 
-    override suspend fun getNearByMemoList(nickname: String,location: Location, range: Float) = flow {
+    override suspend fun getNearByMemoList(nickname: String, location: LocationEntity, range: Float) = flow {
         emit(DataResourceResult.Loading)
-        emit(memoDataSource.getNearByMemoList(nickname,location,range))
+        val androidLocation = Location("").apply {
+            latitude = location.latitude
+            longitude = location.longitude
+        }
+        emit(memoDataSource.getNearByMemoList(nickname, androidLocation, range))
     }.catch { emit(DataResourceResult.Failure(it)) }
 }

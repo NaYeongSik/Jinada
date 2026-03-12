@@ -1,6 +1,6 @@
 package com.youngsik.jinada.data.datasource
 
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.domain.entity.UserSettings
 import kotlinx.coroutines.flow.Flow

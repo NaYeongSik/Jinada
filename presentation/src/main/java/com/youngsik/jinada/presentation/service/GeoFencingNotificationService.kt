@@ -10,10 +10,11 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
+import androidx.core.content.getSystemService
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.domain.entity.TodoItemData
-import com.youngsik.jinada.data.repository.MemoRepository
+import com.youngsik.domain.repository.MemoRepository
 import com.youngsik.shared.R
-import com.youngsik.shared.model.DataResourceResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class GeoFensingNotificationService: Service() {
+class GeoFencingNotificationService: Service() {
     companion object{
         private const val NOTIFICATION_ID = 10001
     }
@@ -63,8 +64,7 @@ class GeoFensingNotificationService: Service() {
 
     @SuppressLint("ForegroundServiceType")
     private fun startForegroundNotify() {
-        notificationManager =
-            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getSystemService<NotificationManager>()!!
 
         val channel = NotificationChannel(
             "geofence_channel",

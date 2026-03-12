@@ -1,13 +1,13 @@
 package com.youngsik.jinada.data.di
 
+import com.youngsik.domain.repository.DataStoreRepository
+import com.youngsik.domain.repository.MemoRepository
+import com.youngsik.domain.repository.NaverRepository
+import com.youngsik.domain.repository.UserRepository
 import com.youngsik.jinada.data.impl.DataStoreRepositoryImpl
 import com.youngsik.jinada.data.impl.MemoRepositoryImpl
 import com.youngsik.jinada.data.impl.NaverRepositoryImpl
 import com.youngsik.jinada.data.impl.UserRepositoryImpl
-import com.youngsik.jinada.data.repository.DataStoreRepository
-import com.youngsik.jinada.data.repository.MemoRepository
-import com.youngsik.jinada.data.repository.NaverRepository
-import com.youngsik.jinada.data.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

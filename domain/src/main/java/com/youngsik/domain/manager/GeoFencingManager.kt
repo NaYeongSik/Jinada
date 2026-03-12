@@ -3,6 +3,6 @@ package com.youngsik.domain.manager
 import com.youngsik.domain.entity.TodoItemData
 
 interface GeoFencingManager {
-    fun updateGeoPencing(memoList: List<TodoItemData>, notiRange: Float)
-    fun removeGeoPencing()
+    fun updateGeoFencing(memoList: List<TodoItemData>, notiRange: Float)
+    fun removeGeoFencing()
 }

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
-import com.youngsik.jinada.presentation.service.GeoFensingNotificationService
+import com.youngsik.jinada.presentation.service.GeoFencingNotificationService
 
 class GeoFencingReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -15,7 +15,7 @@ class GeoFencingReceiver : BroadcastReceiver() {
         }
         if (geofencingEvent?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             val triggeredMemoIds = geofencingEvent.triggeringGeofences?.map { it.requestId }
-            val serviceIntent = Intent(context, GeoFensingNotificationService::class.java)
+            val serviceIntent = Intent(context, GeoFencingNotificationService::class.java)
             serviceIntent.putStringArrayListExtra("memoIds", ArrayList(triggeredMemoIds))
             context.startForegroundService(serviceIntent)
         }

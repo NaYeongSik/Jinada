@@ -7,8 +7,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
-import com.youngsik.jinada.data.repository.CurrentLocationRepository
+import com.youngsik.domain.repository.CurrentLocationRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +19,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import javax.inject.Inject
 
+
+import androidx.core.content.getSystemService
 
 @AndroidEntryPoint
 class CurrentLocationService : Service() {
@@ -40,7 +41,7 @@ class CurrentLocationService : Service() {
 
         locationRepository.getCurrentLocationUpdates()
             .onEach { location ->
-                (locationRepository as CurrentLocationRepositoryImpl).updateLatestLocation(location)
+                locationRepository.updateLatestLocation(location)
             }
             .catch { e -> e.printStackTrace() }
             .launchIn(serviceScope)
@@ -53,8 +54,7 @@ class CurrentLocationService : Service() {
     @SuppressLint("ForegroundServiceType")
     private fun startForegroundNotify() {
         val channelId = "location_notification_channel"
-        notificationManager =
-            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getSystemService<NotificationManager>()!!
 
         val channel = NotificationChannel(
             channelId,

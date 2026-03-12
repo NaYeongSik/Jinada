@@ -2,7 +2,7 @@ package com.youngsik.jinada.data.datasource
 
 
 import android.location.Location
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.domain.entity.TodoItemData
 
 interface MemoDataSource {

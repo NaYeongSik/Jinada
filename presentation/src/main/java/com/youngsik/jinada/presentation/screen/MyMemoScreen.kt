@@ -31,7 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.youngsik.domain.entity.TodoItemData
-import com.youngsik.jinada.data.utils.getCompleteRateData
+import com.youngsik.domain.entity.CompleteRateData
 import com.youngsik.jinada.presentation.component.CommonLazyColumnCard
 import com.youngsik.jinada.presentation.viewmodel.MemoViewModel
 import com.youngsik.shared.R
@@ -74,7 +74,7 @@ fun MyMemoScreen(memoViewModel: MemoViewModel, onMemoUpdateClick: (TodoItemData)
                     .background(MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                ProgressBarSection(memoUiState.memoList)
+                ProgressBarSection(memoUiState.completeRateData)
 
                 Spacer(modifier = Modifier.padding(JinadaDimens.Padding.xxSmall))
 
@@ -119,8 +119,7 @@ fun DateSelectSection(selectedDate: String, onClickEvent: ()-> Unit){
 }
 
 @Composable
-fun ProgressBarSection(memoList: List<TodoItemData>){
-    val completeRateData = getCompleteRateData(memoList)
+fun ProgressBarSection(completeRateData: CompleteRateData){
     Column(
         modifier = Modifier
             .fillMaxWidth(0.85f)

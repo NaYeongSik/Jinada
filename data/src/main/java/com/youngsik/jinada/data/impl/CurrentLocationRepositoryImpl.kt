@@ -10,13 +10,15 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.youngsik.jinada.data.repository.CurrentLocationRepository
+import com.youngsik.domain.entity.LocationEntity
+import com.youngsik.domain.repository.CurrentLocationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -24,14 +26,19 @@ import javax.inject.Inject
 class CurrentLocationRepositoryImpl @Inject constructor(@param:ApplicationContext private val context: Context) : CurrentLocationRepository {
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private val _latestLocation = MutableStateFlow<Location?>(null)
-    val latestLocationState: Flow<Location?> = _latestLocation.asStateFlow()
+    override val latestLocationState: Flow<LocationEntity?> = _latestLocation.asStateFlow().map { location ->
+        location?.let { LocationEntity(it.latitude, it.longitude) }
+    }
 
-    fun updateLatestLocation(location: Location) {
-        _latestLocation.value = location
+    override fun updateLatestLocation(location: LocationEntity) {
+        _latestLocation.value = Location("").apply {
+            latitude = location.latitude
+            longitude = location.longitude
+        }
     }
 
     @SuppressLint("MissingPermission")
-    override  fun getCurrentLocationUpdates(): Flow<Location> = callbackFlow {
+    override fun getCurrentLocationUpdates(): Flow<LocationEntity> = callbackFlow {
         val locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
             TimeUnit.SECONDS.toMillis(5)
@@ -53,11 +60,11 @@ class CurrentLocationRepositoryImpl @Inject constructor(@param:ApplicationContex
         awaitClose {
             fusedLocationClient.removeLocationUpdates(locationCallback)
         }
-    }
+    }.map { location -> LocationEntity(location.latitude, location.longitude) }
 
     @SuppressLint("MissingPermission")
-    override suspend fun getCurrentLocation(): Location? {
+    override suspend fun getCurrentLocation(): LocationEntity? {
         val currentLocation = fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).await()
-        return currentLocation
+        return currentLocation?.let { LocationEntity(it.latitude, it.longitude) }
     }
 }

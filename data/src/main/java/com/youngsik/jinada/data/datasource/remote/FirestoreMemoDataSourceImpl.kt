@@ -11,7 +11,7 @@ import com.youngsik.jinada.data.datasource.MemoDataSource
 import com.youngsik.jinada.data.mapper.toDomainModel
 import com.youngsik.jinada.data.mapper.toDto
 import com.youngsik.jinada.data.utils.toTimestamp
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.shared.utils.changeToLocalDate
 import kotlinx.coroutines.tasks.await
 import java.time.DayOfWeek

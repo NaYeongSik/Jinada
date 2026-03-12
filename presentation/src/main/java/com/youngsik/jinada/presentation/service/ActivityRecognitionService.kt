@@ -10,12 +10,12 @@ import android.content.pm.PackageManager
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.youngsik.domain.entity.LocationEntity
 import com.youngsik.domain.manager.GeoFencingManager
-import com.youngsik.jinada.data.impl.CurrentLocationRepositoryImpl
-import com.youngsik.jinada.data.repository.CurrentLocationRepository
-import com.youngsik.jinada.data.repository.DataStoreRepository
-import com.youngsik.jinada.data.repository.MemoRepository
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.repository.CurrentLocationRepository
+import com.youngsik.domain.repository.DataStoreRepository
+import com.youngsik.domain.repository.MemoRepository
+import com.youngsik.domain.entity.DataResourceResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+import androidx.core.content.getSystemService
+import com.youngsik.jinada.presentation.utils.hasLocationPermission
 
 @AndroidEntryPoint
 class ActivityRecognitionService : Service(){
@@ -53,14 +56,14 @@ class ActivityRecognitionService : Service(){
                         settings to userInfo
                     }.collectLatest { (settings, userInfo) ->
                         if (settings.closerNotificationEnabled){
-                            val location = (locationRepository as CurrentLocationRepositoryImpl).getCurrentLocation()
+                            val location = locationRepository.getCurrentLocation()
                             if (location != null){
-                                memoRepository.getNearByMemoList(userInfo.nickname,location,SEARCHING_RANGE).collect { result ->
+                                memoRepository.getNearByMemoList(userInfo.nickname, location, SEARCHING_RANGE).collect { result ->
                                     when (result) {
                                         is DataResourceResult.Success -> {
-                                            if (ActivityCompat.checkSelfPermission(applicationContext,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                            if (applicationContext.hasLocationPermission()) {
                                                 val memoList = result.data.filter { todoItemData -> !todoItemData.isCompleted }
-                                                geoFencingManager.updateGeoPencing(memoList, settings.closerMemoNotiRange)
+                                                geoFencingManager.updateGeoFencing(memoList, settings.closerMemoNotiRange)
                                             }
                                             stopForegroundNotify()
                                         }
@@ -70,7 +73,7 @@ class ActivityRecognitionService : Service(){
                                 }
                             }
                         } else {
-                            geoFencingManager.removeGeoPencing()
+                            geoFencingManager.removeGeoFencing()
                         }
                     }
                     dataStoreRepository.userSettings.collect { settings ->
@@ -88,8 +91,7 @@ class ActivityRecognitionService : Service(){
     @SuppressLint("ForegroundServiceType")
     private fun startForegroundNotify() {
         val channelId = "location_notification_channel"
-        notificationManager =
-            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getSystemService<NotificationManager>()!!
 
         val channel = NotificationChannel(
             channelId,

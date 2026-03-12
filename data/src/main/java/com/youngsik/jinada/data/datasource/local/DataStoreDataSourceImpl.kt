@@ -9,7 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.domain.entity.UserSettings
 import com.youngsik.jinada.data.datasource.DataStoreDataSource
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

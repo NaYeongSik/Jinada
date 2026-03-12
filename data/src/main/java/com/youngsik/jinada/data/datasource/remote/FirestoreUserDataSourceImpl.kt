@@ -1,7 +1,7 @@
 package com.youngsik.jinada.data.datasource.remote
 
 import com.google.firebase.firestore.CollectionReference
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import com.youngsik.domain.entity.UserInfo
 import com.youngsik.jinada.data.dataclass.UserInfoDto
 import com.youngsik.jinada.data.datasource.UserDataSource
@@ -13,13 +13,8 @@ import javax.inject.Named
 
 class FirestoreUserDataSourceImpl @Inject constructor(@Named("userCollection") private val userCollection: CollectionReference) : UserDataSource {
 
-    override suspend fun createUserInfo(userInfo: UserInfo): DataResourceResult<Unit> = runCatching{
-        userCollection.add(userInfo.toDto()).await()
-        DataResourceResult.Success(Unit)
-    }.getOrElse { DataResourceResult.Failure(it) }
-
-    override suspend fun updateUserInfo(userInfo: UserInfo): DataResourceResult<Unit> = runCatching{
-        userCollection.document(userInfo.uuid).set(userInfo.toDto()).await()
+    override suspend fun saveUserInfo(userInfo: UserInfo): DataResourceResult<Unit> = runCatching {
+        userCollection.document(userInfo.uuid).set(userInfo.toDto(), com.google.firebase.firestore.SetOptions.merge()).await()
         DataResourceResult.Success(Unit)
     }.getOrElse { DataResourceResult.Failure(it) }
 

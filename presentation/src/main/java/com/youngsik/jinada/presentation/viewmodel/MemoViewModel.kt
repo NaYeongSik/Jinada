@@ -3,15 +3,11 @@ package com.youngsik.jinada.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.youngsik.domain.entity.TodoItemData
-import com.youngsik.jinada.data.repository.DataStoreRepository
-import com.youngsik.jinada.data.repository.MemoRepository
-import com.youngsik.jinada.data.utils.getCompleteRateData
-import com.youngsik.jinada.data.utils.getMonthlyStatData
-import com.youngsik.jinada.data.utils.getTotalyStatData
-import com.youngsik.jinada.data.utils.getWeeklyStatData
+import com.youngsik.domain.repository.DataStoreRepository
+import com.youngsik.domain.usecase.bundle.MemoUseCases
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.jinada.presentation.uistate.MemoUiState
-import com.youngsik.shared.model.DataResourceResult
+import com.youngsik.domain.entity.DataResourceResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MemoViewModel @Inject constructor(private val repository: MemoRepository, private val dataStoreRepository: DataStoreRepository) : ViewModel(){
+class MemoViewModel @Inject constructor(
+    private val dataStoreRepository: DataStoreRepository,
+    private val memoUseCases: MemoUseCases
+) : ViewModel(){
     companion object{
         const val NONE = "NONE"
         const val SUCCESSFUL_GET_MEMO = "SUCCESSFUL_GET_MEMO"
@@ -57,7 +56,7 @@ class MemoViewModel @Inject constructor(private val repository: MemoRepository, 
 
     fun createMemo(todoItemData: TodoItemData){
         viewModelScope.launch {
-            repository.createMemo(todoItemData,_memoUiState.value.nickname).collectLatest{ result ->
+            memoUseCases.createMemo(todoItemData,_memoUiState.value.nickname).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_CREATE_MEMO) }
@@ -69,7 +68,7 @@ class MemoViewModel @Inject constructor(private val repository: MemoRepository, 
 
     fun updateMemo(todoItemData: TodoItemData){
         viewModelScope.launch {
-            repository.updateMemo(todoItemData,_memoUiState.value.nickname).collectLatest{ result ->
+            memoUseCases.updateMemo(todoItemData,_memoUiState.value.nickname).collectLatest{ result ->
             when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_UPDATE_MEMO) }
@@ -81,7 +80,7 @@ class MemoViewModel @Inject constructor(private val repository: MemoRepository, 
 
     fun deleteMemo(memoId: String){
         viewModelScope.launch {
-            repository.deleteMemo(memoId).collectLatest{ result ->
+            memoUseCases.deleteMemo(memoId).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_DELETE_MEMO) }
@@ -93,10 +92,10 @@ class MemoViewModel @Inject constructor(private val repository: MemoRepository, 
 
     fun getMemoListBySelectedDate(date: String){
         viewModelScope.launch {
-            repository.getMemoListBySelectedDate(date,_memoUiState.value.nickname).collectLatest{ result ->
+            memoUseCases.getMemosByDate(date,_memoUiState.value.nickname).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
-                    is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_MEMO, memoList = result.data) }
+                    is DataResourceResult.Success -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_MEMO, memoList = result.data, completeRateData = memoUseCases.getMemoStatistics.getCompleteRateData(result.data)) }
                     is DataResourceResult.Failure -> _memoUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }
             }
@@ -105,15 +104,16 @@ class MemoViewModel @Inject constructor(private val repository: MemoRepository, 
 
     fun getMemoListBySelectedStatTabMenu(selectedTabMenu: String){
         viewModelScope.launch {
-            repository.getMemoListBySelectedStatTabMenu(selectedTabMenu,_memoUiState.value.nickname).collectLatest{ result ->
+            memoUseCases.getMemosByStatTab(selectedTabMenu,_memoUiState.value.nickname).collectLatest{ result ->
                 when(result){
                     is DataResourceResult.Loading -> _memoUiState.update { it.copy(isLoading = true, lastSuccessfulAction = NONE) }
                     is DataResourceResult.Success -> {
-                        when(selectedTabMenu){
-                            StatTabMenu.WEEKLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = getCompleteRateData(result.data), statData = getWeeklyStatData(result.data)) }
-                            StatTabMenu.MONTHLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = getCompleteRateData(result.data), statData = getMonthlyStatData(result.data)) }
-                            StatTabMenu.TOTALLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = getCompleteRateData(result.data), statData = getTotalyStatData(result.data)) }
-                        }
+                                                 when(selectedTabMenu){
+                                                    StatTabMenu.WEEKLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = memoUseCases.getMemoStatistics.getCompleteRateData(result.data), statData = memoUseCases.getMemoStatistics.getWeeklyStatData(result.data)) }
+                                                    StatTabMenu.MONTHLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = memoUseCases.getMemoStatistics.getCompleteRateData(result.data), statData = memoUseCases.getMemoStatistics.getMonthlyStatData(result.data)) }
+                                                    StatTabMenu.TOTALLY.name -> _memoUiState.update { it.copy(isLoading = false, lastSuccessfulAction = SUCCESSFUL_GET_STATISTICS, memoListInSelectedTab = result.data, completeRateData = memoUseCases.getMemoStatistics.getCompleteRateData(result.data), statData = memoUseCases.getMemoStatistics.getTotalyStatData(result.data)) }
+                                                 }
+                        
                     }
                     is DataResourceResult.Failure -> _memoUiState.update { it.copy(isLoading = false, isFailure = true) }
                 }

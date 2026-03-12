@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.youngsik.shared.model.CompleteRateData
-import com.youngsik.shared.model.StatisticsData
+import com.youngsik.domain.entity.CompleteRateData
+import com.youngsik.domain.entity.StatisticsData
 import com.youngsik.jinada.presentation.common.StatTabMenu
 import com.youngsik.shared.theme.JinadaDimens
 import com.youngsik.shared.R

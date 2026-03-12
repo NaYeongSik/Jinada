@@ -2,8 +2,8 @@ package com.youngsik.jinada.presentation.uistate
 
 import com.youngsik.domain.entity.TodoItemData
 import com.youngsik.jinada.presentation.common.StatTabMenu
-import com.youngsik.shared.model.CompleteRateData
-import com.youngsik.shared.model.StatisticsData
+import com.youngsik.domain.entity.CompleteRateData
+import com.youngsik.domain.entity.StatisticsData
 import com.youngsik.shared.utils.changeToStringDate
 import java.time.LocalDate
 

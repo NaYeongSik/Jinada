@@ -1,9 +1,9 @@
 package com.youngsik.jinada.data.impl
 
 import com.youngsik.domain.entity.PoiItem
+import com.youngsik.domain.repository.NaverRepository
 import com.youngsik.jinada.data.mapper.toDomainModel
 import com.youngsik.jinada.data.repository.NaverApiRepository
-import com.youngsik.jinada.data.repository.NaverRepository
 import javax.inject.Inject
 import javax.inject.Named
 
